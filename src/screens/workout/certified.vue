@@ -15,7 +15,7 @@
       <nb-right />
     </nb-header>
     <nb-content>
-      <WorkoutsList />
+      <WorkoutsList @goToWorkout="goToWorkout" />
     </nb-content>
   </nb-container>
 </template>
@@ -26,8 +26,19 @@ export default {
   components: {
     WorkoutsList
   },
+  props: {
+    navigation: {
+      type: Object
+    }
+  },
   data() {
     return {}
+  },
+  methods: {
+    goToWorkout(id) {
+      console.log(id)
+      this.navigation.navigate('ViewWorkout', {id});
+    }
   }
 };
 </script>

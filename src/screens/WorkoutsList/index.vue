@@ -1,5 +1,5 @@
 <template>
-  <nb-container :style="blackBg">
+  <nb-container :style="blackBg" class="text-red">
     <nb-header>
       <nb-title>WORKOUTS LIST</nb-title>
     </nb-header>
@@ -24,13 +24,13 @@
           <nb-card-item :style="blackBg">
             <nb-left>
               <nb-button transparent>
-                <nb-icon :style="{color: '#DA4437'}" name="logo-github"></nb-icon>
-                <nb-text :style="{color: '#DA4437'}">8000 stars</nb-text>
+                <nb-icon class="text-red" name="logo-github"></nb-icon>
+                <nb-text class="text-red">8000 stars</nb-text>
               </nb-button>
             </nb-left>
             <nb-right>
               <nb-button transparent @press="goToWorkout(workout.id)">
-                <nb-text :style="{color: '#DA4437'}">View</nb-text>
+                <nb-text class="text-red">View</nb-text>
               </nb-button>
             </nb-right>
           </nb-card-item>
@@ -51,11 +51,6 @@
   import { Dimensions } from "react-native";
   const deviceWidth = Dimensions.get("window").width;
   export default {
-    props: {
-      navigation: {
-        type: Object
-      }
-    },
     data: function () {
       return {
         thumb,
@@ -108,8 +103,7 @@
         }
       },
       goToWorkout(id) {
-        console.log(this.blackBg) // this is correct. incorrect navigation
-        this.navigation.navigate("NHViewWorkout");
+        this.$emit('goToWorkout', id)
       }
     }
   }
@@ -120,5 +114,8 @@
   align-self: center;
   height: 150;
   margin-vertical: 5;
+}
+.text-red {
+  color: #DA4437
 }
 </style>

@@ -157,7 +157,7 @@ import ToastDurationScreen from "./screens/toast/toastDuration";
 import ToastPositionScreen from "./screens/toast/toastPosition";
 import ToastTextScreen from "./screens/toast/toastText";
 import ToastTypeScreen from "./screens/toast/toastType";
-import ViewWorkout from './screens/WorkoutsList/index'
+import ViewWorkout from './screens/workout/viewWorkout'
 
 import TypographyScreen from "./screens/typography";
 
@@ -209,7 +209,7 @@ const Drawer = createDrawerNavigator(
 const AppNavigation = createAppContainer(
   createStackNavigator(
     {
-      NHViewWorkout: {screen: ViewWorkout},
+      ViewWorkout: {screen: ViewWorkout},
       Drawer: { screen: Drawer },
       RegularActionSheet: { screen: RegularActionSheetScreen },
       IconActionSheet: { screen: IconActionSheetScreen },
