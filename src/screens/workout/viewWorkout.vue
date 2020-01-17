@@ -20,7 +20,7 @@
           <nb-text class="black-background">Interactive header</nb-text>
         </nb-card-item>
         <nb-card-item class="black-background">
-          <nb-text class="black-background">{{item.title}}</nb-text>
+          <nb-text class="black-background">{{item.name}}</nb-text>
         </nb-card-item>
         <nb-card-item class="black-background" footer>
           <nb-text class="black-background">GeekyAnts</nb-text>
@@ -55,7 +55,7 @@ export default {
       alert('Current id - ' + this.id);
     },
     getData: function (id) {
-      let uri = 'https://jsonplaceholder.typicode.com/posts/' + id;
+      let uri = 'http://api.ironbuffet.localhost/workout/' + id;
       this.loading = true;
       axios.get(uri, {
         params: {
