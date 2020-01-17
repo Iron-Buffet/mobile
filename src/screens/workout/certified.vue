@@ -14,13 +14,18 @@
       </nb-body>
       <nb-right />
     </nb-header>
-    <nb-content padder>
+    <nb-content>
+      <WorkoutsList />
     </nb-content>
   </nb-container>
 </template>
 
 <script>
+  import WorkoutsList from '../WorkoutsList/index'
 export default {
+  components: {
+    WorkoutsList
+  },
   data() {
     return {}
   }

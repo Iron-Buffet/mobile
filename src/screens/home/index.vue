@@ -9,13 +9,6 @@
         >
           <nb-text> Design a new workout</nb-text>
         </nb-button>
-
-        <nb-button
-          :style="stylesObj.btnContainer"
-          :onPress="() => handleBtnClick('NHPlan')"
-        >
-          <nb-text> Design a new workout plan</nb-text>
-        </nb-button>
         <nb-button
           :style="stylesObj.btnContainer"
           :onPress="() => handleBtnClick('NHCertified')"
@@ -48,7 +41,7 @@
 </template>
 
 <script>
-import { Dimensions, Platform } from "react-native";
+import { Dimensions, Platform, Animated, Easing } from "react-native";
 import launchScreenBg from "../../../assets/bg.png";
 import launchscreenLogo from "../../../assets/logo-kitchen-sink.png";
 
@@ -85,7 +78,7 @@ export default {
     },
     handleBtnClick(route) {
       this.navigation.navigate(route);
-    }
+    },
   }
 };
 </script>

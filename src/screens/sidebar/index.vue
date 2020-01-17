@@ -1,5 +1,5 @@
 <template>
-  <nb-container>
+  <nb-container :style="{backgroundColor: '#000'}">
     <nb-content class="sidebar-content-wrapper" :bounces="true">
       <nb-content
         :style="stylesObj.drawerCoverObj"

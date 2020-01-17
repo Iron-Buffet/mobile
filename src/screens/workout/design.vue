@@ -14,15 +14,30 @@
       </nb-body>
       <nb-right />
     </nb-header>
-    <nb-content padder>
+    <nb-content>
+    
     </nb-content>
   </nb-container>
 </template>
 
 <script>
+
 export default {
-  data() {
-    return {}
+  data: function() {
+    return {
+      message: "Hello World",
+      text: '',
+      isLoading: true,
+      value: false
+    };
+  },
+  methods: {
+    handleBtnPress: function() {
+      alert('Btn Press');
+    },
+    handleChange: function(val) {
+      this.value = val;
+    }
   }
 };
 </script>
