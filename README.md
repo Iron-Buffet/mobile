@@ -8,6 +8,8 @@
 
 * **Run on iOS**
   * Opt #1:
+    * Clone from github https://github.com/iron-buffet/mobile
+    * Run `npm install in your terminal to install dependencies`
     * Run `npm start` in your terminal
     * Scan the QR code in your Expo app
   * Opt #2:
@@ -15,6 +17,8 @@
 
 - **Run on Android**
   * Opt #1:
+    * Clone from github https://github.com/iron-buffet/mobile
+    * Run `npm install in your terminal to install dependencies`
     * Run `npm start` in your terminal
     * Scan the QR code in your Expo app
   * Opt #2:
