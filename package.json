@@ -1,43 +1,58 @@
 {
-  "name": "kitchenSink-vue-native",
-  "version": "0.2.0",
-  "private": true,
-  "devDependencies": {
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-react": "^7.16.0",
-    "eslint-plugin-vue": "^5.2.3",
-    "jest-expo": "^35.0.0",
-    "prettier": "^1.18.2",
-    "react-test-renderer": "16.8.6",
-    "vue-native-scripts": "~0.1.4"
-  },
-  "main": "./node_modules/expo/AppEntry.js",
-  "scripts": {
-    "start": "expo start",
-    "eject": "expo eject",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "lint": "eslint ./src ./App.vue --ext .js,.vue",
-    "lint:fix": "eslint ./src ./App.vue --ext .js,.vue --fix",
-    "test": "jest"
-  },
-  "jest": {
-    "preset": "jest-expo"
-  },
-  "dependencies": {
-    "axios": "^0.19.1",
-    "expo": "^35.0.0",
-    "native-base": "^2.13.8",
-    "react": "16.8.3",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
-    "react-native-gesture-handler": "~1.3.0",
-    "react-native-paper": "^2.16.0",
-    "react-native-reanimated": "~1.2.0",
-    "vue-native-core": "~0.1.4",
-    "vue-native-helper": "~0.1.4",
-    "vue-native-router": "~0.1.1"
-  }
+    "name": "reactnative",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "android": "react-native run-android",
+        "ios": "react-native run-ios",
+        "start": "react-native start",
+        "test": "jest",
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "@react-native-community/async-storage": "^1.7.1",
+        "@react-native-community/datetimepicker": "^2.2.1",
+        "@react-native-community/masked-view": "^0.1.6",
+        "expo": "^36.0.2",
+        "expo-asset": "^8.0.0",
+        "expo-linear-gradient": "^8.0.0",
+        "galio-framework": "^0.6.3",
+        "react": "16.9.0",
+        "react-native": "0.61.5",
+        "react-native-appearance": "^0.3.2",
+        "react-native-calendars": "^1.259.0",
+        "react-native-dotenv": "^0.2.0",
+        "react-native-gesture-handler": "^1.5.3",
+        "react-native-masked-text": "^1.13.0",
+        "react-native-modal": "^11.5.3",
+        "react-native-modal-dropdown": "^0.7.0",
+        "react-native-picker-select": "^6.4.0",
+        "react-native-progress-steps": "^1.2.8",
+        "react-native-ratings": "^6.5.0",
+        "react-native-reanimated": "^1.7.0",
+        "react-native-safe-area-context": "^0.6.2",
+        "react-native-screens": "^2.0.0-alpha.29",
+        "react-native-table-component": "^1.2.1",
+        "react-native-unimodules": "^0.7.0",
+        "react-native-vector-icons": "^6.6.0",
+        "react-navigation": "^4.0.10",
+        "react-navigation-drawer": "^2.3.3",
+        "react-navigation-stack": "^2.0.16",
+        "react-redux": "^7.1.3",
+        "reactotron-react-native": "^4.0.3",
+        "redux": "^4.0.5"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.6.2",
+        "@babel/runtime": "^7.6.2",
+        "@react-native-community/eslint-config": "^0.0.5",
+        "babel-jest": "^24.9.0",
+        "eslint": "^6.5.1",
+        "jest": "^24.9.0",
+        "metro-react-native-babel-preset": "^0.56.0",
+        "react-test-renderer": "16.9.0"
+    },
+    "jest": {
+        "preset": "react-native"
+    }
 }
