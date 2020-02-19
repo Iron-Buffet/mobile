@@ -35,4 +35,8 @@ target 'ironbuffet' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
   use_native_modules!
+  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
+  pod 'FBSDKCoreKit' #Facebook Analytics
+  pod 'FBSDKLoginKit' #Facebook Login
+  pod 'FBSDKShareKit' #Facebook sharing
 end
