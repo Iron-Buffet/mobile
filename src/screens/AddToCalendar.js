@@ -64,7 +64,7 @@ class AddToCalendar extends React.Component {
       emptyWorkouts: false
     });
     if (selectedParts.length > 0) {
-      $get(LINKS.WORKOUT_INDEX + '?filter[parts]=' + selectedParts.join(',')).then(res => {
+      $get(LINKS.WORKOUT_ALL + '?filter[parts]=' + selectedParts.join(',')).then(res => {
         const workouts = res.map(w => {
           return {
             label: w.name || 'Workout #' + w.id,

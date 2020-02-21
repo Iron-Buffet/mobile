@@ -1,9 +1,9 @@
-import React from 'react'
-import {StyleSheet} from 'react-native'
+import React from 'react';
+import {StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import {LINKS, PROFILE, theme} from "../constants";
-import {Input, Wrap, Button} from '../components'
-import {$get} from "../utils/Fetch";
+import {Input, Wrap, Button} from '../components';
+import {$get, $post} from "../utils/Fetch";
 import RNPickerSelect from "react-native-picker-select";
 import {cardInput} from "../utils/globalStyles";
 import {age} from "../utils/methods";
@@ -36,6 +36,19 @@ class EditProfile extends React.Component {
     })
   };
 
+  updateHandler = () => {
+    const data = new FormData;
+    const {navigation} = this.props;
+    data.append('firstname', this.state.firstName)
+    data.append('lastname', this.state.lastName)
+    data.append('experience', this.state.expLevel)
+    data.append('dob', this.formatDate(this.state.date))
+    $post(LINKS.PROFILE_UPDATE, {body: data}).then(res => {
+      console.log(res)
+      navigation.push('Profile');
+    })
+  };
+
   state = {
     firstName: '',
     lastName: '',
@@ -48,6 +61,20 @@ class EditProfile extends React.Component {
   expLevelSelectHandler = expLevel => {
     this.setState({expLevel});
   };
+
+  formatDate = (date) => {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
 
   setDate = (event, date) => {
     date = date || this.state.age;
@@ -73,7 +100,7 @@ class EditProfile extends React.Component {
       goal: goals,
       firstName: user.firstName,
       lastName: user.lastName,
-      expLevel: user.expLevel,
+      expLevel: user.experience,
       date
     })
   }
@@ -92,21 +119,6 @@ class EditProfile extends React.Component {
             value={this.state.lastName}
             onChangeText={lastName => this.setState({lastName})}
           />
-          <RNPickerSelect
-            onValueChange={plan => {
-              this.setState({plan: plan ? plan.id : null})
-            }}
-            value={this.state.plan}
-            placeholder={
-              {label: 'Your Plan'}
-            }
-            items={plans}
-            style={{
-              inputIOS: styles.cardInput,
-              placeholder: {
-                color: theme.COLORS.TEXT
-              }
-            }}/>
           <RNPickerSelect
             onValueChange={el => {
               this.setState({expLevel: el})
@@ -128,7 +140,7 @@ class EditProfile extends React.Component {
             value={date.toLocaleDateString() + ' (' + age(date) + ' y.o.)'}
           />
           <DateTimePicker onChange={this.setDate} value={date} maximumDate={new Date(2010, 1, 1)}  />
-          <Button style={bottomButton}>
+          <Button style={bottomButton} onPress={this.updateHandler}>
             Save
           </Button>
         </Wrap>
