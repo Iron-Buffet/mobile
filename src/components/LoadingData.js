@@ -23,6 +23,7 @@ class LoadingData extends React.Component {
   load = async () => {
     this.setState({isLogged: true});
     const profile = await $get(LINKS.PROFILE);
+    console.log(profile)
     this.props.setUser(profile.data);
     this.setState({isProfileLoaded: true});
     const styles = await $get(LINKS.STYLE);

@@ -2,7 +2,7 @@ import React from 'react'
 import {StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native'
 import {connect} from 'react-redux';
 import {LINKS, PROFILE, theme} from "../constants";
-import {Input, Wrap, Button} from '../components'
+import {Input, Wrap, Button, Checkbox, Text} from '../components'
 import {$get, $post} from "../utils/Fetch";
 import RNPickerSelect from "react-native-picker-select";
 import {cardInput} from "../utils/globalStyles";
@@ -44,13 +44,13 @@ class EditProfile extends React.Component {
     plan: null,
     expLevel: null,
     isDatePickerVisible: false,
-    phoneNumber: null,
+    phoneNumber: '',
     date: new Date(),
-    city: null,
-    zip: null,
-    state: null,
-    height: null,
-    weight: null,
+    city: '',
+    zip: '',
+    state: '',
+    height: '',
+    weight: '',
     toast: false,
     loading: false,
   };
@@ -67,6 +67,7 @@ class EditProfile extends React.Component {
       height,
       weight,
       date,
+      goal,
     } = this.state;
     const form = new FormData();
     form.append('firstname', firstName);
@@ -78,7 +79,7 @@ class EditProfile extends React.Component {
     form.append('height', height);
     form.append('weight', weight);
     form.append('experience', expLevel);
-    // form.append('goal', goal.join());
+    form.append('goal', goal.join());
     // form.append('plan', plan);
     form.append('dob', date.toLocaleDateString());
     $post('/profile/update', {body: form}).then(res => {
@@ -114,22 +115,25 @@ class EditProfile extends React.Component {
     });
   };
 
+  selectGoal = (goal) => {
+      const goals = [...this.state.goal];
+      let newGoals = [];
+      if (goals.includes(goal)) {
+          newGoals = goals.filter(x => x !== goal)
+      } else {
+          newGoals = goals.concat(goal)
+      }
+      this.setState({goal: newGoals});
+  };
+
   componentDidMount () {
     const {user} = this.props;
-    const goals = [];
-    let goalsCount = 0;
-    for (const key in user.goals) {
-      if (user.goals[key]) {
-        goals.push(goalsCount)
-      }
-      goalsCount++;
-    }
-    console.log(user.zip)
+
     const date = user.dob ? new Date(user.dob) : new Date('1/1/2000');
 
     const zip = user.zip.toString()
     this.setState({
-      goal: goals,
+      goal: user.goal ? user.goal.split(',') : [],
       firstName: user.firstName,
       lastName: user.lastName,
       expLevel: user.experience,
@@ -238,6 +242,16 @@ class EditProfile extends React.Component {
                 value={date.toLocaleDateString() + ' (' + age(date) + ' y.o.)'}
               />
             </Block>
+              <Block>
+                  <Text bold>Select your goals</Text>
+                  {
+                      PROFILE.GOALS.map((g, index) => {
+                          return (<Block style={{marginTop: 5}} key={'ch'+index}>
+                              <Checkbox value={this.state.goal.includes(index)} full onPress={() => this.selectGoal(index)} text={g} />
+                          </Block>)
+                      })
+                  }
+              </Block>
           </ScrollView>
           <DateTimePickerModal
             isVisible={this.state.isDatePickerVisible}

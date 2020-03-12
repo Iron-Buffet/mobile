@@ -7,6 +7,7 @@ import Switch from './Switch';
 import Text from './Text';
 import Input from './Input';
 import Wrap from './Wrap';
+import Checkbox from './Checkbox';
 
 export {
   Button,
@@ -17,5 +18,6 @@ export {
   Switch,
   Text,
   Input,
-  Wrap
+  Wrap,
+  Checkbox,
 };
