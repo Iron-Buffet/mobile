@@ -200,7 +200,7 @@ class Register extends React.Component {
                 {this.state.terms && <Block style={styles.check} />}
               </Block>
             </TouchableOpacity>
-            <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>By checking this box I agree on <Text style={styles.link} onPress={() => Linking.openURL('https://ironbuffet.com/terms-of-use')}>Terms & Conditions</Text> & <Text style={styles.link} onPress={() => Linking.openURL('https://ironbuffet.com/privacy-policy')}>Privacy Policy</Text></Text>
+            <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>By checking this box I agree on <Text style={styles.link} onPress={() => Linking.openURL('https://ironbuffet.com/terms-of-use')}>Terms & Conditions</Text> & <Text style={styles.link} onPress={() => Linking.openURL('https://ironbuffet.com/privacy-policy')}>Privacy&nbsp;Policy</Text></Text>
           </Block>
           <Text style={styles.info}>
             By participating, you consent to receive text and emails messages sent by an automatic telephone dialing system. Consent to these terms is not a condition of purchase. Message and data rates may apply.

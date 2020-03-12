@@ -83,17 +83,15 @@ class EditProfile extends React.Component {
     // form.append('plan', plan);
     form.append('dob', date.toLocaleDateString());
     $post('/profile/update', {body: form}).then(res => {
-      $get(LINKS.PROFILE).then(res => {
-        this.props.setUser(res.data);
-        this.setState({
-          toast: true
-        });
-        setTimeout(() => {
-          this.setState({
-            toast: false
-          })
-        }, 2000)
+      this.props.setUser(res.data);
+      this.setState({
+        toast: true
       });
+      setTimeout(() => {
+        this.setState({
+          toast: false
+        })
+      }, 2000)
     })
   };
 
@@ -102,10 +100,6 @@ class EditProfile extends React.Component {
     this.setState({
       isDatePickerVisible: false
     });
-  };
-
-  expLevelSelectHandler = expLevel => {
-    this.setState({expLevel});
   };
 
   setDate = (date) => {
@@ -130,8 +124,6 @@ class EditProfile extends React.Component {
     const {user} = this.props;
 
     const date = user.dob ? new Date(user.dob) : new Date('1/1/2000');
-
-    const zip = user.zip.toString()
     this.setState({
       goal: user.goal ? user.goal.split(',') : [],
       firstName: user.firstName,
@@ -140,7 +132,7 @@ class EditProfile extends React.Component {
       phoneNumber: user.phone,
       city: user.city,
       state: user.state,
-      zip,
+      zip: user.zip ? user.zip.toString() : '',
       height: user.height,
       weight: user.weight,
       date
@@ -247,7 +239,7 @@ class EditProfile extends React.Component {
                   {
                       PROFILE.GOALS.map((g, index) => {
                           return (<Block style={{marginTop: 5}} key={'ch'+index}>
-                              <Checkbox value={this.state.goal.includes(index)} full onPress={() => this.selectGoal(index)} text={g} />
+                              <Checkbox value={this.state.goal.includes(index.toString())} full onPress={() => this.selectGoal(index.toString())} text={g} />
                           </Block>)
                       })
                   }
