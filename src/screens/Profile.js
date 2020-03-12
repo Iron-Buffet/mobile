@@ -17,7 +17,6 @@ class Profile extends React.Component {
 
   componentDidMount(){
     $get(LINKS.PROFILE).then(res => {
-      console.log(res.data.workouts.recently[0].parts[0].id)
       this.props.setUser(res.data);
     })
   }
