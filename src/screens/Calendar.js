@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { Block } from 'galio-framework';
 import theme from '../constants/Theme'
+import XDate from 'xdate';
 
 import { Agenda } from "react-native-calendars";
 import { $get } from '../utils/Fetch'
@@ -20,6 +21,13 @@ export default class Calendar extends React.Component {
     }
   }
 
+  getShortMonth() {
+    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  }
+  getShortDay() {
+    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  }
+
   componentDidMount() {
     const date = {};
     date.timestamp = (new Date()).getTime();
@@ -28,6 +36,7 @@ export default class Calendar extends React.Component {
 
   loadItems = (day) => {
     $get('/workout/events-mobile?time=' + day.timestamp).then(res => {
+      console.log(res)
       this.setState({
         items: res,
       })
@@ -35,17 +44,20 @@ export default class Calendar extends React.Component {
   };
 
   renderDay = (day) => {
-    const actualTimestamp = day ? day.timestamp : null;
-    const dayText = day ? new Date(actualTimestamp).toLocaleString('en-us', {  weekday: 'short' }): null;
-    const mnText = day ? new Date(actualTimestamp).toLocaleString('en-us', {  month: 'short' }): null;
-    const dayNumber = day ? new Date(actualTimestamp).getDate(): null;
+    if (!day) {
+      return <Block center style={styles.day} />
+    }
+    const xDate = new XDate(day.timestamp, true);
+    const d = xDate.getDay();
+    const date = xDate.getDate();
+    const month = xDate.getMonth();
     return (
       <Block center style={styles.day}>
         <Block row>
-          <Text style={styles.dayText}>{mnText}</Text>
-          <Text style={styles.dayText}> {dayNumber}</Text>
+          <Text style={styles.dayText}>{this.getShortMonth()[month]}</Text>
+          <Text style={styles.dayText}> {date}</Text>
         </Block>
-        <Text style={styles.dayText}>{dayText}</Text>
+        <Text style={styles.dayText}>{this.getShortDay()[d]}</Text>
       </Block>
     )
   };
@@ -57,8 +69,8 @@ export default class Calendar extends React.Component {
         style={[styles.item, {backgroundColor: item.done ? 'grey' : theme.COLORS.PRIMARY}]}
         onPress={() => navigation.navigate('SWorkout', { id: item.id } )}
       >
-        <Text style={styles.itemTitle}>{item.name} {item.id}</Text>
-        <Text style={styles.itemDate}>Time: {item.time}</Text>
+        <Text style={styles.itemTitle}>{item.name}</Text>
+        <Text>{item.description}</Text>
       </TouchableOpacity>
     );
   };

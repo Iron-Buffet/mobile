@@ -2,15 +2,18 @@ import React from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Linking,
 } from 'react-native';
 import { Block } from 'galio-framework';
 import { Input, Text, Button } from '../components';
 import theme from '../constants/Theme';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TextInputMask } from 'react-native-masked-text'
 import RNPickerSelect from 'react-native-picker-select'
 import {cardInput} from "../utils/globalStyles";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import {PROFILE, utils} from "../constants";
 import LoadingData from "../components/LoadingData";
@@ -32,7 +35,10 @@ class Register extends React.Component {
     year: null,
     cvv: null,
     loading: false,
-    form: null
+    form: null,
+    isDatePickerVisible: false,
+    phoneNumber: null,
+    terms: false,
   };
 
   componentDidMount () {
@@ -43,12 +49,20 @@ class Register extends React.Component {
     });
   }
 
+  handleConfirm = date => {
+    this.setDate(date);
+    this.setState({
+      isDatePickerVisible: false
+    });
+  };
+
   nextBtnHandler = () => {
     const {
       currentStep,
       password,
       firstName,
       lastName,
+      phoneNumber,
       date,
       expLevel,
       goal,
@@ -56,16 +70,21 @@ class Register extends React.Component {
       cardNumber,
       year,
       month,
+      terms,
       cvv
     } = this.state;
     switch (currentStep) {
       case 1:
-        if (!(password && firstName && lastName && date)) {
-          alert('Check entered data')
+        if (!terms) {
+          alert('You must agree with Terms & Conditions & Privacy Policy')
         } else {
-          this.setState({
-            currentStep: 2,
-          });
+          if (!(password && firstName && lastName && date && phoneNumber)) {
+            alert('Check entered data')
+          } else {
+            this.setState({
+              currentStep: 2,
+            });
+          }
         }
         break;
       case 2:
@@ -121,7 +140,7 @@ class Register extends React.Component {
     });
   };
 
-  setDate = (event, date) => {
+  setDate = (date) => {
     date = date || this.state.age;
     this.setState({
       date,
@@ -144,22 +163,49 @@ class Register extends React.Component {
             onChangeText={password => this.setState({password})}
           />
           <Input
-            placeholder="First name"
+            placeholder="First Name"
             value={this.state.firstName}
             onChangeText={firstName => this.setState({firstName})}
           />
           <Input
-            placeholder="Last name"
+            placeholder="Last Name"
             value={this.state.lastName}
             onChangeText={lastName => this.setState({lastName})}
           />
           <Input
-            placeholder="Date of Birth"
-            editable={false}
-            value={date.toLocaleDateString() + ' (' + age(date) + ' y.o.)'}
+            placeholder="Phone Number"
+            value={this.state.phoneNumber}
+            keyboardType="phone-pad"
+            onChangeText={phoneNumber => this.setState({phoneNumber})}
           />
+          <Block style={{position: 'relative'}}>
+            <TouchableWithoutFeedback onPress={() => {
+              this.setState({
+                isDatePickerVisible: true
+              })
+            }}>
+              <Block style={styles.inputOverflow} />
+            </TouchableWithoutFeedback>
+            <Input
+              placeholder="Date of Birth"
+              editable={false}
+              value={date.toLocaleDateString() + ' (' + age(date) + ' y.o.)'}
+            />
+          </Block>
+          <Block style={styles.terms}>
+            <TouchableOpacity onPress={() => this.setState({
+              terms: !this.state.terms
+            })}>
+              <Block style={styles.checkBorder}>
+                {this.state.terms && <Block style={styles.check} />}
+              </Block>
+            </TouchableOpacity>
+            <Text>By checking this box I agree on <Text style={styles.link} onPress={() => Linking.openURL('https://ironbuffet.com/terms-of-use')}>Terms & Conditions</Text> & <Text style={styles.link} onPress={() => Linking.openURL('https://ironbuffet.com/privacy-policy')}>Privacy Policy</Text></Text>
+          </Block>
+          <Text style={styles.info}>
+            By participating, you consent to receive text and emails messages sent by an automatic telephone dialing system. Consent to these terms is not a condition of purchase. Message and data rates may apply.
+          </Text>
         </Block>
-        <DateTimePicker style={styles.date} onChange={this.setDate} value={date} maximumDate={new Date(2010, 12, 31)}  />
       </Block>
     );
   };
@@ -342,6 +388,7 @@ class Register extends React.Component {
       password,
       firstName,
       lastName,
+      phoneNumber,
       expLevel,
       goal,
       plan,
@@ -356,8 +403,9 @@ class Register extends React.Component {
     form.append('password', password);
     form.append('firstName', firstName);
     form.append('lastName', lastName);
+    form.append('phone', phoneNumber);
     form.append('level', expLevel);
-    form.append('goal', goal.join());
+    form.append('goal', goal.join(','));
     form.append('plan', plan);
     form.append('date', date.toLocaleDateString());
     form.append('card', cardNumber);
@@ -433,52 +481,105 @@ class Register extends React.Component {
       dots.push(<Block key={`dot-${i}`} style={[styles.dot, style]} />);
     }
     return (
-      <Block safe flex middle style={styles.container}>
-        <Block
-          style={{
-            marginBottom: 'auto',
-            marginTop: 'auto',
-          }}>
-          {currentScreen}
-          <Block row center middle style={{marginVertical: 30}}>
-            {dots}
-          </Block>
-          {currentStep <= dots.length ? (
-            <Block row>
-              {currentStep > 1 ? (
-                <Button
-                  onPress={this.prevBtnHandler}
-                  textStyle={{color: theme.COLORS.TEXT}}
-                  back>
-                  Back
-                </Button>
-              ) : null}
-              {currentStep <= 5 ? (
-                <Button
-                  onPress={this.nextBtnHandler}
-                  style={[styles.btn, {marginLeft: 'auto'}]}
-                  color={theme.COLORS.PRIMARY}>
-                  {currentStep === 5 ? 'Join' : 'Next'}
-                </Button>
-              ) : null}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <Block safe flex middle style={styles.container}>
+          <Block
+            style={{
+              marginBottom: 'auto',
+              marginTop: 'auto',
+            }}>
+            {currentScreen}
+            <Block row center middle style={{marginVertical: 30}}>
+              {dots}
             </Block>
-          ) : null}
+            {currentStep <= dots.length ? (
+              <Block row>
+                {currentStep > 1 ? (
+                  <Button
+                    onPress={this.prevBtnHandler}
+                    textStyle={{color: theme.COLORS.TEXT}}
+                    back>
+                    Back
+                  </Button>
+                ) : null}
+                {currentStep <= 5 ? (
+                  <Button
+                    onPress={this.nextBtnHandler}
+                    style={[styles.btn, {marginLeft: 'auto'}]}
+                    color={theme.COLORS.PRIMARY}>
+                    {currentStep === 5 ? 'Join' : 'Next'}
+                  </Button>
+                ) : null}
+              </Block>
+            ) : null}
+          </Block>
+          <Block middle>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text color={theme.COLORS.TEXT}>
+                Already have an account? Go to login
+              </Text>
+            </TouchableOpacity>
+          </Block>
+          <DateTimePickerModal
+            isVisible={this.state.isDatePickerVisible}
+            mode="date"
+            onConfirm={this.handleConfirm}
+            onCancel={() => {
+              this.setState({
+                isDatePickerVisible: false
+              })
+            }}
+          />
         </Block>
-        <Block middle>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text color={theme.COLORS.TEXT}>
-              Already have an account? Go to login
-            </Text>
-          </TouchableOpacity>
-        </Block>
-      </Block>
+      </TouchableWithoutFeedback>
     );
   }
 }
 const styles = StyleSheet.create({
+  inputOverflow: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 2,
+  },
+  link: {
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'solid',
+    textDecorationColor: theme.COLORS.TEXT,
+  },
+  info: {
+    fontSize: 10,
+    marginTop: theme.SIZES.BASE
+  },
+  terms: {
+    marginTop: theme.SIZES.BASE,
+    flexDirection: 'row'
+  },
   container: {
     marginHorizontal: theme.SIZES.BASE,
     alignItems: 'stretch'
+  },
+  checkBorder: {
+    borderRadius: 3,
+    borderWidth: 2,
+    borderColor: theme.COLORS.MUTED,
+    width: 20,
+    height: 20,
+    position: 'relative',
+    marginRight: theme.SIZES.BASE / 2,
+  },
+  check: {
+    width: 20,
+    height: 10,
+    borderColor: theme.COLORS.PRIMARY,
+    borderLeftWidth: 2,
+    borderBottomWidth: 2,
+    position: 'absolute',
+    top: -3,
+    left: 2,
+    transform: [{ rotate: '-45deg' }]
   },
   loadingContainer: {
     flex: 1,

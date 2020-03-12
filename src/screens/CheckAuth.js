@@ -11,7 +11,6 @@ class CheckAuth extends React.Component {
 
   render() {
     const { navigation, user } = this.props;
-    console.log(user)
     return (
       <Wrap>
         <LoadingData
