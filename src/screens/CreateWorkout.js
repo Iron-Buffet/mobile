@@ -1,11 +1,11 @@
 import React from 'react'
-import {StyleSheet, Switch, ScrollView} from 'react-native'
+import {StyleSheet, ScrollView} from 'react-native'
 import { connect } from 'react-redux';
 import { Slider } from 'galio-framework';
 import CreateWorkoutPart from '../components/CreateWorkoutPart'
 import { Rating } from 'react-native-ratings';
 
-import {Button, Input, Text, Wrap} from '../components';
+import {Button, Input, Text, Wrap, Checkbox} from '../components';
 import { Block } from 'galio-framework';
 import theme from '../constants/Theme'
 import PARTS from '../constants/Parts';
@@ -145,15 +145,12 @@ class CreateWorkout extends React.Component{
           row
           key={`part${p.id}`}
           style={styles.switchWrap}>
-          <Switch
+          <Checkbox
             value={val}
-            onValueChange={() => this.toggleSwitchHandler(p)}
-            style={{marginRight: 10}}
-            trackColor={{
-              true: theme.COLORS.PRIMARY
-            }}
+            onPress={() => this.toggleSwitchHandler(p)}
+            text={p.name}
+            full
           />
-          <Text size={18}>{p.name}</Text>
         </Block>
       )
     })
@@ -257,7 +254,7 @@ const styles = StyleSheet.create({
   switchWrap: {
     marginBottom: theme.SIZES.BASE / 2,
     marginRight: theme.SIZES.BASE / 2,
-    width: 150,
+    width: 120,
     alignItems: 'center'
   },
   switchersContainer: {

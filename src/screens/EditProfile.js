@@ -130,11 +130,11 @@ class EditProfile extends React.Component {
       lastName: user.lastName,
       expLevel: user.experience,
       phoneNumber: user.phone,
-      city: user.city,
-      state: user.state,
+      city: user.city || '',
+      state: user.state || '',
       zip: user.zip ? user.zip.toString() : '',
-      height: user.height,
-      weight: user.weight,
+      height: user.height || '',
+      weight: user.weight || '',
       date
     })
   }
