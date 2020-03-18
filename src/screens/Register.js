@@ -524,6 +524,7 @@ class Register extends React.Component {
             isVisible={this.state.isDatePickerVisible}
             mode="date"
             onConfirm={this.handleConfirm}
+            isDarkModeEnabled={theme.IS_DARK}
             onCancel={() => {
               this.setState({
                 isDatePickerVisible: false

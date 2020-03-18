@@ -48,5 +48,6 @@ export default {
     LIGHT: 'Kanit-Light',
     MEDIUM: 'Kanit-Medium',
   },
-  STATUS_BAR: mode === 'light' ? 'dark-content' : 'light-content'
+  STATUS_BAR: mode === 'light' ? 'dark-content' : 'light-content',
+  IS_DARK: mode === 'dark'
 };

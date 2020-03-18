@@ -248,6 +248,7 @@ class EditProfile extends React.Component {
           <DateTimePickerModal
             isVisible={this.state.isDatePickerVisible}
             mode="date"
+            isDarkModeEnabled={theme.IS_DARK}
             onConfirm={this.handleConfirm}
             onCancel={() => {
               this.setState({
