@@ -45,8 +45,6 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Used to create a selfie and upload it to the user profile</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Used to upload an image to user profile</string>
 	<key>UIAppFonts</key>

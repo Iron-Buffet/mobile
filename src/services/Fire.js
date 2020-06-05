@@ -60,7 +60,7 @@ export default class Fire {
 
   createUser = async user => {
       try {
-        const usr = await auth().createUserWithEmailAndPassword(user.email, user.password);
+        await auth().createUserWithEmailAndPassword(user.email, user.password);
         await this.firestore.collection('users').doc(this.uid).set({
           first_name: user.first_name,
           last_name: user.last_name,
@@ -70,7 +70,7 @@ export default class Fire {
           level: user.level,
           goal: user.goal,
           plan: user.plan,
-          date: user.date,
+          dob: user.dob,
         });
         let remoteUrl = null;
 
@@ -83,13 +83,14 @@ export default class Fire {
           });
         }
       } catch (e) {
+        console.log(e);
         return e;
       }
   };
 
   updateUser = async user => {
       try {
-        const res = await this.firestore.collection('users').doc(this.uid).update({
+        await this.firestore.collection('users').doc(this.uid).update({
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,

@@ -26,7 +26,7 @@ const Drawer = props => {
         <Block flex={0.2} style={styles.header} row center>
           <TouchableWithoutFeedback
             onPress={() => navigation.navigate('Profile')}>
-            <Image source={{uri: fbUser.avatar || user.avatar}} style={styles.avatar} />
+            <Image source={{uri: fbUser && fbUser.avatar ? fbUser.avatar : user.avatar}} style={styles.avatar} />
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
             onPress={() => navigation.navigate('Profile')}>
