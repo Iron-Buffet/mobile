@@ -1,202 +1,181 @@
 import React from 'react';
 import {TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
-import { Block } from 'galio-framework';
+import {Block} from 'galio-framework';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Text, Button, Input } from "../components";
-import { LINKS } from '../constants'
-import {checkEmail} from "../constants/utils";
+import {Text, Button, Input, Loader} from '../components';
+import {LINKS} from '../constants';
+import {checkEmail} from '../constants/utils';
 
-import { $post } from '../utils/Fetch'
+import {$post} from '../utils/Fetch';
 
 import theme from '../constants/Theme';
-import LoadingData from '../components/LoadingData'
+import {AuthContext} from '../context/contexts';
 
-class Login extends React.Component {
+const Login = ({navigation}) => {
+  const {signIn} = React.useContext(AuthContext);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false,
-      isEmailChecked: false,
-      emailChecking: false,
-      email: '',
-      password: '',
-      user: null,
-      form: null
-    };
-  }
-  backPressHandler = () => {
-    this.setState({
+  const [state, setState] = React.useState({
+    isLoading: false,
+    isEmailChecked: false,
+    emailChecking: false,
+    email: '',
+    password: '',
+    user: null,
+    form: null,
+  });
+
+  const backPressHandler = () => {
+    setState({
       isEmailChecked: false,
       email: '',
       password: '',
       user: null,
     });
   };
-  continuePressHandler = async () => {
-    const form = new FormData;
-    const { email } = this.state;
-    const { navigation } = this.props;
-    form.append('email', email.toLowerCase());
-    if (!this.state.isEmailChecked) {
-      if (checkEmail(email)) {
-        this.setState({
-          emailChecking: true
+
+  const continuePressHandler = async () => {
+    if (state.isLoading) {
+      return false;
+    }
+    const form = new FormData();
+    form.append('email', state.email.toLowerCase());
+    if (!state.isEmailChecked) {
+      if (checkEmail(state.email)) {
+        setState({
+          ...state,
+          emailChecking: true,
         });
         try {
           const user = await $post(LINKS.CHECK_EMAIL, {body: form});
           if (user) {
-            this.setState({
+            setState({
+              ...state,
               user,
               emailChecking: false,
-              isEmailChecked: true
+              isEmailChecked: true,
             });
           } else {
-            this.setState({
-              emailChecking: false
+            setState({
+              ...state,
+              emailChecking: false,
             });
-            await AsyncStorage.setItem('email', email);
-            navigation.navigate({routeName: 'Register'})
+            await AsyncStorage.setItem('email', state.email);
+            navigation.navigate('Register');
           }
         } catch (e) {
-          alert(e.message)
+          alert(e.message);
         }
       } else {
-        alert('Check your email')
+        alert('Check your email');
       }
     } else {
-      const { password } = this.state;
-      if (password) {
-        form.append('password', password);
-        this.setState({
-          isLoading: true,
-          form
+      if (state.password) {
+        form.append('password', state.password);
+        setState({
+          ...state,
+          // isLoading: true,
+          form,
         });
+        try {
+          await signIn(form, LINKS.LOGIN, state.email, state.password);
+        } catch (e) {
+
+          console.log(e)
+        }
       } else {
-        alert('Enter password')
+        alert('Enter password');
       }
     }
   };
 
-  onSuccess = () => {
-    const {navigation} = this.props;
-    this.setState({
-      isLoading: false
-    });
-    navigation.navigate('Dashboard');
-  };
+  const {isEmailChecked, emailChecking, user} = state;
 
-  onError = () => {
-    this.setState({
-      isLoading: false
-    });
-    alert('Incorrect Email or Password')
-  };
-
-  render() {
-    const {
-      isLoading,
-      isEmailChecked,
-      emailChecking,
-      user,
-      form
-    } = this.state;
-
-    if(isLoading){
-      return(
-        <LoadingData
-          url={LINKS.LOGIN}
-          form={form}
-          onSuccess={() => this.onSuccess()}
-          onError={() => this.onError()}
-        />
-      )
-    }
-
-    return (
-      <Block middle style={styles.container}>
-        <Text style={styles.title} color="red">
-          IRON BUFFET
-        </Text>
-        <Block style={{position: 'relative'}}>
-          {
-            user ? (
-              <Block>
-                <Text style={styles.email}>{user.email}</Text>
-                <Text title>
-                  Hello, {user.name}
-                </Text>
-              </Block>
-            ) : (
-              <Input
-                placeholder="Enter Your Email To Get Started"
-                keyboardType="email-address"
-                value={this.state.email}
-                onChangeText={(email) => this.setState({ email })}
-              />
-            )
-          }
-          { emailChecking && <ActivityIndicator style={styles.emailLoader}/> }
-        </Block>
-        {
-          isEmailChecked && (
-            <Input
-              placeholder="Password"
-              password
-              onChangeText={(password) => this.setState({ password })}
-            />
-          )
-        }
-        <Button
-          shadowless
-          style={styles.button}
-          color={theme.COLORS.BUTTON_COLOR}
-          onPress={this.continuePressHandler}>
-          continue
-        </Button>
-           {
-             isEmailChecked && (
-               <Block row space="between" style={{ alignSelf: 'stretch',marginTop: theme.SIZES.BASE}}>
-                <TouchableOpacity onPress={this.backPressHandler}>
-                   <Text style={{color: theme.COLORS.TEXT}} >Back</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => alert('Reset password')}>
-                   <Text style={{color: theme.COLORS.TEXT}}>Reset password</Text>
-                </TouchableOpacity>
-              </Block>
-             )
-           }
-        </Block>
-    );
+  if (state.isLoading) {
+    return <Loader />
   }
-}
+
+  return (
+    <Block middle style={styles.container}>
+      <Text style={styles.title} color="red">
+        IRON BUFFET
+      </Text>
+      <Block style={{position: 'relative'}}>
+        {user ? (
+          <Block>
+            <Text style={styles.email}>{user.email}</Text>
+            <Text title>Hello, {user.name}</Text>
+          </Block>
+        ) : (
+          <Input
+            placeholder="Enter Your Email To Get Started"
+            keyboardType="email-address"
+            value={state.email}
+            onChangeText={email => {
+              setState({...state, email});
+            }}
+          />
+        )}
+        {emailChecking && <ActivityIndicator style={styles.emailLoader} />}
+      </Block>
+      {isEmailChecked && (
+        <Block>
+          <Input
+            placeholder="Password"
+            password
+            onChangeText={password => setState({...state, password})}
+          />
+        </Block>
+      )}
+      <Button
+        shadowless
+        style={styles.button}
+        color={theme.COLORS.BUTTON_COLOR}
+        onPress={continuePressHandler}>
+        continue
+      </Button>
+      {isEmailChecked && (
+        <Block
+          row
+          space="between"
+          style={{alignSelf: 'stretch', marginTop: theme.SIZES.BASE}}>
+          <TouchableOpacity onPress={backPressHandler}>
+            <Text style={{color: theme.COLORS.TEXT}}>Back</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => alert('Reset password')}>
+            <Text style={{color: theme.COLORS.TEXT}}>Reset password</Text>
+          </TouchableOpacity>
+        </Block>
+      )}
+    </Block>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: theme.SIZES.BASE,
     backgroundColor: theme.COLORS.APP_BG,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
   title: {
     color: theme.COLORS.PRIMARY,
     fontWeight: 'bold',
     fontSize: 34,
     textAlign: 'center',
-    marginBottom: 20
+    marginBottom: 20,
   },
   button: {
-    marginTop: 20
+    marginTop: 20,
   },
   emailLoader: {
     position: 'absolute',
     right: 5,
-    bottom: 20
+    bottom: 20,
   },
   email: {
     alignSelf: 'center',
-    color: theme.COLORS.MUTED
-  }
+    color: theme.COLORS.MUTED,
+  },
 });
 
-export default Login
+export default Login;

@@ -1,18 +1,15 @@
-import React from 'react'
-import { Block } from 'galio-framework'
-import {Input, Wrap, Button} from '../components'
-import {bottomButton} from "../utils/globalStyles";
-
+import React from 'react';
+import {Input, Wrap, Button} from '../components';
+import {bottomButton} from '../utils/globalStyles';
 
 export default class ChangePassword extends React.Component {
-
   state = {
     oldPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   };
 
-  render () {
+  render() {
     return (
       <Wrap>
         <Input
@@ -33,10 +30,8 @@ export default class ChangePassword extends React.Component {
           password
           onChangeText={confirmPassword => this.setState({confirmPassword})}
         />
-        <Button style={bottomButton}>
-          Change password
-        </Button>
+        <Button style={bottomButton}>Change password</Button>
       </Wrap>
-    )
+    );
   }
 }

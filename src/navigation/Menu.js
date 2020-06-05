@@ -1,10 +1,10 @@
-import React from "react";
-import { Dimensions } from "react-native";
+import React from 'react';
+import {Dimensions} from 'react-native';
 
-import Drawer from './components/Drawer'
-import {theme} from '../constants'
+import Drawer from './components/Drawer';
+import {theme} from '../constants';
 
-const { width } = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 
 const Menu = {
   contentComponent: props => <Drawer {...props} />,
@@ -38,4 +38,3 @@ const Menu = {
 };
 
 export default Menu;
-

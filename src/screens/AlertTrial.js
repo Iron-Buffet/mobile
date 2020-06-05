@@ -1,17 +1,15 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Block } from 'galio-framework';
-import { theme } from '../constants'
-import Wrap from '../components/Wrap'
-import  {Button, Text } from '../components'
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import {Block} from 'galio-framework';
+import {theme} from '../constants';
+import Wrap from '../components/Wrap';
+import {Button, Text} from '../components';
 
 export default class Dashboard extends React.Component {
-
-  btnPressHandler = (id) => {
+  btnPressHandler = id => {
     // const {navigation} = this.props;
-    console.log(id)
+    console.log(id);
   };
-
 
   render() {
     const {navigation} = this.props;
@@ -22,11 +20,11 @@ export default class Dashboard extends React.Component {
           <Text style={styles.close}>&times;</Text>
         </TouchableOpacity>
         <Block style={{marginTop: 'auto', marginBottom: 'auto'}}>
-          <Text title style={styles.title}>trial version</Text>
+          <Text title style={styles.title}>
+            trial version
+          </Text>
         </Block>
-        <Button
-          style={styles.btn}
-          onPress={() => this.btnPressHandler()}>
+        <Button style={styles.btn} onPress={() => this.btnPressHandler()}>
           Get Full Version
         </Button>
       </Wrap>
@@ -36,13 +34,13 @@ export default class Dashboard extends React.Component {
 
 const styles = StyleSheet.create({
   btn: {
-    marginBottom: theme.SIZES.BASE
+    marginBottom: theme.SIZES.BASE,
   },
   wrap: {
     paddingHorizontal: theme.SIZES.BASE,
     justifyContent: 'space-between',
     paddingBottom: 20,
-    position: 'relative'
+    position: 'relative',
   },
   close: {
     color: theme.COLORS.TEXT,
@@ -58,6 +56,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: theme.FONT_FAMILY.BOLD,
-    fontSize: 40
-  }
+    fontSize: 40,
+  },
 });

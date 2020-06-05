@@ -1,7 +1,11 @@
 import React from 'react';
 import {Block} from 'galio-framework';
 import {Text} from '../components';
-import {StyleSheet, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+} from 'react-native';
 import {theme} from '../constants';
 
 const Checkbox = ({full, value, text, onPress}) => {
@@ -15,7 +19,7 @@ const Checkbox = ({full, value, text, onPress}) => {
           <Text>{text}</Text>
         </Block>
       </TouchableWithoutFeedback>
-    )
+    );
   }
   return (
     <Block style={styles.checkWrap}>
@@ -26,7 +30,7 @@ const Checkbox = ({full, value, text, onPress}) => {
       </TouchableOpacity>
       <Text>{text}</Text>
     </Block>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
@@ -48,12 +52,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -3,
     left: 2,
-    transform: [{ rotate: '-45deg' }]
+    transform: [{rotate: '-45deg'}],
   },
   checkWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-  }
+  },
 });
 
 export default Checkbox;

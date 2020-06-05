@@ -1,6 +1,6 @@
-import {GET_EXERCISES} from "./types";
+import {GET_EXERCISES} from './types';
 
-export const getExercises = (exercises) => ({
+export const getExercises = exercises => ({
   type: GET_EXERCISES,
   data: exercises,
 });

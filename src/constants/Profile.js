@@ -21,10 +21,10 @@ export const PLANS = [
   },
   {
     id: 'month',
-    title: 'Monthly Subscription - $19.97'
+    title: 'Monthly Subscription - $19.97',
   },
   {
     id: 'year',
-    title: 'Annual Membership - $199.97'
-  }
+    title: 'Annual Membership - $199.97',
+  },
 ];

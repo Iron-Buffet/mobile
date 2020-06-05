@@ -1,6 +1,6 @@
-import {theme} from 'galio-framework'
+import {theme} from 'galio-framework';
 
-import { Appearance } from 'react-native-appearance'
+import {Appearance} from 'react-native-appearance';
 
 const mode = Appearance.getColorScheme();
 const COLORS = {
@@ -36,11 +36,11 @@ export default {
     APP_BG: mode === 'light' ? COLORS.WHITE : COLORS.DARK,
     CARD_BG: mode === 'light' ? COLORS.BLOCK : COLORS.BLACK,
     SHADOW: mode === 'light' ? COLORS.BLACK : 'transparent',
-    starsBg: mode === 'light' ? null : COLORS.DARK
+    starsBg: mode === 'light' ? null : COLORS.DARK,
   },
   SIZES: {
     BLOCK_SHADOW_RADIUS: 2,
-    ...theme.SIZES
+    ...theme.SIZES,
   },
   FONT_FAMILY: {
     REGULAR: 'Kanit-Regular',
@@ -49,5 +49,5 @@ export default {
     MEDIUM: 'Kanit-Medium',
   },
   STATUS_BAR: mode === 'light' ? 'dark-content' : 'light-content',
-  IS_DARK: mode === 'dark'
+  IS_DARK: mode === 'dark',
 };

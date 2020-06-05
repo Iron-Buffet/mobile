@@ -1,46 +1,47 @@
 /**
  * Libraries
  */
-import React from 'react'
-import { createAppContainer } from 'react-navigation'
-import { createStackNavigator } from 'react-navigation-stack'
-import { createDrawerNavigator } from 'react-navigation-drawer'
+import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 /**
  * Components
  */
-import DrawerLabel from './components/DrawerLabel'
-import HeaderLeft from './components/HeaderLeft'
-import ProfileHeaderRight from './components/ProfileHeaderRight'
-import EditProfileHeaderRight from './components/EditProfileHeaderRight'
-import CalendarHeaderRight from './components/CalendarHeaderRight'
-
+import DrawerLabel from './components/DrawerLabel';
+import HeaderLeft from './components/HeaderLeft';
+import ProfileHeaderRight from './components/ProfileHeaderRight';
+import CalendarHeaderRight from './components/CalendarHeaderRight';
+import {Text} from '../components';
 /**
  * Configs
  */
-import theme from '../constants/Theme'
-import Menu from './Menu'
-import { Icons, LINKS } from '../constants'
+import theme from '../constants/Theme';
+import Menu from './components/Drawer';
+import {Icons, LINKS} from '../constants';
 
 /**
  * Screens
  */
-import BillingInformationScreen from '../screens/BillingInformation'
-import ChangePasswordScreen from '../screens/ChangePassword'
-import AddToCalendarScreen from '../screens/AddToCalendar'
-import CreateWorkoutScreen from '../screens/CreateWorkout'
-import EditProfileScreen from '../screens/EditProfile'
-import AlertTrialScreen from '../screens/AlertTrial'
-import DashboardScreen from '../screens/Dashboard'
-import CheckAuthScreen from '../screens/CheckAuth'
-import WorkoutsScreen from '../screens/Workouts'
-import RegisterScreen from '../screens/Register'
-import CalendarScreen from '../screens/Calendar'
-import WorkoutScreen from '../screens/Workout'
-import ProfileScreen from '../screens/Profile'
-import LogoutScreen from '../screens/Logout'
-import LoginScreen from '../screens/Login'
-import PartsScreen from '../screens/Parts'
-
+import BillingInformationScreen from '../screens/BillingInformation';
+import ChangePasswordScreen from '../screens/ChangePassword';
+import AddToCalendarScreen from '../screens/AddToCalendar';
+import CreateWorkoutScreen from '../screens/CreateWorkout';
+import EditProfileScreen from '../screens/EditProfile';
+import AlertTrialScreen from '../screens/AlertTrial';
+import DashboardScreen from '../screens/Dashboard';
+import CheckAuthScreen from '../screens/CheckAuth';
+import WorkoutsScreen from '../screens/Workouts';
+import RegisterScreen from '../screens/Register';
+import CalendarScreen from '../screens/Calendar';
+import WorkoutScreen from '../screens/Workout';
+import ProfileScreen from '../screens/Profile';
+import LoginScreen from '../screens/Login';
+import PartsScreen from '../screens/Parts';
+import ChatsScreen from '../screens/Chat/Chats';
+import MessagesScreen from '../screens/Chat/Messages';
+import {AuthContext} from '../context/contexts';
+import {shadow} from '../utils/globalStyles';
 const headerBaseConfig = {
   headerStyle: {
     backgroundColor: theme.COLORS.APP_BG,
@@ -56,328 +57,399 @@ const headerBaseConfig = {
   headerTitleStyle: {
     color: theme.COLORS.TEXT,
     textTransform: 'uppercase',
-    fontFamily: theme.FONT_FAMILY.REGULAR
+    fontFamily: theme.FONT_FAMILY.REGULAR,
   },
 };
 
-const WorkoutManagementStack = createStackNavigator({
-  WMParts: {
-    screen: (props) => (<PartsScreen path="WMWorkouts" {...props} />),
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      headerTitle: 'Workout Management',
-      headerLeft: () => (<HeaderLeft icon={Icons.menu} />)
-    })
-  },
-  WMWorkouts: {
-    screen: (props) => (<WorkoutsScreen
-      workoutPath="WMWorkout"
-      createWorkoutPath="WMCreateWorkout"
-      url={LINKS.WORKOUT_INDEX}
-      {...props} />),
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Workout Management',
-      headerLeft: () => (<HeaderLeft title="Parts" back icon={Icons.back} />)
-    })
-  },
-  WMWorkout: {
-    screen: (props) => (<WorkoutScreen {...props} />),
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: '',
-      headerLeft: () => (<HeaderLeft title="Workout Management" back icon={Icons.back} />)
-    })
-  },
-  WMCreateWorkout: {
-    screen: (props) => (<CreateWorkoutScreen workoutPath="WMWorkout" {...props} />),
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Create',
-      headerLeft: () => (<HeaderLeft title="Workouts" back icon={Icons.back} />),
-      mode: 'modal'
-    })
-  }
-});
+const AuthStack = createStackNavigator();
+const WMStack = createStackNavigator();
+const CertifiedStack = createStackNavigator();
+const DashboardStack = createStackNavigator();
+const CalendarStack = createStackNavigator();
+const ProfileStack = createStackNavigator();
+const RootStack = createStackNavigator();
+const ChatStack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
-const CertifiedStack = createStackNavigator({
-  CParts: {
-    screen: (props) => (<PartsScreen path="CWorkouts" {...props} />),
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      headerTitle: 'Certified Workouts',
-      headerLeft: () => (<HeaderLeft icon={Icons.menu} />)
-    })
-  },
-  CWorkouts: {
-    screen: (props) => (<WorkoutsScreen
-      workoutPath="CWorkout"
-      url={LINKS.WORKOUT_CERTIFIED}
-      createWorkoutPath="CCreateWorkout"
-      {...props} />),
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Certified Workouts',
-      headerLeft: () => (<HeaderLeft title="Parts" back icon={Icons.back} />)
-    })
-  },
-  CWorkout: {
-    screen: (props) => (<WorkoutScreen {...props} />),
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: '',
-      headerLeft: () => (<HeaderLeft title="Certified Workouts" back icon={Icons.back} />)
-    })
-  },
-  CCreateWorkout: {
-    screen: CreateWorkoutScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Create',
-      headerLeft: () => (<HeaderLeft title="Certified Workouts" back icon={Icons.back} />),
-      mode: 'modal'
-    })
-  }
-});
+const Auth = () => {
+  return (
+    <AuthStack.Navigator
+      screenOptions={{
+        ...headerBaseConfig,
+        headerShown: false,
+      }}>
+      <AuthStack.Screen name="Login" component={LoginScreen} />
+      <AuthStack.Screen name="Register" component={RegisterScreen} />
+    </AuthStack.Navigator>
+  );
+};
 
-const DashboardStack = createStackNavigator({
-  Dashboard: {
-    screen: DashboardScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      headerLeft: () => (<HeaderLeft icon={Icons.menu} />)
-    })
-  },
-  DCreateWorkout: {
-    screen: CreateWorkoutScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Create',
-      headerLeft: () => (<HeaderLeft title="Dashboard" back icon={Icons.back} />),
-      mode: 'modal'
-    })
-  }
-}, {
-  mode: 'modal'
-});
+const Profile = () => {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          ...headerBaseConfig,
+          title: 'Profile',
+          headerLeft: () => <HeaderLeft icon={Icons.menu} />,
+          headerRight: () => <ProfileHeaderRight />,
+        }}
+      />
+      <ProfileStack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{
+          ...headerBaseConfig,
+          title: 'Edit',
+          headerLeft: () => (
+            <HeaderLeft title="Profile" back icon={Icons.back} />
+          ),
+          headerRight: () => <ProfileHeaderRight />,
+        }}
+      />
+      <ProfileStack.Screen
+        name="ChangePassword"
+        component={ChangePasswordScreen}
+        options={{
+          ...headerBaseConfig,
+          title: 'Change Password',
+          headerLeft: () => (
+            <HeaderLeft title="Profile" back icon={Icons.back} />
+          ),
+        }}
+      />
+      <ProfileStack.Screen
+        name="BillingInformation"
+        component={BillingInformationScreen}
+        options={{
+          ...headerBaseConfig,
+          title: 'Billing Information',
+          headerLeft: () => <HeaderLeft title="Edit" back icon={Icons.back} />,
+        }}
+      />
+    </ProfileStack.Navigator>
+  );
+};
 
-const ProfileStack = createStackNavigator({
-  Profile: {
-    screen: ProfileScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Profile',
-      headerLeft: () => (<HeaderLeft icon={Icons.menu} />),
-      headerRight: () => (<ProfileHeaderRight />)
-    })
-  },
-  EditProfile: {
-    screen: EditProfileScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Edit',
-      headerLeft: () => (<HeaderLeft title="Profile" back icon={Icons.back} />),
-      headerRight: () => (<EditProfileHeaderRight />)
-    })
-  },
-  ChangePassword: {
-    screen: ChangePasswordScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Change Password',
-      headerLeft: () => (<HeaderLeft title="Edit" back icon={Icons.back} />),
-    })
-  },
-  BillingInformation: {
-    screen: BillingInformationScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Billing Information',
-      headerLeft: () => (<HeaderLeft title="Edit" back icon={Icons.back} />),
-    })
-  }
-},
-{
-  mode: 'modal'
-});
+const Dashboard = () => {
+  return (
+    <DashboardStack.Navigator
+      screenOptions={{
+        ...headerBaseConfig,
+      }}>
+      <DashboardStack.Screen name="Dashboard" component={DashboardScreen} />
+      <DashboardStack.Screen
+        options={{
+          ...headerBaseConfig,
+          title: 'Create',
+          headerLeft: () => (
+            <HeaderLeft title="Dashboard" back icon={Icons.back} />
+          ),
+        }}
+        name="DCreateWorkout"
+        component={CreateWorkoutScreen}
+      />
+    </DashboardStack.Navigator>
+  );
+};
 
-const CalendarStack = createStackNavigator({
-  Calendar: {
-    screen: CalendarScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      headerLeft: () => (<HeaderLeft icon={Icons.menu} />),
-      headerRight: () => (<CalendarHeaderRight />),
-    })
-  },
-  SCreateWorkout: {
-    screen: CreateWorkoutScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      headerLeft: () => (<HeaderLeft icon={Icons.menu} />)
-    })
-  },
-  SWorkout: {
-    screen: (props) => (<WorkoutScreen {...props} />),
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: '',
-      headerLeft: () => (<HeaderLeft title="Calendar" back icon={Icons.back} />)
-    })
-  },
-  AddToCalendar: {
-    screen: AddToCalendarScreen,
-    navigationOptions: () => ({
-      ...headerBaseConfig,
-      title: 'Workout',
-      headerLeft: () => (<HeaderLeft title="Calendar" back icon={Icons.back} />),
-    })
-  }
-}, {
-  mode: 'modal',
-  unmountInactiveRoutes: true,
-});
+const WM = () => {
+  return (
+    <WMStack.Navigator
+      screenOptions={{
+        ...headerBaseConfig,
+      }}>
+      <WMStack.Screen
+        options={{
+          ...headerBaseConfig,
+          headerTitle: 'Workout Management',
+          headerLeft: () => <HeaderLeft icon={Icons.menu} />,
+        }}
+        name="WMParts">
+        {() => <PartsScreen path="WMWorkouts" />}
+      </WMStack.Screen>
+      <WMStack.Screen
+        options={{
+          ...headerBaseConfig,
+          headerTitle: 'Workout Management',
+          headerLeft: () => <HeaderLeft title="Parts" back icon={Icons.back} />,
+        }}
+        name="WMWorkouts">
+        {() => (
+          <WorkoutsScreen
+            workoutPath="WMWorkout"
+            createWorkoutPath="WMCreateWorkout"
+            url={LINKS.WORKOUT_INDEX}
+          />
+        )}
+      </WMStack.Screen>
+      <WMStack.Screen
+        name="WMWorkout"
+        component={WorkoutScreen}
+        options={{
+          ...headerBaseConfig,
+          title: '',
+          headerLeft: () => (
+            <HeaderLeft title="Workout Management" back icon={Icons.back} />
+          ),
+        }}
+      />
+      <WMStack.Screen
+        name="WMCreateWorkout"
+        options={{
+          ...headerBaseConfig,
+          title: 'Create',
+          headerLeft: () => (
+            <HeaderLeft title="Workouts" back icon={Icons.back} />
+          ),
+        }}>
+        {() => <CreateWorkoutScreen workoutPath="WMWorkout" />}
+      </WMStack.Screen>
+    </WMStack.Navigator>
+  );
+};
+const Certified = () => {
+  return (
+    <CertifiedStack.Navigator
+      screenOptions={{
+        ...headerBaseConfig,
+      }}>
+      <CertifiedStack.Screen
+        options={{
+          ...headerBaseConfig,
+          headerTitle: 'Certified Workouts',
+          headerLeft: () => <HeaderLeft icon={Icons.menu} />,
+        }}
+        name="CParts">
+        {() => <PartsScreen path="CWorkouts" />}
+      </CertifiedStack.Screen>
+      <CertifiedStack.Screen
+        options={{
+          ...headerBaseConfig,
+          headerTitle: 'Certified Workouts',
+          headerLeft: () => <HeaderLeft title="Parts" back icon={Icons.back} />,
+        }}
+        name="CWorkouts">
+        {() => (
+          <WorkoutsScreen
+            workoutPath="CWorkout"
+            createWorkoutPath="CCreateWorkout"
+            url={LINKS.WORKOUT_CERTIFIED}
+          />
+        )}
+      </CertifiedStack.Screen>
+      <CertifiedStack.Screen
+        name="CWorkout"
+        component={WorkoutScreen}
+        options={{
+          ...headerBaseConfig,
+          title: '',
+          headerLeft: () => (
+            <HeaderLeft title="Certified Workouts" back icon={Icons.back} />
+          ),
+        }}
+      />
+      <CertifiedStack.Screen
+        name="CCreateWorkout"
+        options={{
+          ...headerBaseConfig,
+          title: 'Create',
+          headerLeft: () => (
+            <HeaderLeft title="Workouts" back icon={Icons.back} />
+          ),
+        }}>
+        {() => <CreateWorkoutScreen workoutPath="CWorkout" />}
+      </CertifiedStack.Screen>
+    </CertifiedStack.Navigator>
+  );
+};
 
-const RegisterStack = createStackNavigator({
-  Register: {
-    screen: RegisterScreen,
-    navigationOptions: {
-      headerShown: false,
-      cardStyle: {
-        backgroundColor: theme.COLORS.APP_BG,
-      }
-    }
-  }
-});
+const Calendar = () => {
+  return (
+    <CalendarStack.Navigator>
+      <CalendarStack.Screen
+        name="Calendar"
+        component={CalendarScreen}
+        options={{
+          ...headerBaseConfig,
+          headerLeft: () => <HeaderLeft icon={Icons.menu} />,
+          headerRight: () => <CalendarHeaderRight />,
+        }}
+      />
+      <CalendarStack.Screen
+        name="SCreateWorkout"
+        component={CreateWorkoutScreen}
+        options={{
+          ...headerBaseConfig,
+          headerLeft: () => <HeaderLeft icon={Icons.menu} />,
+        }}
+      />
+      <CalendarStack.Screen
+        name="SWorkout"
+        component={WorkoutScreen}
+        options={{
+          ...headerBaseConfig,
+          title: '',
+          headerLeft: () => (
+            <HeaderLeft title="Calendar" back icon={Icons.back} />
+          ),
+        }}
+      />
+      <CalendarStack.Screen
+        name="AddToCalendar"
+        component={AddToCalendarScreen}
+        options={{
+          ...headerBaseConfig,
+          title: 'Workout',
+          headerLeft: () => (
+            <HeaderLeft title="Calendar" back icon={Icons.back} />
+          ),
+        }}
+      />
+    </CalendarStack.Navigator>
+  );
+};
 
-const CheckAuthStack = createStackNavigator({
-  CheckAuth: {
-    screen: CheckAuthScreen,
-    navigationOptions: {
-      headerShown: false,
-      cardStyle: {
-        backgroundColor: theme.COLORS.APP_BG,
-      }
-    }
-  }
-});
+const DrawerNav = () => {
+  return (
+    <Drawer.Navigator
+      drawerContent={props => <Menu {...props} />}
+      drawerContentOptions={{
+        activeTintColor: theme.COLORS.TEXT,
+        inactiveTintColor: theme.COLORS.TEXT,
+        activeBackgroundColor: theme.COLORS.PRIMARY,
+      }}>
+      {/*<Drawer.Screen
+        options={{
+          drawerLabel: () => undefined,
+          gestureEnabled: false,
+        }}
+        name="Alert" component={AlertTrialScreen} />*/}
+      <Drawer.Screen
+        options={{
+          drawerLabel: ({focused}) => (
+            <DrawerLabel
+              focused={focused}
+              icon={{name: 'home'}}
+              title="Dashboard"
+            />
+          ),
+        }}
+        name="Dashboard"
+        component={Dashboard}
+      />
+      <Drawer.Screen
+        options={{
+          drawerLabel: ({focused}) => (
+            <DrawerLabel
+              focused={focused}
+              icon={{name: 'chat'}}
+              title="Messages"
+            />
+          ),
+        }}
+        name="Messages"
+        component={Chat}
+      />
+      <Drawer.Screen
+        options={{
+          drawerLabel: ({focused}) => (
+            <DrawerLabel
+              focused={focused}
+              icon={{name: 'accessibility'}}
+              title="Workout&nbsp;management"
+            />
+          ),
+        }}
+        name="WorkoutManagement"
+        component={WM}
+      />
+      <Drawer.Screen
+        options={{
+          drawerLabel: ({focused}) => (
+            <DrawerLabel
+              focused={focused}
+              icon={{name: 'group'}}
+              title="Certified workouts"
+            />
+          ),
+        }}
+        name="CertifiedWorkouts"
+        component={Certified}
+      />
+      <Drawer.Screen
+        options={{
+          drawerLabel: ({focused}) => (
+            <DrawerLabel
+              focused={focused}
+              icon={{name: 'schedule'}}
+              title="Calendar"
+            />
+          ),
+        }}
+        name="Calendar"
+        component={Calendar}
+      />
+      <Drawer.Screen
+        options={{
+          drawerLabel: ({focused}) => (
+            <DrawerLabel
+              focused={focused}
+              icon={{name: 'person'}}
+              title="Profile"
+            />
+          ),
+        }}
+        name="Profile"
+        component={Profile}
+      />
+    </Drawer.Navigator>
+  );
+};
 
-const AlertStack = createStackNavigator({
-  AlertTrial: {
-    screen: AlertTrialScreen,
-    navigationOptions: {
-      headerShown: false,
-      cardStyle: {
-        backgroundColor: theme.COLORS.APP_BG,
-      }
-    }
-  }
-});
+const Chat = () => {
+  return (
+    <ChatStack.Navigator>
+      <ChatStack.Screen
+        name="Chats"
+        component={ChatsScreen}
+        options={{
+          ...headerBaseConfig,
+          headerLeft: () => <HeaderLeft icon={Icons.menu} />,
+        }}
+      />
+      <ChatStack.Screen
+        name="Messages"
+        component={MessagesScreen}
+        options={{
+          ...headerBaseConfig,
+          headerLeft: () => <HeaderLeft title="" back icon={Icons.back} />,
+        }}
+      />
+    </ChatStack.Navigator>
+  );
+};
 
-const LoginStack = createStackNavigator({
-  Login: {
-    screen: LoginScreen,
-    navigationOptions: {
-      headerShown: false,
-      cardStyle: {
-        backgroundColor: theme.COLORS.APP_BG,
-      }
-    }
-  }
-});
+const AppNavigation = ({initRoute}) => {
+  const {isLoading, userToken} = React.useContext(AuthContext);
+  return (
+    <NavigationContainer>
+      <RootStack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        {isLoading ? (
+          <RootStack.Screen name="CheckAuth" component={CheckAuthScreen} />
+        ) : userToken === null ? (
+          <RootStack.Screen name="Auth" component={Auth} />
+        ) : (
+          <RootStack.Screen name="Drawer" component={DrawerNav} />
+        )}
+      </RootStack.Navigator>
+    </NavigationContainer>
+  );
+};
 
-const AppNavigator = createDrawerNavigator({
-  CheckAuth: {
-    screen: CheckAuthStack,
-    navigationOptions: {
-      drawerLabel: () => {},
-      drawerLockMode: 'locked-closed'
-    }
-  },
-  Alert: {
-    screen: AlertStack,
-    navigationOptions: {
-      drawerLabel: () => {},
-      drawerLockMode: 'locked-closed'
-    }
-  },
-  Login: {
-    screen: LoginStack,
-    navigationOptions: {
-      drawerLabel: () => {},
-      drawerLockMode: 'locked-closed'
-    }
-  },
-  Dashboard: {
-    screen: DashboardStack,
-    navigationOptions: {
-      drawerLabel: ({focused}) => (
-        <DrawerLabel
-          focused={focused}
-          icon={{name: 'home'}}
-          title="Dashboard" />
-      )
-    }
-  },
-  WorkoutManagement: {
-    screen: WorkoutManagementStack,
-    navigationOptions: {
-      drawerLabel: ({focused}) => (
-        <DrawerLabel
-          focused={focused}
-          icon={{name: 'accessibility'}}
-          title="Workout management" />
-      )
-    }
-  },
-  Certified: {
-    screen: CertifiedStack,
-    navigationOptions: {
-      drawerLabel: ({focused}) => (
-        <DrawerLabel
-          focused={focused}
-          icon={{name: 'group'}}
-          title="Certified workouts" />
-      )
-    }
-  },
-  Calendar: {
-    screen: CalendarStack,
-    navigationOptions: {
-      drawerLabel: ({focused}) => (
-        <DrawerLabel
-          focused={focused}
-          icon={{name: 'schedule'}}
-          title="Calendar" />
-      )
-    }
-  },
-  Logout: {
-    screen: LogoutScreen,
-    navigationOptions: {
-      drawerLabel: () => {},
-      drawerLockMode: 'locked-closed'
-    }
-  },
-  Register: {
-    screen: RegisterStack,
-    navigationOptions: {
-      drawerLabel: () => {},
-      drawerLockMode: 'locked-closed'
-    }
-  },
-  Profile: {
-    screen: ProfileStack,
-    navigationOptions: {
-      drawerLabel: ({focused}) => (
-        <DrawerLabel
-          focused={focused}
-          icon={{name: 'person'}}
-          title="Profile" />
-      )
-    }
-  },
-},
-  Menu);
-
-export default createAppContainer(AppNavigator);
+export default AppNavigation;

@@ -1,51 +1,34 @@
 import React from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import { Block } from 'galio-framework';
-import theme from '../constants/Theme'
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import {Block} from 'galio-framework';
+import theme from '../constants/Theme';
 import XDate from 'xdate';
+import {getShortDay, getShortMonth} from '../utils/methods';
 
-import { Agenda } from "react-native-calendars";
-import { $get } from '../utils/Fetch'
+import {Agenda} from 'react-native-calendars';
+import {$get} from '../utils/Fetch';
 
-import { Button, Text, Wrap } from '../components'
+import {Text, Wrap} from '../components';
 
-export default class Calendar extends React.Component {
+const Calendar = ({navigation}) => {
+  const [items, setItems] = React.useState([]);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: {},
-    }
-  }
-
-  getShortMonth() {
-    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  }
-  getShortDay() {
-    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  }
-
-  componentDidMount() {
+  React.useEffect(() => {
     const date = {};
-    date.timestamp = (new Date()).getTime();
-    this.loadItems(date)
-  }
+    date.timestamp = new Date().getTime();
+    loadItems(date);
+    //eslint-disable-next-line
+  }, []);
 
-  loadItems = (day) => {
+  const loadItems = day => {
     $get('/workout/events-mobile?time=' + day.timestamp).then(res => {
-      console.log(res)
-      this.setState({
-        items: res,
-      })
-    })
+      setItems(res);
+    });
   };
 
-  renderDay = (day) => {
+  const renderDay = day => {
     if (!day) {
-      return <Block center style={styles.day} />
+      return <Block center style={styles.day} />;
     }
     const xDate = new XDate(day.timestamp, true);
     const d = xDate.getDay();
@@ -54,28 +37,29 @@ export default class Calendar extends React.Component {
     return (
       <Block center style={styles.day}>
         <Block row>
-          <Text style={styles.dayText}>{this.getShortMonth()[month]}</Text>
+          <Text style={styles.dayText}>{getShortMonth()[month]}</Text>
           <Text style={styles.dayText}> {date}</Text>
         </Block>
-        <Text style={styles.dayText}>{this.getShortDay()[d]}</Text>
+        <Text style={styles.dayText}>{getShortDay()[d]}</Text>
       </Block>
-    )
+    );
   };
 
-  renderItem = (item) => {
-    const {navigation} = this.props;
+  const renderItem = item => {
     return (
       <TouchableOpacity
-        style={[styles.item, {backgroundColor: item.done ? 'grey' : theme.COLORS.PRIMARY}]}
-        onPress={() => navigation.navigate('SWorkout', { id: item.id } )}
-      >
+        style={[
+          styles.item,
+          {backgroundColor: item.done ? 'grey' : theme.COLORS.PRIMARY},
+        ]}
+        onPress={() => navigation.navigate('SWorkout', {id: item.id})}>
         <Text style={styles.itemTitle}>{item.name}</Text>
         <Text>{item.description}</Text>
       </TouchableOpacity>
     );
   };
 
-  renderEmptyDate = () => {
+  const renderEmptyDate = () => {
     return (
       <Block style={styles.emptyDate}>
         <Text style={{color: theme.COLORS.MUTED}}>No workouts</Text>
@@ -83,23 +67,21 @@ export default class Calendar extends React.Component {
     );
   };
 
-  render() {
-    return (
-      <Wrap style={{paddingBottom: 30}}>
-        <Agenda
-          items={this.state.items}
-          renderItem={this.renderItem}
-          renderEmptyDate={this.renderEmptyDate}
-          renderEmptyData = {() => {return (<Block />);}}
-          onDayPress={this.loadItems}
-          theme={calendarTheme}
-          renderDay={this.renderDay}
-          hideExtraDays={true}
-        />
-      </Wrap>
-    );
-  }
-}
+  return (
+    <Wrap style={{paddingBottom: 30}}>
+      <Agenda
+        items={items}
+        renderItem={renderItem}
+        renderEmptyDate={renderEmptyDate}
+        renderEmptyData={() => <Block />}
+        onDayPress={loadItems}
+        theme={calendarTheme}
+        renderDay={renderDay}
+        hideExtraDays={true}
+      />
+    </Wrap>
+  );
+};
 
 const calendarTheme = {
   calendarBackground: theme.COLORS.CARD_BG,
@@ -128,32 +110,33 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginRight: 10,
-    marginTop: 17
+    marginTop: 17,
   },
   itemTitle: {
     color: theme.COLORS.WHITE,
-    fontSize: 18
+    fontSize: 18,
   },
   itemDate: {
     color: theme.COLORS.WHITE,
     fontSize: 14,
-    marginTop: 5
+    marginTop: 5,
   },
   emptyDate: {
     height: 15,
-    flex:1,
-    paddingTop: 30
+    flex: 1,
+    paddingTop: 30,
   },
   day: {
     width: 60,
-    paddingTop: 25
+    paddingTop: 25,
   },
   dayText: {
     fontWeight: '300',
-    color: theme.COLORS.TEXT
+    color: theme.COLORS.TEXT,
   },
   button: {
-    marginTop: theme.SIZES.BASE
-  }
+    marginTop: theme.SIZES.BASE,
+  },
 });
 
+export default Calendar;

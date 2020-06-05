@@ -59,4 +59,4 @@ export default [
     image: require('../assets/images/Yoga.png'),
     name: 'Yoga',
   },
-]
+];

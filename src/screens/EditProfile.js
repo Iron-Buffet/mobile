@@ -1,231 +1,254 @@
-import React from 'react'
-import {StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native'
-import {connect} from 'react-redux';
-import {LINKS, PROFILE, theme} from "../constants";
-import {Input, Wrap, Button, Checkbox, Text} from '../components'
-import {$get, $post} from "../utils/Fetch";
-import RNPickerSelect from "react-native-picker-select";
-import {cardInput} from "../utils/globalStyles";
-import {age} from "../utils/methods";
-import {bottomButton} from "../utils/globalStyles";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import {Block, Toast} from "galio-framework";
-import {setUser} from "../actions/user";
+import React from 'react';
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import {LINKS, PROFILE, theme} from '../constants';
+import {Input, Wrap, Button, Checkbox, Text, AvatarPicker} from '../components';
+import {$get, $post} from '../utils/Fetch';
+import RNPickerSelect from 'react-native-picker-select';
+import {cardInput} from '../utils/globalStyles';
+import {age} from '../utils/methods';
+import {bottomButton} from '../utils/globalStyles';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {Block, Toast} from 'galio-framework';
+import {AuthContext} from '../context/contexts';
+import {UPDATE_USER} from '../context/types';
+import {fire} from '../services';
 
 const plans = PROFILE.PLANS.map((plan, index) => {
   return {
     label: plan.title,
     key: 'plan' + index,
-    value: plan.id
-  }
+    value: plan.id,
+  };
 });
+
 const expLevels = PROFILE.EXPERIENCE_LEVELS.map((el, index) => {
   return {
     label: el,
     key: 'el' + index,
-    value: index
-  }
+    value: index,
+  };
 });
 
-class EditProfile extends React.Component {
+const EditProfile = ({navigation}) => {
+  const {user, dispatch, fbUser} = React.useContext(AuthContext);
+  const date = user.dob ? new Date(user.dob) : new Date('1/1/2000');
 
-  unsubscribeHandler = () => {
-    const {user, navigation} = this.props;
-    const url = LINKS.UNSUBSCRIBE + '?id=' + user.id;
-    $get(url).then(res => {
-      navigation.navigate('Logout')
-    })
-  };
-
-  state = {
-    firstName: '',
-    lastName: '',
-    goal: [],
-    plan: null,
-    expLevel: null,
+  const [state, setState] = React.useState({
+    firstName: user.firstName,
+    lastName: user.lastName,
+    goal: user.goal ? user.goal.split(',') : [],
+    plan: '',
+    expLevel: user.experience,
     isDatePickerVisible: false,
-    phoneNumber: '',
-    date: new Date(),
-    city: '',
-    zip: '',
-    state: '',
-    height: '',
-    weight: '',
+    phoneNumber: user.phone,
+    date,
+    avatar: fbUser.avatar || '',
+    city: user.city || '',
+    zip: user.zip ? user.zip.toString() : '',
+    state: user.state || '',
+    height: user.height || '',
+    weight: user.weight || '',
     toast: false,
     loading: false,
+    changedAvatar: false,
+  });
+
+  const unsubscribeHandler = () => {
+    const url = LINKS.UNSUBSCRIBE + '?id=' + user.id;
+    $get(url).then(() => {
+      navigation.navigate('Logout');
+    });
   };
 
-  saveProfile = () => {
-    const {
-      firstName,
-      lastName,
-      phoneNumber,
-      expLevel,
-      city,
-      state,
-      zip,
-      height,
-      weight,
-      date,
-      goal,
-    } = this.state;
+  const save = () => {
     const form = new FormData();
-    form.append('firstname', firstName);
-    form.append('lastname', lastName);
-    form.append('phone', phoneNumber);
-    form.append('city', city);
-    form.append('state', state);
-    form.append('zip', zip);
-    form.append('height', height);
-    form.append('weight', weight);
-    form.append('experience', expLevel);
-    form.append('goal', goal.join());
+    form.append('firstname', state.firstName);
+    form.append('lastname', state.lastName);
+    form.append('phone', state.phoneNumber);
+    form.append('city', state.city);
+    form.append('state', state.state);
+    form.append('zip', state.zip);
+    form.append('height', state.height);
+    form.append('weight', state.weight);
+    form.append('experience', state.expLevel);
+    form.append('goal', state.goal.join());
     // form.append('plan', plan);
     form.append('dob', date.toLocaleDateString());
-    $post('/profile/update', {body: form}).then(res => {
-      this.props.setUser(res.data);
-      this.setState({
-        toast: true
-      });
-      setTimeout(() => {
-        this.setState({
-          toast: false
-        })
-      }, 2000)
-    })
-  };
-
-  handleConfirm = date => {
-    this.setDate(date);
-    this.setState({
-      isDatePickerVisible: false
-    });
-  };
-
-  setDate = (date) => {
-    date = date || this.state.age;
-    this.setState({
-      date,
-    });
-  };
-
-  selectGoal = (goal) => {
-      const goals = [...this.state.goal];
-      let newGoals = [];
-      if (goals.includes(goal)) {
-          newGoals = goals.filter(x => x !== goal)
-      } else {
-          newGoals = goals.concat(goal)
+    $post('/profile/update', {body: form}).then(async res => {
+      const usr = {
+        first_name: state.firstName,
+        last_name: state.lastName,
+        phone: state.phoneNumber,
+        level: state.expLevel,
+        goal: state.goal.join(','),
+        dob: date.toLocaleDateString(),
+        avatar: state.avatar,
+        email: user.email,
+        plan:  fire.user.plan || '',
+        zip: state.zip,
+        height: state.height,
+        weight: state.weight,
+      };
+      if (state.changedAvatar) {
+        usr.avatar = state.avatar;
       }
-      this.setState({goal: newGoals});
+      try {
+        await fire.updateUser(usr);
+        fire.userDoc.get().then(snap => {
+          dispatch({
+            type: UPDATE_USER,
+            user: {role: user.role, ...res.data},
+            fbUser: {uid: snap.id, ...snap.data()}
+          });
+          setState({
+            ...state,
+            toast: true,
+          });
+          setTimeout(() => {
+            setState({
+              ...state,
+              toast: false,
+            });
+          }, 2000);
+        })
+          .catch(e => {
+            console.log(e)
+          });
+
+      } catch (e) {
+        console.log(e)
+      }
+    })
+      .catch(e => {
+        console.log('sql', e)
+      });
   };
 
-  componentDidMount () {
-    const {user} = this.props;
+  const handleConfirm = date => {
+    date = date || state.age;
+    setState({
+      ...state,
+      date,
+      isDatePickerVisible: false,
+    });
+  };
 
-    const date = user.dob ? new Date(user.dob) : new Date('1/1/2000');
-    this.setState({
-      goal: user.goal ? user.goal.split(',') : [],
-      firstName: user.firstName,
-      lastName: user.lastName,
-      expLevel: user.experience,
-      phoneNumber: user.phone,
-      city: user.city || '',
-      state: user.state || '',
-      zip: user.zip ? user.zip.toString() : '',
-      height: user.height || '',
-      weight: user.weight || '',
-      date
-    })
-  }
+  const selectGoal = goal => {
+    const goals = [...state.goal];
+    let newGoals = [];
+    if (goals.includes(goal)) {
+      newGoals = goals.filter(x => x !== goal);
+    } else {
+      newGoals = goals.concat(goal);
+    }
+    setState({...state, goal: newGoals});
+  };
 
-  render() {
-    const {date, toast} = this.state;
-    return (
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Wrap>
-          <Toast isShow={toast} style={styles.toast} color="success" positionIndicator="top">Profile updated!</Toast>
+  const {toast} = state;
+  return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <Wrap>
+        <ScrollView>
+
+          <Toast
+            isShow={toast}
+            style={styles.toast}
+            color="success"
+            positionIndicator="top">
+            Profile updated!
+          </Toast>
+          <Block>
+            <AvatarPicker avatar={state.avatar}  onAvatarPicked={avatar => setState({...state, avatar, changedAvatar: true,})}/>
+          </Block>
           <ScrollView>
             <Input
               placeholder="First name"
-              value={this.state.firstName}
-              onChangeText={firstName => this.setState({firstName})}
+              value={state.firstName}
+              onChangeText={firstName => setState({...state, firstName})}
             />
             <Input
               placeholder="Last name"
-              value={this.state.lastName}
-              onChangeText={lastName => this.setState({lastName})}
+              value={state.lastName}
+              onChangeText={lastName => setState({...state, lastName})}
             />
             <Input
               placeholder="City"
-              value={this.state.city}
-              onChangeText={city => this.setState({city})}
+              value={state.city}
+              onChangeText={city => setState({...state, city})}
             />
             <Input
               placeholder="State"
-              value={this.state.state}
-              onChangeText={state => this.setState({state})}
+              value={state.state}
+              onChangeText={_state => setState({...state, state: _state})}
             />
             <Input
               placeholder="Zip"
               keyboardType="numeric"
-              value={this.state.zip}
-              onChangeText={zip => this.setState({zip})}
+              value={state.zip}
+              onChangeText={zip => setState({...state, zip})}
             />
             <Input
               placeholder="Weight"
               keyboardType="numeric"
-              value={this.state.weight}
-              onChangeText={weight => this.setState({weight})}
+              value={state.weight}
+              onChangeText={weight => setState({...state, weight})}
             />
             <Input
               placeholder="Height"
               keyboardType="numeric"
-              value={this.state.height}
-              onChangeText={height => this.setState({height})}
+              value={state.height}
+              onChangeText={height => setState({...state, height})}
             />
             {/*<RNPickerSelect
-            onValueChange={plan => {
-              this.setState({plan: plan ? plan.id : null})
-            }}
-            value={this.state.plan}
-            placeholder={
-              {label: 'Your Plan'}
+          onValueChange={plan => {
+            setState({plan: plan ? plan.id : null})
+          }}
+          value={state.plan}
+          placeholder={
+            {label: 'Your Plan'}
+          }
+          items={plans}
+          style={{
+            inputIOS: styles.cardInput,
+            placeholder: {
+              color: theme.COLORS.TEXT
             }
-            items={plans}
-            style={{
-              inputIOS: styles.cardInput,
-              placeholder: {
-                color: theme.COLORS.TEXT
-              }
-            }}/>*/}
+          }}/>*/}
             <RNPickerSelect
               onValueChange={el => {
-                this.setState({expLevel: el})
+                setState({...state, expLevel: el});
               }}
-              value={this.state.expLevel}
-              placeholder={
-                {label: 'Your Experience Level'}
-              }
+              value={state.expLevel}
+              placeholder={{label: 'Your Experience Level'}}
               items={expLevels}
               style={{
                 inputIOS: styles.cardInput,
                 placeholder: {
-                  color: theme.COLORS.TEXT
-                }
-              }}/>
+                  color: theme.COLORS.TEXT,
+                },
+              }}
+            />
             <Input
               placeholder="Phone Number"
-              value={this.state.phoneNumber}
+              value={state.phoneNumber}
               keyboardType="phone-pad"
-              onChangeText={phoneNumber => this.setState({phoneNumber})}
+              onChangeText={phoneNumber => setState({...state, phoneNumber})}
             />
             <Block style={{position: 'relative'}}>
-              <TouchableWithoutFeedback onPress={() => {
-                this.setState({
-                  isDatePickerVisible: true
-                })
-              }}>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  setState({
+                    ...state,
+                    isDatePickerVisible: true,
+                  });
+                }}>
                 <Block style={styles.inputOverflow} />
               </TouchableWithoutFeedback>
               <Input
@@ -234,36 +257,46 @@ class EditProfile extends React.Component {
                 value={date.toLocaleDateString() + ' (' + age(date) + ' y.o.)'}
               />
             </Block>
-              <Block>
-                  <Text bold>Select your goals</Text>
-                  {
-                      PROFILE.GOALS.map((g, index) => {
-                          return (<Block style={{marginTop: 5}} key={'ch'+index}>
-                              <Checkbox value={this.state.goal.includes(index.toString())} full onPress={() => this.selectGoal(index.toString())} text={g} />
-                          </Block>)
-                      })
-                  }
-              </Block>
+            <Block>
+              <Text bold>Select your goals</Text>
+              {PROFILE.GOALS.map((g, index) => {
+                return (
+                  <Block style={{marginTop: 5}} key={'ch' + index}>
+                    <Checkbox
+                      value={state.goal.includes(index.toString())}
+                      full
+                      onPress={() => {
+                        selectGoal(index.toString());
+                      }}
+                      text={g}
+                    />
+                  </Block>
+                );
+              })}
+            </Block>
           </ScrollView>
           <DateTimePickerModal
-            isVisible={this.state.isDatePickerVisible}
+            isVisible={state.isDatePickerVisible}
             mode="date"
+            onConfirm={handleConfirm}
             isDarkModeEnabled={theme.IS_DARK}
-            onConfirm={this.handleConfirm}
             onCancel={() => {
-              this.setState({
-                isDatePickerVisible: false
-              })
+              setState({
+                ...state,
+                isDatePickerVisible: false,
+              });
             }}
           />
-          <Button style={bottomButton} onPress={() => this.saveProfile()}>
-            Save
-          </Button>
-        </Wrap>
-      </TouchableWithoutFeedback>
-    )
-  }
-}
+          <Block style={{marginTop: 16}}>
+            <Button style={bottomButton} onPress={() => save()}>
+              Save
+            </Button>
+          </Block>
+        </ScrollView>
+      </Wrap>
+    </TouchableWithoutFeedback>
+  );
+};
 
 const styles = StyleSheet.create({
   inputOverflow: {
@@ -286,21 +319,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     color: theme.COLORS.TEXT,
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
   },
-  cardInput
+  cardInput,
 });
 
-const mapStateToProps = state => {
-  return {
-    user: state.userReducer.user
-  }
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setUser: (user) => dispatch(setUser(user)),
-  }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(EditProfile)
+export default EditProfile;

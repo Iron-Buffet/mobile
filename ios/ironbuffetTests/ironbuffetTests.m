@@ -11,9 +11,6 @@
 #import <React/RCTLog.h>
 #import <React/RCTRootView.h>
 
-//  AppDelegate.m
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
@@ -70,9 +67,6 @@
   XCTAssertNil(redboxError, @"RedBox error: %@", redboxError);
   XCTAssertTrue(foundElement, @"Couldn't find element with text '%@' in %d seconds", TEXT_TO_LOOK_FOR, TIMEOUT_SECONDS);
 }
-// Facebook App Events
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-  [FBSDKAppEvents activateApp];
-}
+
 
 @end

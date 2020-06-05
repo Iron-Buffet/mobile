@@ -1,6 +1,6 @@
-import {GET_STYLES} from "./types";
+import {GET_STYLES} from './types';
 
-export const getStyles = (styles) => ({
+export const getStyles = styles => ({
   type: GET_STYLES,
   data: styles,
-})
+});

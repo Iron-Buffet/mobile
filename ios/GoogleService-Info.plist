@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>546869884355-f902u9s12hvg24c70jun27480q853qu5.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.546869884355-f902u9s12hvg24c70jun27480q853qu5</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>546869884355-m6tg8o87ablktnceht82n77js2rb9kd7.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAwBXRpBFU4ZVTtXlLw4PUJWiW91JrYLyY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>546869884355</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.partnerviamobilemarketing.IronBuffet</string>
+	<key>PROJECT_ID</key>
+	<string>iron-buffet-227305</string>
+	<key>STORAGE_BUCKET</key>
+	<string>iron-buffet-227305.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:546869884355:ios:d510914ad4f09b2ce33976</string>
+	<key>DATABASE_URL</key>
+	<string>https://iron-buffet-227305.firebaseio.com</string>
+</dict>
+</plist>

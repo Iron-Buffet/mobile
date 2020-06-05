@@ -1,4 +1,4 @@
-export const API_URL = 'http://api.ironbuffet.localhost';
+export const API_URL = 'http://api.ironbuffet.com';
 export const LOGIN = '/login';
 export const CHECK_EMAIL = '/site/email';
 export const WORKOUT_INDEX = '/workout/index';

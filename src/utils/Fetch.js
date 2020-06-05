@@ -1,11 +1,11 @@
-import AsyncStorage from '@react-native-community/async-storage'
-import {API_URL} from "../constants/links";
+import AsyncStorage from '@react-native-community/async-storage';
+import {API_URL} from '../constants/links';
 
 async function $get(url, config) {
-  let token
+  let token;
   try {
-    token = await AsyncStorage.getItem('token')
-    const headers = config && config.headers || {}
+    token = await AsyncStorage.getItem('token');
+    const headers = (config && config.headers) || {};
 
     const configOptions = {
       ...config,
@@ -14,13 +14,13 @@ async function $get(url, config) {
       headers: {
         ...headers,
         'X-Request-With': 'app',
-        'Authorization': 'Bearer ' + token,
-        'Cookie': null
+        Authorization: 'Bearer ' + token,
+        Cookie: null,
       },
-    }
-    return fetch(API_URL + url, configOptions).then(r => r.json())
+    };
+    return fetch(API_URL + url, configOptions).then(r => r.json());
   } catch (e) {
-    console.log(error)
+    console.log(e);
   }
 }
 
@@ -28,8 +28,8 @@ async function $post(url, config) {
   let token;
   try {
     token = await AsyncStorage.getItem('token');
-    const body = config && config.body || null;
-    const headers = config && config.headers || {};
+    const body = (config && config.body) || null;
+    const headers = (config && config.headers) || {};
 
     const configOptions = {
       ...config,
@@ -38,15 +38,15 @@ async function $post(url, config) {
       headers: {
         ...headers,
         'X-Request-With': 'app',
-        'Authorization': 'Bearer ' + token,
-        'Cookie': null
+        Authorization: 'Bearer ' + token,
+        Cookie: null,
       },
-      body
+      body,
     };
-    return fetch(API_URL + url, configOptions).then(r => r.json())
+    return fetch(API_URL + url, configOptions).then(r => r.json());
   } catch (e) {
-    console.log(error)
+    console.log(e);
   }
 }
 
-export {$get, $post}
+export {$get, $post};

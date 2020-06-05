@@ -5,22 +5,27 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Linking,
+  Alert,
 } from 'react-native';
-import { Block } from 'galio-framework';
-import { Input, Text, Button } from '../components';
+import {Block} from 'galio-framework';
+import {Input, Text, Button, Wrap, Loader, AvatarPicker} from '../components';
 import theme from '../constants/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
-import { TextInputMask } from 'react-native-masked-text'
-import RNPickerSelect from 'react-native-picker-select'
-import {cardInput} from "../utils/globalStyles";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import {TextInputMask} from 'react-native-masked-text';
+import RNPickerSelect from 'react-native-picker-select';
+import {cardInput} from '../utils/globalStyles';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {PROFILE, utils} from '../constants';
+import {age} from '../utils/methods';
+import {AuthContext} from '../context/contexts';
+import {fire} from '../services'
 
-import {PROFILE, utils} from "../constants";
-import LoadingData from "../components/LoadingData";
-import {age} from "../utils/methods";
+const Register = props => {
+  const {navigation} = props;
 
-class Register extends React.Component {
-  state = {
+  const {signUp} = React.useContext(AuthContext);
+
+  const [state, setState] = React.useState({
     firstName: '',
     lastName: '',
     email: '',
@@ -39,24 +44,28 @@ class Register extends React.Component {
     isDatePickerVisible: false,
     phoneNumber: null,
     terms: false,
-  };
+    avatar: '',
+  });
 
-  componentDidMount () {
+  React.useEffect(() => {
     AsyncStorage.getItem('email').then(email => {
-      this.setState({
-        email
-      })
+      setState({
+        ...state,
+        email,
+      });
     });
-  }
+    //eslint-disable-next-line
+  }, []);
 
-  handleConfirm = date => {
-    this.setDate(date);
-    this.setState({
-      isDatePickerVisible: false
+  const handleConfirm = date => {
+    setState({
+      ...state,
+      date,
+      isDatePickerVisible: false,
     });
   };
 
-  nextBtnHandler = () => {
+  const nextBtnHandler = async () => {
     const {
       currentStep,
       password,
@@ -71,17 +80,18 @@ class Register extends React.Component {
       year,
       month,
       terms,
-      cvv
-    } = this.state;
+      cvv,
+    } = state;
     switch (currentStep) {
       case 1:
         if (!terms) {
-          alert('You must agree with Terms & Conditions & Privacy Policy')
+          alert('You must agree with Terms & Conditions & Privacy Policy');
         } else {
           if (!(password && firstName && lastName && date && phoneNumber)) {
-            alert('Check entered data')
+            alert('Check entered data');
           } else {
-            this.setState({
+            setState({
+              ...state,
               currentStep: 2,
             });
           }
@@ -89,30 +99,33 @@ class Register extends React.Component {
         break;
       case 2:
         if (expLevel === null) {
-          alert('Select your experience level')
+          alert('Select your experience level');
         } else {
-          this.setState({
+          setState({
+            ...state,
             currentStep: 3,
           });
         }
         break;
       case 3:
         if (goal.length === 0) {
-          alert('Select your goals')
+          alert('Select your goals');
         } else {
-          this.setState({
+          setState({
+            ...state,
             currentStep: 4,
           });
         }
         break;
       case 4:
         if (!plan) {
-          alert('Create your plan')
+          alert('Create your plan');
         } else {
           if (plan === 'trial') {
-            this.register()
+            await register();
           } else {
-            this.setState({
+            setState({
+              ...state,
               currentStep: 5,
             });
           }
@@ -121,122 +134,146 @@ class Register extends React.Component {
       case 5:
       default:
         if (!(cardNumber && month && year && cvv)) {
-          alert('Check entered data')
+          alert('Check entered data');
         } else {
           if (month > 12) {
-            alert('Check entered data')
+            alert('Check entered data');
           } else {
-            this.register()
+            await register();
           }
         }
     }
-
   };
 
-  prevBtnHandler = () => {
-    const currStep = this.state.currentStep;
-    this.setState({
+  const prevBtnHandler = () => {
+    const currStep = state.currentStep;
+    setState({
+      ...state,
       currentStep: currStep - 1,
     });
   };
 
-  setDate = (date) => {
-    date = date || this.state.age;
-    this.setState({
-      date,
-    });
+  const goalSelectHandler = goal => {
+    const goals = [...state.goal];
+    let newGoals = [];
+    if (goals.includes(goal)) {
+      newGoals = goals.filter(x => x !== goal);
+    } else {
+      newGoals = goals.concat(goal);
+    }
+    setState({...state, goal: newGoals});
   };
 
-  renderStepOne = () => {
-    const {date} = this.state;
+  const planSelectHandler = plan => {
+    setState({...state, plan});
+  };
+
+  const expLevelSelectHandler = expLevel => {
+    setState({...state, expLevel});
+  };
+
+  const renderStepOne = () => {
+    const {date} = state;
     return (
       <Block>
         <Block center>
-          <Text title style={{marginBottom: 0}}>Registration</Text>
-          <Text size={18}>{this.state.email}</Text>
+          <Text title style={styles.mb0}>
+            Registration
+          </Text>
+          <Text size={18}>{state.email}</Text>
+          <Block style={{marginTop: 10}}>
+            <AvatarPicker avatar={state.avatar} onAvatarPicked={avatar => setState({...state, avatar})} />
+          </Block>
         </Block>
         <Block>
           <Input
             placeholder="Password"
             password
-            value={this.state.password}
-            onChangeText={password => this.setState({password})}
+            value={state.password}
+            onChangeText={password => setState({...state, password})}
           />
           <Input
             placeholder="First Name"
-            value={this.state.firstName}
-            onChangeText={firstName => this.setState({firstName})}
+            value={state.firstName}
+            onChangeText={firstName => setState({...state, firstName})}
           />
           <Input
             placeholder="Last Name"
-            value={this.state.lastName}
-            onChangeText={lastName => this.setState({lastName})}
+            value={state.lastName}
+            onChangeText={lastName => setState({...state, lastName})}
           />
           <Input
             placeholder="Phone Number"
-            value={this.state.phoneNumber}
+            value={state.phoneNumber}
             keyboardType="phone-pad"
-            onChangeText={phoneNumber => this.setState({phoneNumber})}
+            onChangeText={phoneNumber => setState({...state, phoneNumber})}
           />
           <Block style={{position: 'relative'}}>
-            <TouchableWithoutFeedback onPress={() => {
-              this.setState({
-                isDatePickerVisible: true
-              });
-            }}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setState({
+                  ...state,
+                  isDatePickerVisible: true,
+                });
+              }}>
               <Block style={styles.inputOverflow} />
             </TouchableWithoutFeedback>
             <Input
               placeholder="Date of Birth"
               editable={false}
-              value={date.toLocaleDateString() + ' (' + age(date) + ' y.o.)'}
+              value={state.date.toLocaleDateString() + ' (' + age(state.date) + ' y.o.)'}
             />
           </Block>
           <Block style={styles.terms}>
-            <TouchableOpacity onPress={() => this.setState({
-              terms: !this.state.terms
-            })}>
+            <TouchableOpacity
+              onPress={() =>
+                setState({
+                  ...state,
+                  terms: !state.terms,
+                })
+              }>
               <Block style={styles.checkBorder}>
-                {this.state.terms && <Block style={styles.check} />}
+                {state.terms && <Block style={styles.check} />}
               </Block>
             </TouchableOpacity>
-            <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>By checking this box I agree on <Text style={styles.link} onPress={() => Linking.openURL('https://ironbuffet.com/terms-of-use')}>Terms & Conditions</Text> & <Text style={styles.link} onPress={() => Linking.openURL('https://ironbuffet.com/privacy-policy')}>Privacy&nbsp;Policy</Text></Text>
+            <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>
+              By checking this box I agree on{' '}
+              <Text
+                style={styles.link}
+                onPress={() =>
+                  Linking.openURL('https://ironbuffet.com/terms-of-use')
+                }>
+                Terms & Conditions
+              </Text>{' '}
+              &{' '}
+              <Text
+                style={styles.link}
+                onPress={() =>
+                  Linking.openURL('https://ironbuffet.com/privacy-policy')
+                }>
+                Privacy&nbsp;Policy
+              </Text>
+            </Text>
           </Block>
           <Text style={styles.info}>
-            By participating, you consent to receive text and emails messages sent by an automatic telephone dialing system. Consent to these terms is not a condition of purchase. Message and data rates may apply.
+            By participating, you consent to receive text and emails messages
+            sent by an automatic telephone dialing system. Consent to these
+            terms is not a condition of purchase. Message and data rates may
+            apply.
           </Text>
         </Block>
       </Block>
     );
   };
 
-  expLevelSelectHandler = expLevel => {
-    this.setState({expLevel});
-  };
-
-  goalSelectHandler = goal => {
-    const goals = [...this.state.goal];
-    let newGoals = [];
-    if (goals.includes(goal)) {
-      newGoals = goals.filter(x => x !== goal)
-    } else {
-      newGoals = goals.concat(goal)
-    }
-    this.setState({goal: newGoals});
-  };
-
-  planSelectHandler = plan => {
-    this.setState({plan});
-  };
-
-  renderStepTwo = () => {
-    const {expLevel} = this.state;
+  const renderStepTwo = () => {
+    const {expLevel} = state;
     const buttons = PROFILE.EXPERIENCE_LEVELS.map((lvl, idx) => {
       const bg = expLevel === idx ? 'transparent' : theme.COLORS.PRIMARY;
       const text = expLevel === idx ? theme.COLORS.TEXT : theme.COLORS.WHITE;
       return (
         <Button
-          onPress={() => this.expLevelSelectHandler(idx)}
+          onPress={() => expLevelSelectHandler(idx)}
           textStyle={{color: text}}
           style={[
             styles.selectBtn,
@@ -253,7 +290,7 @@ class Register extends React.Component {
     });
     return (
       <Block>
-        <Block center style={{marginBottom: 30}}>
+        <Block center style={styles.mb30}>
           <Text title>Experience level</Text>
         </Block>
         <Block>{buttons}</Block>
@@ -261,14 +298,14 @@ class Register extends React.Component {
     );
   };
 
-  renderStepThree = () => {
-    const {goal} = this.state;
+  const renderStepThree = () => {
+    const {goal} = state;
     const buttons = PROFILE.GOALS.map((lvl, idx) => {
       const bg = goal.includes(idx) ? 'transparent' : theme.COLORS.PRIMARY;
       const text = goal.includes(idx) ? theme.COLORS.TEXT : theme.COLORS.WHITE;
       return (
         <Button
-          onPress={() => this.goalSelectHandler(idx)}
+          onPress={() => goalSelectHandler(idx)}
           textStyle={{color: text}}
           style={[
             styles.selectBtn,
@@ -285,7 +322,7 @@ class Register extends React.Component {
     });
     return (
       <Block>
-        <Block center style={{marginBottom: 30}}>
+        <Block center style={styles.mb30}>
           <Text title>What's Your Goal?</Text>
         </Block>
         <Block>{buttons}</Block>
@@ -293,14 +330,14 @@ class Register extends React.Component {
     );
   };
 
-  renderStepFour = () => {
-    const {plan} = this.state;
+  const renderStepFour = () => {
+    const {plan} = state;
     const buttons = PROFILE.PLANS.map((_plan, idx) => {
       const bg = plan === _plan.id ? 'transparent' : theme.COLORS.PRIMARY;
       const text = plan === _plan.id ? theme.COLORS.TEXT : theme.COLORS.WHITE;
       return (
         <Button
-          onPress={() => this.planSelectHandler(_plan.id)}
+          onPress={() => planSelectHandler(_plan.id)}
           textStyle={{color: text}}
           style={[
             styles.selectBtn,
@@ -317,7 +354,7 @@ class Register extends React.Component {
     });
     return (
       <Block>
-        <Block center style={{marginBottom: 30}}>
+        <Block center style={styles.mb30}>
           <Text title>Create Your Plan</Text>
         </Block>
         <Block>{buttons}</Block>
@@ -325,7 +362,7 @@ class Register extends React.Component {
     );
   };
 
-  renderStepFive = () => {
+  const renderStepFive = () => {
     return (
       <Block>
         <Text title>Billing Information</Text>
@@ -335,54 +372,69 @@ class Register extends React.Component {
             style={styles.cardInput}
             placeholderTextColor={theme.COLORS.TEXT}
             placeholder="Card Number"
-            value={this.state.cardNumber}
+            value={state.cardNumber}
             onChangeText={cardNumber => {
-              this.setState({cardNumber})
+              setState({...state, cardNumber});
             }}
           />
           <Block row space="between">
             <Block row bottom>
               <RNPickerSelect
                 onValueChange={month => {
-                  this.setState({month})
+                  setState({...state, month});
                 }}
-                value={this.state.month}
-                placeholder={
-                  {label: ''}
-                }
+                value={state.month}
+                placeholder={{label: ''}}
                 items={utils.months}
                 style={{
-                  inputIOS: [styles.cardInput, {width: 40, paddingHorizontal: 5}],
-                }}/>
-              <Text style={{fontSize: 20, marginHorizontal: 10, fontFamily: theme.FONT_FAMILY.LIGHT}}>/</Text>
+                  inputIOS: [
+                    styles.cardInput,
+                    {width: 40, paddingHorizontal: 5},
+                  ],
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: 20,
+                  marginHorizontal: 10,
+                  fontFamily: theme.FONT_FAMILY.LIGHT,
+                }}>
+                /
+              </Text>
               <RNPickerSelect
                 onValueChange={year => {
-                  this.setState({year})
+                  setState({...state, year});
                 }}
-                value={this.state.year}
+                value={state.year}
                 items={utils.years}
-                placeholder={
-                  {label: ''}
-                }
+                placeholder={{label: ''}}
                 style={{
-                  inputIOS: [styles.cardInput, {width: 60, paddingHorizontal: 5}],
-                }}/>
+                  inputIOS: [
+                    styles.cardInput,
+                    {width: 60, paddingHorizontal: 5},
+                  ],
+                }}
+              />
             </Block>
             <Input
               placeholder="CVV"
               password
               maxLength={3}
               keyboardType="numeric"
-              onChangeText={cvv => this.setState({cvv})}
+              onChangeText={cvv => setState({...state, cvv})}
               style={[styles.cardInput, {width: 150}]}
             />
           </Block>
         </Block>
       </Block>
-    )
+    );
   };
 
-  register = async () => {
+  const register = async () => {
+    setState({
+      ...state,
+      loading: true,
+    });
     const {
       email,
       password,
@@ -397,7 +449,7 @@ class Register extends React.Component {
       month,
       year,
       cvv,
-    } = this.state;
+    } = state;
     const form = new FormData();
     form.append('email', email);
     form.append('password', password);
@@ -405,83 +457,78 @@ class Register extends React.Component {
     form.append('lastName', lastName);
     form.append('phone', phoneNumber);
     form.append('level', expLevel);
-    form.append('goal', goal.join());
+    form.append('goal', goal.join(','));
     form.append('plan', plan);
     form.append('date', date.toLocaleDateString());
     form.append('card', cardNumber);
     form.append('month', month);
     form.append('year', year);
     form.append('cvv', cvv);
-    this.setState({
-      form,
-      loading: true,
-    });
-  };
-
-  onSuccess = () => {
-    const {navigation} = this.props;
-    this.setState({
-      loading: false
-    });
-    navigation.navigate('Dashboard');
-  };
-
-  onError = () => {
-    this.setState({
-      loading: false
-    });
-    alert('Incorrect Email or Password')
-  };
-
-  render() {
-
-    const {
-      loading,
-      form
-    } = this.state;
-
-    if(loading){
-      return(
-        <LoadingData
-          url={'/register'}
-          form={form}
-          onSuccess={() => this.onSuccess()}
-          onError={() => this.onError()}
-        />
-      )
-    }
-    const {currentStep} = this.state;
-    const {navigation} = this.props;
-    let currentScreen = null;
-    switch (currentStep) {
-      case 1:
-        currentScreen = this.renderStepOne();
-        break;
-      case 2:
-        currentScreen = this.renderStepTwo();
-        break;
-      case 3:
-        currentScreen = this.renderStepThree();
-        break;
-      case 4:
-        currentScreen = this.renderStepFour();
-        break;
-      case 5:
-        currentScreen = this.renderStepFive();
-        break;
-    }
-    let dots = [];
-    for (let i = 1; i <= 5; i++) {
-      let style = {};
-      if (i <= currentStep) {
-        style.backgroundColor = theme.COLORS.PRIMARY;
+    const usr = {
+      first_name: firstName,
+      password: password,
+      last_name: lastName,
+      phone: phoneNumber,
+      level: expLevel,
+      goal: goal.join(','),
+      email,
+      plan,
+      avatar: state.avatar,
+      dob: date.toLocaleDateString(),
+    };
+    try {
+      await fire.createUser(usr);
+      await signUp(form);
+    } catch (error) {
+      setState({
+        ...state,
+        loading: false,
+      });
+      if (error.code === 'auth/email-already-in-use') {
+        Alert.alert('That email address is already in use!');
+      } else if (error.code === 'auth/invalid-email') {
+        Alert.alert('That email address is invalid!');
       } else {
-        style.backgroundColor = theme.COLORS.TEXT;
+        Alert.alert(error.message);
       }
-      dots.push(<Block key={`dot-${i}`} style={[styles.dot, style]} />);
     }
-    return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+  };
+
+  const {currentStep} = state;
+  let currentScreen = null;
+  switch (currentStep) {
+    case 1:
+      currentScreen = renderStepOne();
+      break;
+    case 2:
+      currentScreen = renderStepTwo();
+      break;
+    case 3:
+      currentScreen = renderStepThree();
+      break;
+    case 4:
+      currentScreen = renderStepFour();
+      break;
+    case 5:
+      currentScreen = renderStepFive();
+      break;
+  }
+  let dots = [];
+  for (let i = 1; i <= 5; i++) {
+    let style = {};
+    if (i <= currentStep) {
+      style.backgroundColor = theme.COLORS.PRIMARY;
+    } else {
+      style.backgroundColor = theme.COLORS.TEXT;
+    }
+    dots.push(<Block key={`dot-${i}`} style={[styles.dot, style]} />);
+  }
+  if (state.loading) {
+    return <Loader />;
+  }
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <Wrap>
         <Block safe flex middle style={styles.container}>
           <Block
             style={{
@@ -496,7 +543,7 @@ class Register extends React.Component {
               <Block row>
                 {currentStep > 1 ? (
                   <Button
-                    onPress={this.prevBtnHandler}
+                    onPress={prevBtnHandler}
                     textStyle={{color: theme.COLORS.TEXT}}
                     back>
                     Back
@@ -504,7 +551,7 @@ class Register extends React.Component {
                 ) : null}
                 {currentStep <= 5 ? (
                   <Button
-                    onPress={this.nextBtnHandler}
+                    onPress={nextBtnHandler}
                     style={[styles.btn, {marginLeft: 'auto'}]}
                     color={theme.COLORS.PRIMARY}>
                     {currentStep === 5 ? 'Join' : 'Next'}
@@ -521,22 +568,30 @@ class Register extends React.Component {
             </TouchableOpacity>
           </Block>
           <DateTimePickerModal
-            isVisible={this.state.isDatePickerVisible}
+            isVisible={state.isDatePickerVisible}
             mode="date"
-            onConfirm={this.handleConfirm}
+            onConfirm={handleConfirm}
             isDarkModeEnabled={theme.IS_DARK}
             onCancel={() => {
-              this.setState({
-                isDatePickerVisible: false
-              })
+              setState({
+                ...state,
+                isDatePickerVisible: false,
+              });
             }}
           />
         </Block>
-      </TouchableWithoutFeedback>
-    );
-  }
-}
+      </Wrap>
+    </TouchableWithoutFeedback>
+  );
+};
+
 const styles = StyleSheet.create({
+  mb30: {
+    marginBottom: 30,
+  },
+  mb0: {
+    marginBottom: 0,
+  },
   inputOverflow: {
     position: 'absolute',
     top: 0,
@@ -552,15 +607,14 @@ const styles = StyleSheet.create({
   },
   info: {
     fontSize: 10,
-    marginTop: theme.SIZES.BASE
+    marginTop: theme.SIZES.BASE,
   },
   terms: {
     marginTop: theme.SIZES.BASE,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   container: {
-    marginHorizontal: theme.SIZES.BASE,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
   checkBorder: {
     borderRadius: 3,
@@ -580,13 +634,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -3,
     left: 2,
-    transform: [{ rotate: '-45deg' }]
+    transform: [{rotate: '-45deg'}],
   },
   loadingContainer: {
     flex: 1,
     paddingHorizontal: theme.SIZES.BASE,
     backgroundColor: theme.COLORS.APP_BG,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
   btn: {
     width: 100,
@@ -612,4 +666,4 @@ const styles = StyleSheet.create({
   cardInput,
 });
 
-export default Register
+export default Register;

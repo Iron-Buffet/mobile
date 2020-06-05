@@ -14,16 +14,15 @@ export const cardInput = {
 
 export const bottomButton = {
   marginTop: 'auto',
-  marginBottom: 30
+  marginBottom: 30,
 };
 
 export const shadow = {
   shadowColor: theme.COLORS.SHADOW,
-    shadowOffset: {
+  shadowOffset: {
     width: 0,
-      height: 2
+    height: 2,
   },
   shadowRadius: 6,
-  shadowOpacity: 0.4
+  shadowOpacity: 0.4,
 };
-

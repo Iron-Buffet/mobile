@@ -1,36 +1,45 @@
 import React from 'react';
 import {StyleSheet, Dimensions, Image} from 'react-native';
-import { Block } from 'galio-framework';
-import {theme} from '../constants'
-import Wrap from '../components/Wrap'
-import {Button} from '../components'
+import {Block} from 'galio-framework';
+import {theme, Icons} from '../constants';
+import Wrap from '../components/Wrap';
+import {Button, Text} from '../components';
+import HeaderLeft from '../navigation/components/HeaderLeft';
 
-const { width } = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 
-export default class Dashboard extends React.Component {
+const Dashboard = ({navigation}) => {
+  navigation.setOptions({
+    headerLeft: () => <HeaderLeft icon={Icons.menu} />,
+  });
 
-  btnPressHandler = (route) => {
-    const {navigation} = this.props;
-    return navigation.navigate(route)
+  const btnPressHandler = route => {
+    return navigation.navigate(route);
   };
 
-  render() {
-
-    return (
-      <Wrap space="between" flex>
-        <Image
-          style={styles.img}
-          source={require('../assets/images/logo.png')}
-        />
-        <Block style={{marginBottom: 25}}>
-          <Button style={styles.button} onPress={() => this.btnPressHandler('DCreateWorkout')}>Design a new workout</Button>
-          <Button style={styles.button} onPress={() => this.btnPressHandler('CParts')}>Certified Workouts</Button>
-          <Button style={styles.button} onPress={() => this.btnPressHandler('WMParts')}>Workout Management</Button>
-        </Block>
-      </Wrap>
-    );
-  }
-}
+  return (
+    <Wrap space="between" flex>
+      <Image style={styles.img} source={require('../assets/images/logo.png')} />
+      <Block style={{marginBottom: 25}}>
+        <Button
+          style={styles.button}
+          onPress={() => btnPressHandler('DCreateWorkout')}>
+          Design a new workout
+        </Button>
+        <Button style={styles.button} onPress={() => btnPressHandler('CParts')}>
+          Certified Workouts
+        </Button>
+        <Button
+          style={styles.button}
+          onPress={() =>
+            btnPressHandler('WorkoutManagement', {screen: 'WMParts'})
+          }>
+          Workout Management
+        </Button>
+      </Block>
+    </Wrap>
+  );
+};
 
 const styles = StyleSheet.create({
   img: {
@@ -38,7 +47,7 @@ const styles = StyleSheet.create({
     borderRadius: 200,
     width: width - 100,
     height: width - 100,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   search: {
     height: 48,
@@ -52,7 +61,7 @@ const styles = StyleSheet.create({
     shadowColor: theme.COLORS.SHADOW,
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowRadius: 8,
     shadowOpacity: 0.2,
@@ -66,7 +75,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     backgroundColor: theme.COLORS.TRANSPARENT,
-    width: width * 0.50,
+    width: width * 0.5,
     borderRadius: 0,
     borderWidth: 0,
     height: 24,
@@ -74,7 +83,7 @@ const styles = StyleSheet.create({
   },
   tabTitle: {
     lineHeight: 19,
-    fontWeight: '300'
+    fontWeight: '300',
   },
   divider: {
     borderRightWidth: 0.3,
@@ -89,9 +98,11 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     textAlign: 'center',
     fontWeight: 'bold',
-    color: theme.COLORS.TEXT
+    color: theme.COLORS.TEXT,
   },
   button: {
-    marginBottom: theme.SIZES.BASE
-  }
+    marginBottom: theme.SIZES.BASE,
+  },
 });
+
+export default Dashboard;

@@ -1,32 +1,25 @@
 import React from 'react';
-import { withNavigation } from 'react-navigation';
-import { StyleSheet, Dimensions, Image } from 'react-native';
-import { Block } from 'galio-framework';
-import {theme} from "../constants";
-import Text from '../components/Text'
+import {StyleSheet, Dimensions, Image} from 'react-native';
+import {Block} from 'galio-framework';
+import {theme} from '../constants';
+import Text from '../components/Text';
 
-const { width } = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 
-class PartCard extends React.Component {
+const PartCard = ({part, selected}) => {
+  const style = [styles.card, selected ? styles.selected : styles.baseCard];
 
-  render() {
-    const { part, selected } = this.props;
-    const style = [styles.card, selected ? styles.selected: styles.baseCard];
-
-    return (
-      <Block center space="between" style={style}>
-        <Block style={styles.imageWrap}>
-          <Image
-            style={styles.img}
-            source={part.image} />
-        </Block>
-        <Text style={styles.text}>{part.name}</Text>
+  return (
+    <Block center space="between" style={style}>
+      <Block style={styles.imageWrap}>
+        <Image style={styles.img} source={part.image} />
       </Block>
-    );
-  }
-}
+      <Text style={styles.text}>{part.name}</Text>
+    </Block>
+  );
+};
 
-export default withNavigation(PartCard);
+export default PartCard;
 
 const styles = StyleSheet.create({
   imageWrap: {
@@ -34,7 +27,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   card: {
-    width: (width / 2) - 40,
+    width: width / 2 - 40,
     height: 88,
     borderWidth: 1,
     borderStyle: 'solid',
@@ -49,11 +42,11 @@ const styles = StyleSheet.create({
   selected: {
     borderWidth: 3,
     borderColor: theme.COLORS.PRIMARY,
-    paddingTop: 0
+    paddingTop: 0,
   },
   text: {
     color: theme.COLORS.TEXT,
-    marginBottom: 3
+    marginBottom: 3,
   },
   img: {
     width: null,
@@ -62,6 +55,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     marginBottom: 5,
     borderRadius: 5,
-    resizeMode: 'cover'
-  }
+    resizeMode: 'cover',
+  },
 });

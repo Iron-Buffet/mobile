@@ -1,31 +1,29 @@
 import React from 'react';
-import {Dimensions, StyleSheet} from 'react-native';
-import { TextInput } from 'react-native';
-import theme from '../constants/Theme'
+import {Dimensions, StyleSheet, TextInput} from 'react-native';
+import theme from '../constants/Theme';
 
-const { width } = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 
-export default class InputComponent extends React.Component {
-
-  render() {
-    const { onChangeText, textarea, placeholder, password, style, ...props } = this.props;
-    return (
-      <TextInput
-        placeholderTextColor={theme.COLORS.TEXT}
-        autoCapitalize="none"
-        style={[
-          styles.input,
-          textarea && styles.textarea,
-          style
-        ]}
-        placeholder={placeholder}
-        onChangeText={onChangeText}
-        secureTextEntry={!!password}
-        {...props}
-      />
-    )
-  }
-}
+const InputComponent = ({
+  onChangeText,
+  textarea,
+  placeholder,
+  password,
+  style,
+  ...props
+}) => {
+  return (
+    <TextInput
+      placeholderTextColor={theme.COLORS.TEXT}
+      autoCapitalize="none"
+      style={[styles.input, textarea && styles.textarea, style]}
+      placeholder={placeholder}
+      onChangeText={onChangeText}
+      secureTextEntry={!!password}
+      {...props}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   input: {
@@ -41,9 +39,11 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     fontFamily: theme.FONT_FAMILY.REGULAR,
     marginBottom: 10,
-    height: 40
+    height: 40,
   },
   textarea: {
-    height: 100
-  }
+    height: 100,
+  },
 });
+
+export default InputComponent;

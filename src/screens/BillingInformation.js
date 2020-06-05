@@ -1,14 +1,13 @@
-import React from 'react'
-import {StyleSheet} from 'react-native'
-import {TextInputMask} from "react-native-masked-text";
-import {Block} from "galio-framework";
-import RNPickerSelect from "react-native-picker-select";
-import {utils, theme} from "../constants";
-import {Input, Text, Wrap} from "../components";
-import {cardInput} from "../utils/globalStyles";
+import React from 'react';
+import {StyleSheet} from 'react-native';
+import {TextInputMask} from 'react-native-masked-text';
+import {Block} from 'galio-framework';
+import RNPickerSelect from 'react-native-picker-select';
+import {utils, theme} from '../constants';
+import {Input, Text, Wrap} from '../components';
+import {cardInput} from '../utils/globalStyles';
 
 export default class BillingInformation extends React.Component {
-
   state = {
     cardNumber: null,
     month: null,
@@ -16,7 +15,7 @@ export default class BillingInformation extends React.Component {
     cvv: null,
   };
 
-  render () {
+  render() {
     return (
       <Wrap>
         <Block>
@@ -27,36 +26,47 @@ export default class BillingInformation extends React.Component {
             placeholder="Card Number"
             value={this.state.cardNumber}
             onChangeText={cardNumber => {
-              this.setState({cardNumber})
+              this.setState({cardNumber});
             }}
           />
           <Block row space="between">
             <Block row bottom>
               <RNPickerSelect
                 onValueChange={month => {
-                  this.setState({month})
+                  this.setState({month});
                 }}
                 value={this.state.month}
-                placeholder={
-                  {label: ''}
-                }
+                placeholder={{label: ''}}
                 items={utils.months}
                 style={{
-                  inputIOS: [styles.cardInput, {width: 40, paddingHorizontal: 5}],
-                }}/>
-              <Text style={{fontSize: 20, marginHorizontal: 10, fontFamily: theme.FONT_FAMILY.LIGHT}}>/</Text>
+                  inputIOS: [
+                    styles.cardInput,
+                    {width: 40, paddingHorizontal: 5},
+                  ],
+                }}
+              />
+              <Text
+                style={{
+                  fontSize: 20,
+                  marginHorizontal: 10,
+                  fontFamily: theme.FONT_FAMILY.LIGHT,
+                }}>
+                /
+              </Text>
               <RNPickerSelect
                 onValueChange={year => {
-                  this.setState({year})
+                  this.setState({year});
                 }}
                 value={this.state.year}
                 items={utils.years}
-                placeholder={
-                  {label: ''}
-                }
+                placeholder={{label: ''}}
                 style={{
-                  inputIOS: [styles.cardInput, {width: 60, paddingHorizontal: 5}],
-                }}/>
+                  inputIOS: [
+                    styles.cardInput,
+                    {width: 60, paddingHorizontal: 5},
+                  ],
+                }}
+              />
             </Block>
             <Input
               placeholder="CVV"
@@ -69,20 +79,20 @@ export default class BillingInformation extends React.Component {
           </Block>
         </Block>
       </Wrap>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: theme.SIZES.BASE,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
   loadingContainer: {
     flex: 1,
     paddingHorizontal: theme.SIZES.BASE,
     backgroundColor: theme.COLORS.APP_BG,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
   btn: {
     width: 100,
@@ -105,5 +115,5 @@ const styles = StyleSheet.create({
   listItem: {
     marginVertical: 10,
   },
-  cardInput
+  cardInput,
 });

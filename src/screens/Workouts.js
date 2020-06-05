@@ -1,42 +1,39 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
-import { ScrollView } from 'react-native';
-import { Block } from 'galio-framework';
-import { $get } from '../utils/Fetch';
-import { Wrap, Text, Button, WorkoutCard } from '../components'
+import {ActivityIndicator, StyleSheet} from 'react-native';
+import {ScrollView} from 'react-native';
+import {Block} from 'galio-framework';
+import {$get} from '../utils/Fetch';
+import {Wrap, Text, Button, WorkoutCard} from '../components';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
+const Workouts = ({url, workoutPath, createWorkoutPath}) => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const [state, setState] = React.useState({
+    isLoading: true,
+    workouts: [],
+  });
 
-export default class Workouts extends React.Component {
-
-  constructor(props){
-    super(props);
-    this.state = {
-      isLoading: true,
-      workouts: [],
-    }
-  }
-
-  componentDidMount() {
-    const {url, navigation} = this.props;
-    const parts = navigation.getParam('parts');
-
-    return $get(url + '?filter[parts]=' + parts.join(','))
-      .then((responseJson) => {
-        this.setState({
+  React.useEffect(() => {
+    const parts = route.params.parts;
+    $get(url + '?filter[parts]=' + parts.join(','))
+      .then(responseJson => {
+        setState({
+          ...state,
           isLoading: false,
           workouts: responseJson,
         });
       })
-      .catch((error) =>{
+      .catch(error => {
         console.error(error);
       });
-  }
+    //eslint-disable-next-line
+  }, []);
 
-  renderWorkouts = () => {
-    const { navigation, workoutPath, createWorkoutPath } = this.props;
-    if (this.state.workouts.length === 0) {
+  const renderWorkouts = () => {
+    if (state.workouts.length === 0) {
       return (
-        <Block style={{paddingBottom: 30}} flex space="between">
+        <Block style={styles.container} flex space="between">
           <Block flex center middle>
             <Text title>You have no workouts</Text>
           </Block>
@@ -44,44 +41,43 @@ export default class Workouts extends React.Component {
             Add new workout
           </Button>
         </Block>
-      )
+      );
     }
 
-    const workouts = this.state.workouts.map(w => {
+    const workouts = state.workouts.map(w => {
       return (
         <WorkoutCard
           workoutPath={workoutPath}
           key={`workout-${w.id}`}
-          workout={w} />)
+          workout={w}
+        />
+      );
     });
 
     return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Block flex space="between">
           {workouts}
         </Block>
       </ScrollView>
-    )
+    );
   };
 
-  render () {
-    if(this.state.isLoading){
-      return(
-        <Wrap>
-          <ActivityIndicator/>
-        </Wrap>
-      )
-    }
-
-    return(
+  if (state.isLoading) {
+    return (
       <Wrap>
-        {this.renderWorkouts()}
+        <ActivityIndicator />
       </Wrap>
     );
   }
-}
+
+  return <Wrap>{renderWorkouts()}</Wrap>;
+};
 
 const styles = StyleSheet.create({
-
+  container: {
+    paddingBottom: 30
+  },
 });
+
+export default Workouts;
