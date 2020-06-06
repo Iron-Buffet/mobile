@@ -134,12 +134,16 @@ const Profile = () => {
 };
 
 const Dashboard = () => {
+  const {user} = React.useContext(AuthContext);
+
   return (
     <DashboardStack.Navigator
+      initialRouteName={user.status === 1 ? 'Trial' : 'Dashboard'}
       screenOptions={{
         ...headerBaseConfig,
       }}>
       <DashboardStack.Screen name="Dashboard" component={DashboardScreen} />
+      <DashboardStack.Screen name="Trial" component={AlertTrialScreen} />
       <DashboardStack.Screen
         options={{
           ...headerBaseConfig,

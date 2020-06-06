@@ -72,7 +72,7 @@ export const AuthState = ({children}) => {
                     user: user.data,
                     fbUser: {uid: snap.id, ...snap.data()},
                   });
-                });
+                }).catch(e => console.log(e));
 
                 messaging()
                   .getToken()

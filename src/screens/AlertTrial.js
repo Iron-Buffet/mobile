@@ -5,32 +5,27 @@ import {theme} from '../constants';
 import Wrap from '../components/Wrap';
 import {Button, Text} from '../components';
 
-export default class Dashboard extends React.Component {
-  btnPressHandler = id => {
-    // const {navigation} = this.props;
-    console.log(id);
-  };
+const AlertTrial = ({navigation}) => {
+  navigation.setOptions({
+    headerShown: false,
+  });
 
-  render() {
-    const {navigation} = this.props;
-
-    return (
-      <Wrap style={styles.wrap} flex>
-        <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
-          <Text style={styles.close}>&times;</Text>
-        </TouchableOpacity>
-        <Block style={{marginTop: 'auto', marginBottom: 'auto'}}>
-          <Text title style={styles.title}>
-            trial version
-          </Text>
-        </Block>
-        <Button style={styles.btn} onPress={() => this.btnPressHandler()}>
-          Get Full Version
-        </Button>
-      </Wrap>
-    );
-  }
-}
+  return (
+    <Wrap style={styles.wrap} flex>
+      <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+        <Text style={styles.close}>&times;</Text>
+      </TouchableOpacity>
+      <Block style={{marginTop: 'auto', marginBottom: 'auto'}}>
+        <Text title style={styles.title}>
+          trial version
+        </Text>
+      </Block>
+      <Button style={styles.btn}>
+        Get Full Version
+      </Button>
+    </Wrap>
+  );
+};
 
 const styles = StyleSheet.create({
   btn: {
@@ -59,3 +54,5 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
 });
+
+export default AlertTrial;

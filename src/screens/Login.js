@@ -46,7 +46,9 @@ const Login = ({navigation}) => {
           emailChecking: true,
         });
         try {
+          console.log('before request');
           const user = await $post(LINKS.CHECK_EMAIL, {body: form});
+          console.log('after request');
           if (user) {
             setState({
               ...state,
@@ -63,6 +65,11 @@ const Login = ({navigation}) => {
             navigation.navigate('Register');
           }
         } catch (e) {
+          console.log(e);
+          setState({
+            ...state,
+            emailChecking: false,
+          });
           alert(e.message);
         }
       } else {

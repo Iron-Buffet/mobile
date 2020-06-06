@@ -28,6 +28,7 @@ async function $post(url, config) {
   let token;
   try {
     token = await AsyncStorage.getItem('token');
+    console.log(token);
     const body = (config && config.body) || null;
     const headers = (config && config.headers) || {};
 
@@ -43,7 +44,7 @@ async function $post(url, config) {
       },
       body,
     };
-    return fetch(API_URL + url, configOptions).then(r => r.json());
+    return fetch(API_URL + url, configOptions).then(r => r.json()).catch(e => console.log(e));
   } catch (e) {
     console.log(e);
   }
