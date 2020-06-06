@@ -5,7 +5,7 @@ import {
   Keyboard,
   ScrollView,
   TouchableOpacity,
-  Image,
+  Image, default as Alert,
 } from 'react-native';
 import {LINKS, PROFILE, theme} from '../constants';
 import {Input, Wrap, Button, Checkbox, Text, AvatarPicker} from '../components';
@@ -19,6 +19,7 @@ import {Block, Toast} from 'galio-framework';
 import {AuthContext} from '../context/contexts';
 import {UPDATE_USER} from '../context/types';
 import {fire} from '../services';
+import AlertTrial from "./AlertTrial";
 
 const plans = PROFILE.PLANS.map((plan, index) => {
   return {
@@ -123,10 +124,12 @@ const EditProfile = ({navigation}) => {
           });
 
       } catch (e) {
+        Alert.alert(e.message);
         console.log(e)
       }
     })
       .catch(e => {
+        Alert.alert(e.message);
         console.log('sql', e)
       });
   };

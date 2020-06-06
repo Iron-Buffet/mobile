@@ -488,6 +488,8 @@ const Register = props => {
         Alert.alert('That email address is already in use!');
       } else if (error.code === 'auth/invalid-email') {
         Alert.alert('That email address is invalid!');
+      } else if (error.code === 'auth/weak-password') {
+        Alert.alert('The given password is invalid');
       } else {
         Alert.alert(error.message);
       }

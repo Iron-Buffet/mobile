@@ -12,7 +12,6 @@ import DrawerLabel from './components/DrawerLabel';
 import HeaderLeft from './components/HeaderLeft';
 import ProfileHeaderRight from './components/ProfileHeaderRight';
 import CalendarHeaderRight from './components/CalendarHeaderRight';
-import {Text} from '../components';
 /**
  * Configs
  */
@@ -28,7 +27,6 @@ import ChangePasswordScreen from '../screens/ChangePassword';
 import AddToCalendarScreen from '../screens/AddToCalendar';
 import CreateWorkoutScreen from '../screens/CreateWorkout';
 import EditProfileScreen from '../screens/EditProfile';
-import AlertTrialScreen from '../screens/AlertTrial';
 import DashboardScreen from '../screens/Dashboard';
 import CheckAuthScreen from '../screens/CheckAuth';
 import WorkoutsScreen from '../screens/Workouts';
@@ -41,7 +39,6 @@ import PartsScreen from '../screens/Parts';
 import ChatsScreen from '../screens/Chat/Chats';
 import MessagesScreen from '../screens/Chat/Messages';
 import {AuthContext} from '../context/contexts';
-import {shadow} from '../utils/globalStyles';
 const headerBaseConfig = {
   headerStyle: {
     backgroundColor: theme.COLORS.APP_BG,
@@ -134,16 +131,12 @@ const Profile = () => {
 };
 
 const Dashboard = () => {
-  const {user} = React.useContext(AuthContext);
-
   return (
     <DashboardStack.Navigator
-      initialRouteName={user.status === 1 ? 'Trial' : 'Dashboard'}
       screenOptions={{
         ...headerBaseConfig,
       }}>
       <DashboardStack.Screen name="Dashboard" component={DashboardScreen} />
-      <DashboardStack.Screen name="Trial" component={AlertTrialScreen} />
       <DashboardStack.Screen
         options={{
           ...headerBaseConfig,

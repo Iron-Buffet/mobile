@@ -59,6 +59,7 @@ export default class Fire {
   };
 
   createUser = async user => {
+    return new Promise(async (resolve, reject) => {
       try {
         await auth().createUserWithEmailAndPassword(user.email, user.password);
         await this.firestore.collection('users').doc(this.uid).set({
@@ -82,13 +83,16 @@ export default class Fire {
             merge: true
           });
         }
+        resolve(true)
       } catch (e) {
-        console.log(e);
+        reject(e);
         return e;
       }
+    })
   };
 
   updateUser = async user => {
+    return new Promise(async (resolve, reject) => {
       try {
         await this.firestore.collection('users').doc(this.uid).update({
           first_name: user.first_name,
@@ -110,10 +114,12 @@ export default class Fire {
             avatar: remoteUrl,
           });
         }
+        resolve(true)
       } catch (e) {
-        console.log(e)
+        reject(e);
         return e;
       }
+    });
   };
 
   updateChats = async () => {
