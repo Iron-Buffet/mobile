@@ -12,6 +12,7 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 const PushNotification = require("react-native-push-notification");
 import messaging from '@react-native-firebase/messaging';
 
+console.disableYellowBox = true;
 const App: () => React$Node = () => {
   PushNotification.configure({
     onRegister: function (token) {

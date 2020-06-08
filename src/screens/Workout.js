@@ -151,7 +151,7 @@ const Workout = () => {
             <Block flex>
               <Block flex style={styles.mb}>
                 <Block style={styles.profileTexts}>
-                  <Text color="white" size={28}>
+                  <Text color={theme.COLORS.TEXT} size={28}>
                     {workout.name}
                   </Text>
                   <Text style={styles.seller}>Difficulty {workout.rating}</Text>
@@ -172,12 +172,12 @@ const Workout = () => {
               </Block>
               <Text
                 style={styles.descriptionTitle}
-                color="white"
+                color={theme.COLORS.TEXT}
                 bold
                 size={20}>
                 Description
               </Text>
-              <Text color="white">{workout.description}</Text>
+              <Text color={theme.COLORS.TEXT}>{workout.description}</Text>
             </Block>
           )}
         </ScrollView>

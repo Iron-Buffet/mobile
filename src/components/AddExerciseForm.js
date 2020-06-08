@@ -3,107 +3,107 @@ import RNPickerSelect from 'react-native-picker-select';
 import {Dimensions, StyleSheet} from 'react-native';
 import {Block} from 'galio-framework';
 import {Input} from '../components';
-import {connect} from 'react-redux';
 import theme from '../constants/Theme';
+import {AppContext} from "../context/contexts";
 
 const {width} = Dimensions.get('screen');
 
-class AddExerciseForm extends React.Component {
-  state = {
+const AddExerciseForm = props => {
+
+  const {fitStyles, exercises} = React.useContext(AppContext);
+
+  const [state, setState] = React.useState({
     exercise: null,
     sets: '',
     reps: '',
     weight: '',
     style: null,
     notes: null,
-  };
+  });
 
-  updateState = (prop, value) => {
-    const {onStateUpdate} = this.props;
-    this.setState(
-      {
-        [prop]: value,
-      },
-      () => {
-        onStateUpdate(this.state);
-      },
-    );
-  };
-
-  render() {
-    const {exercises, part, exStyles} = this.props;
-    const filteredExercises = exercises.filter(e => e.body_part_id === part.id);
-
-    const itemsE = filteredExercises.map(e => {
-      return {
-        label: e.name,
-        value: e.id,
-        key: 'exercise' + e.id,
-      };
+  const updateState = (prop, value) => {
+    setState({
+      ...state,
+      [prop]: value,
     });
-    const itemsS = exStyles.map(s => {
-      return {
-        label: s.name,
-        value: s.id,
-        key: 'style' + s.id,
-      };
-    });
-    return (
-      <Block style={styles.formWrap}>
-        <Block>
-          <RNPickerSelect
-            onValueChange={value => this.updateState('exercise', value)}
-            value={this.state.exercise}
-            items={itemsE}
-            style={{
-              inputIOS: styles.inputIOS,
-              placeholder: {
-                color: theme.COLORS.TEXT,
-              },
-            }}
-            placeholder={{label: 'Select exercise'}}
-          />
-          <RNPickerSelect
-            onValueChange={value => this.updateState('style', value)}
-            value={this.state.style}
-            items={itemsS}
-            style={{
-              inputIOS: styles.inputIOS,
-              placeholder: {
-                color: theme.COLORS.TEXT,
-              },
-            }}
-            placeholder={{label: 'Select style'}}
-          />
-        </Block>
-        <Block style={styles.stretchRow}>
-          <Input
-            onChangeText={value => this.updateState('sets', value)}
-            style={styles.input}
-            placeholder="Sets"
-          />
-          <Input
-            onChangeText={value => this.updateState('reps', value)}
-            style={styles.input}
-            placeholder="Reps"
-          />
-          <Input
-            onChangeText={value => this.updateState('weight', value)}
-            style={styles.input}
-            placeholder="Weight"
-          />
-        </Block>
-        <Block style={styles.stretchRow}>
-          <Input
-            onChangeText={value => this.updateState('notes', value)}
-            style={[styles.inputWide]}
-            placeholder="Notes"
-          />
-        </Block>
+  };
+  React.useEffect(() => {
+    const {onStateUpdate} = props;
+    onStateUpdate(state);
+  }, [state]);
+
+  const {part} = props;
+  const filteredExercises = exercises.filter(e => e.body_part_id === part.id);
+
+  const itemsE = filteredExercises.map(e => {
+    return {
+      label: e.name,
+      value: e.id,
+      key: 'exercise' + e.id,
+    };
+  });
+  const itemsS = fitStyles.map(s => {
+    return {
+      label: s.name,
+      value: s.id,
+      key: 'style' + s.id,
+    };
+  });
+  return (
+    <Block style={styles.formWrap}>
+      <Block>
+        <RNPickerSelect
+          onValueChange={value => updateState('exercise', value)}
+          value={state.exercise}
+          items={itemsE}
+          style={{
+            inputIOS: styles.inputIOS,
+            placeholder: {
+              color: theme.COLORS.TEXT,
+            },
+          }}
+          placeholder={{label: 'Select exercise'}}
+        />
+        <RNPickerSelect
+          onValueChange={value => updateState('style', value)}
+          value={state.style}
+          items={itemsS}
+          style={{
+            inputIOS: styles.inputIOS,
+            placeholder: {
+              color: theme.COLORS.TEXT,
+            },
+          }}
+          placeholder={{label: 'Select style'}}
+        />
       </Block>
-    );
-  }
-}
+      <Block style={styles.stretchRow}>
+        <Input
+          onChangeText={value => updateState('sets', value)}
+          style={styles.input}
+          placeholder="Sets"
+        />
+        <Input
+          onChangeText={value => updateState('reps', value)}
+          style={styles.input}
+          placeholder="Reps"
+        />
+        <Input
+          onChangeText={value => updateState('weight', value)}
+          style={styles.input}
+          placeholder="Weight"
+        />
+      </Block>
+      <Block style={styles.stretchRow}>
+        <Input
+          onChangeText={value => updateState('notes', value)}
+          style={[styles.inputWide]}
+          placeholder="Notes"
+        />
+      </Block>
+    </Block>
+  );
+};
 
 const styles = StyleSheet.create({
   stretchRow: {
@@ -137,11 +137,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => {
-  return {
-    exercises: state.exercisesReducer.exercises,
-    exStyles: state.stylesReducer.styles,
-  };
-};
-
-export default connect(mapStateToProps)(AddExerciseForm);
+export default AddExerciseForm;
