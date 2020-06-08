@@ -62,27 +62,21 @@ export default class Fire {
     return new Promise(async (resolve, reject) => {
       try {
         await auth().createUserWithEmailAndPassword(user.email, user.password);
+        let remoteUrl = null;
+        if (user.avatar) {
+          remoteUrl = await this.uploadPhotoAsync(user.avatar, `avatars/${this.uid}`);
+        }
         await this.firestore.collection('users').doc(this.uid).set({
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,
-          avatar: null,
+          avatar: remoteUrl,
           phone: user.phone,
           level: user.level,
           goal: user.goal,
           plan: user.plan,
           dob: user.dob,
         });
-        let remoteUrl = null;
-
-        if (user.avatar) {
-          remoteUrl = await this.uploadPhotoAsync(user.avatar, `avatars/${this.uid}`);
-          await this.firestore.collection('users').doc(this.uid).set({
-            avatar: remoteUrl,
-          }, {
-            merge: true
-          });
-        }
         resolve(true)
       } catch (e) {
         reject(e);

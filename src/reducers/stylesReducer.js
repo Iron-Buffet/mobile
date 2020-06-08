@@ -1,7 +1,7 @@
 import {GET_STYLES} from '../actions/types';
 
 const initialState = {
-  styles: [],
+  exStyles: [],
 };
 
 const stylesReducer = (state = initialState, action) => {
@@ -9,7 +9,7 @@ const stylesReducer = (state = initialState, action) => {
     case GET_STYLES:
       return {
         ...state,
-        styles: action.data,
+        exStyles: action.data,
       };
     default:
       return state;

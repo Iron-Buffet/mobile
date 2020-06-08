@@ -71,7 +71,7 @@ const Profile = ({navigation}) => {
               <Text
                 size={12}
                 color={theme.COLORS.PRIMARY}
-                onPress={() => props.navigation.navigate('WMParts')}>
+                onPress={() => navigation.navigate('WorkoutManagement')}>
                 View All
               </Text>
             </Block>

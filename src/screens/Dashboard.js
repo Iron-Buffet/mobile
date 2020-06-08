@@ -26,7 +26,7 @@ const Dashboard = ({navigation}) => {
           onPress={() => btnPressHandler('DCreateWorkout')}>
           Design a new workout
         </Button>
-        <Button style={styles.button} onPress={() => btnPressHandler('CParts')}>
+        <Button style={styles.button} onPress={() => navigation.navigate('CParts')}>
           Certified Workouts
         </Button>
         <Button

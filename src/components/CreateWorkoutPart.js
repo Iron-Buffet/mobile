@@ -3,7 +3,6 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Block} from 'galio-framework';
 import {Button, Text} from './index';
 import theme from '../constants/Theme';
-import {connect} from 'react-redux';
 import AddExerciseForm from '../components/AddExerciseForm';
 
 const baseExercise = {
@@ -15,78 +14,78 @@ const baseExercise = {
   notes: null,
 };
 
-class CreateWorkoutPart extends React.Component {
-  state = {
+const CreateWorkoutPart = (props) =>  {
+
+  const [state, setState] = React.useState({
     exercises: [{...baseExercise}],
-  };
+  });
 
-  componentDidUpdate(prevProps) {
-    const {onPartUpdated, part} = this.props;
-    const {exercises} = this.state;
+  React.useEffect(() => {
+    const {onPartUpdated, part} = props;
+    const {exercises} = state;
     if (part.exercises !== exercises || exercises[0] === baseExercise) {
-      onPartUpdated(this.state.exercises);
+      onPartUpdated(state.exercises);
     }
-  }
+  }, [state]);
 
-  formStateUpdated = (formState, i) => {
-    const {exercises} = this.state;
+  const formStateUpdated = (formState, i) => {
+    const {exercises} = state;
     const before = exercises.slice(0, i);
     const after = exercises.slice(i + 1);
-    this.setState(() => {
-      return {
-        exercises: [...before, formState, ...after],
-      };
+    setState({
+      ...state,
+      exercises: [...before, formState, ...after],
     });
   };
 
-  removeExerciseHandler = i => {
-    let exercises = [...this.state.exercises];
+  const removeExerciseHandler = i => {
+    let exercises = [...state.exercises];
     exercises.splice(i, 1);
-    this.setState({
+    setState({
+      ...state,
       exercises,
     });
   };
 
-  addExerciseHandler = () => {
-    const newExercises = this.state.exercises.concat(baseExercise);
-    this.setState({
+  const addExerciseHandler = () => {
+    const newExercises = state.exercises.concat(baseExercise);
+    setState({
+      ...state,
       exercises: newExercises,
     });
   };
 
-  render() {
-    const {part} = this.props;
-    const stateExercises = this.state.exercises;
+  const {part} = props;
+  const stateExercises = state.exercises;
 
-    return (
-      <Block style={styles.workoutCard}>
-        <Block style={styles.stretchRow}>
-          <Text style={{fontSize: 24}}>{part.name}</Text>
-          <Button small onPress={() => this.addExerciseHandler()}>
-            Add Exercise
-          </Button>
-        </Block>
-        {stateExercises.map((se, i) => {
-          return (
-            <Block key={`ne${i}`} style={{position: 'relative'}}>
-              {i > 0 ? (
-                <TouchableOpacity
-                  style={styles.delete}
-                  onPress={() => this.removeExerciseHandler(i)}>
-                  <Text style={styles.del}>&times;</Text>
-                </TouchableOpacity>
-              ) : null}
-              <AddExerciseForm
-                onStateUpdate={formState => this.formStateUpdated(formState, i)}
-                part={part}
-              />
-            </Block>
-          );
-        })}
+  return (
+    <Block style={styles.workoutCard}>
+      <Block style={styles.stretchRow}>
+        <Text style={{fontSize: 24}}>{part.name}</Text>
+        <Button small onPress={() => addExerciseHandler()}>
+          Add Exercise
+        </Button>
       </Block>
-    );
-  }
-}
+      {stateExercises.map((se, i) => {
+        return (
+          <Block key={`ne${i}`} style={{position: 'relative'}}>
+            {i > 0 ? (
+              <TouchableOpacity
+                style={styles.delete}
+                onPress={() => removeExerciseHandler(i)}>
+                <Text style={styles.del}>&times;</Text>
+              </TouchableOpacity>
+            ) : null}
+            <AddExerciseForm
+              onStateUpdate={formState => formStateUpdated(formState, i)}
+              part={part}
+            />
+          </Block>
+        );
+      })}
+    </Block>
+  );
+};
 
 const styles = StyleSheet.create({
   delete: {
@@ -131,10 +130,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => {
-  return {
-    exercises: state.exercisesReducer.exercises,
-  };
-};
-
-export default connect(mapStateToProps)(CreateWorkoutPart);
+export default CreateWorkoutPart;

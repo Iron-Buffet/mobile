@@ -119,14 +119,7 @@ export const AuthState = ({children}) => {
           .signInWithEmailAndPassword(email, password)
           .then(async res => {
             await AsyncStorage.setItem('token', login.token);
-            const user = await $get(LINKS.PROFILE);
             await restoreData();
-            dispatch({
-              type: SIGN_IN,
-              token: login.token,
-              user: user.data,
-              fbUser: res.user,
-            });
           })
           .catch(e => {
             dispatch({type: SIGN_OUT});
