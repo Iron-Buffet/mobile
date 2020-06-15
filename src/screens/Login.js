@@ -1,5 +1,12 @@
 import React from 'react';
-import {TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import {
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Dimensions,
+} from 'react-native';
 import {Block} from 'galio-framework';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Text, Button, Input, Loader} from '../components';
@@ -10,6 +17,8 @@ import {$post} from '../utils/Fetch';
 
 import theme from '../constants/Theme';
 import {AuthContext} from '../context/contexts';
+
+const {height} = Dimensions.get('screen');
 
 const Login = ({navigation}) => {
   const {signIn} = React.useContext(AuthContext);
@@ -33,6 +42,27 @@ const Login = ({navigation}) => {
     });
   };
 
+  const [totalHeight, setTotalHeight] = React.useState(height);
+
+  React.useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
+
+    // cleanup function
+    return () => {
+      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
+      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
+    };
+  }, []);
+
+  const _keyboardDidShow = (e) => {
+    setTotalHeight(height - e.endCoordinates.height);
+  };
+
+  const _keyboardDidHide = () => {
+    setTotalHeight(height);
+  };
+
   const continuePressHandler = async () => {
     if (state.isLoading) {
       return false;
@@ -46,9 +76,7 @@ const Login = ({navigation}) => {
           emailChecking: true,
         });
         try {
-          console.log('before request');
           const user = await $post(LINKS.CHECK_EMAIL, {body: form});
-          console.log('after request');
           if (user) {
             setState({
               ...state,
@@ -80,16 +108,23 @@ const Login = ({navigation}) => {
         form.append('password', state.password);
         setState({
           ...state,
-          // isLoading: true,
+          isLoading: true,
           form,
         });
         try {
           await signIn(form, LINKS.LOGIN, state.email, state.password);
-        } catch (e) {
-
-          console.log(e)
+        } catch (e) {}
+        finally {
+          setState({
+            ...state,
+            isLoading: false,
+          });
         }
       } else {
+        setState({
+          ...state,
+          isLoading: false,
+        });
         alert('Enter password');
       }
     }
@@ -102,64 +137,70 @@ const Login = ({navigation}) => {
   }
 
   return (
-    <Block middle style={styles.container}>
-      <Text style={styles.title} color="red">
-        IRON BUFFET
-      </Text>
-      <Block style={{position: 'relative'}}>
-        {user ? (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <Block style={{
+        ...styles.container,
+        height: totalHeight,
+        justifyContent: totalHeight === height ? 'center' : 'flex-end',
+        paddingBottom: totalHeight === height ? 0 : 20,
+      }}>
+        <Text style={styles.title} color="red">
+          IRON BUFFET
+        </Text>
+        <Block style={{position: 'relative'}}>
+          {user ? (
+            <Block>
+              <Text style={styles.email}>{user.email}</Text>
+              <Text title>Hello, {user.name}</Text>
+            </Block>
+          ) : (
+            <Input
+              placeholder="Enter Your Email To Get Started"
+              keyboardType="email-address"
+              value={state.email}
+              onChangeText={email => {
+                setState({...state, email});
+              }}
+            />
+          )}
+          {emailChecking && <ActivityIndicator style={styles.emailLoader} />}
+        </Block>
+        {isEmailChecked && (
           <Block>
-            <Text style={styles.email}>{user.email}</Text>
-            <Text title>Hello, {user.name}</Text>
+            <Input
+              placeholder="Password"
+              password
+              onChangeText={password => setState({...state, password})}
+            />
           </Block>
-        ) : (
-          <Input
-            placeholder="Enter Your Email To Get Started"
-            keyboardType="email-address"
-            value={state.email}
-            onChangeText={email => {
-              setState({...state, email});
-            }}
-          />
         )}
-        {emailChecking && <ActivityIndicator style={styles.emailLoader} />}
+        <Button
+          shadowless
+          style={styles.button}
+          color={theme.COLORS.BUTTON_COLOR}
+          onPress={continuePressHandler}>
+          continue
+        </Button>
+        {isEmailChecked && (
+          <Block
+            row
+            space="between"
+            style={{alignSelf: 'stretch', marginTop: theme.SIZES.BASE}}>
+            <TouchableOpacity onPress={backPressHandler}>
+              <Text style={{color: theme.COLORS.TEXT}}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => alert('Reset password')}>
+              <Text style={{color: theme.COLORS.TEXT}}>Reset password</Text>
+            </TouchableOpacity>
+          </Block>
+        )}
       </Block>
-      {isEmailChecked && (
-        <Block>
-          <Input
-            placeholder="Password"
-            password
-            onChangeText={password => setState({...state, password})}
-          />
-        </Block>
-      )}
-      <Button
-        shadowless
-        style={styles.button}
-        color={theme.COLORS.BUTTON_COLOR}
-        onPress={continuePressHandler}>
-        continue
-      </Button>
-      {isEmailChecked && (
-        <Block
-          row
-          space="between"
-          style={{alignSelf: 'stretch', marginTop: theme.SIZES.BASE}}>
-          <TouchableOpacity onPress={backPressHandler}>
-            <Text style={{color: theme.COLORS.TEXT}}>Back</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => alert('Reset password')}>
-            <Text style={{color: theme.COLORS.TEXT}}>Reset password</Text>
-          </TouchableOpacity>
-        </Block>
-      )}
-    </Block>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingHorizontal: theme.SIZES.BASE,
     backgroundColor: theme.COLORS.APP_BG,
     alignItems: 'stretch',

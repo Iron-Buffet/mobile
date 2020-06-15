@@ -27,6 +27,8 @@ export const AppState = ({children}) => {
     const fitStyles = await $get(LINKS.STYLE);
     const exercises = await $get(LINKS.EXERCISES);
 
+    console.log('check data', fitStyles, exercises);
+
     appDispatch({
       type: RESTORE_DATA,
       fitStyles,

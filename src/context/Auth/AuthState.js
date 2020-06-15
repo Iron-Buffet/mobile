@@ -55,20 +55,22 @@ export const AuthState = ({children}) => {
   }, []);
 
   React.useEffect(() => {
-
     if (state.isLoading) {
       const bootstrapAsync = async () => {
         const userToken = await AsyncStorage.getItem('token');
         if (userToken) {
           try {
             auth().onAuthStateChanged(async res => {
+              console.log('123', res);
               if (res) {
                 await restoreData();
                 const user = await $get(LINKS.PROFILE);
+                const tok = await AsyncStorage.getItem('token');
+                console.log('321', tok);
                 fire.userDoc.get().then(snap => {
                   dispatch({
                     type: RESTORE_TOKEN,
-                    token: userToken,
+                    token: tok,
                     user: user.data,
                     fbUser: {uid: snap.id, ...snap.data()},
                   });
@@ -109,26 +111,29 @@ export const AuthState = ({children}) => {
 
   const authContext = {
     signIn: async (loginData, url, email, password) => {
-      try {
-        const login = await $post(url, {body: loginData});
-        if (!login) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const login = await $post(url, {body: loginData});
+          if (!login) {
+            Alert.alert('Incorrect email or password');
+            return false;
+          }
+          auth()
+            .signInWithEmailAndPassword(email, password)
+            .then(async res => {
+              await AsyncStorage.setItem('token', login.token);
+            })
+            .catch(e => {
+              dispatch({type: SIGN_OUT});
+              Alert.alert(e.code);
+              reject(e)
+            });
+        } catch (e) {
           Alert.alert('Incorrect email or password');
-          return false;
+          dispatch({type: SIGN_OUT});
+          reject(e)
         }
-        auth()
-          .signInWithEmailAndPassword(email, password)
-          .then(async res => {
-            await AsyncStorage.setItem('token', login.token);
-            await restoreData();
-          })
-          .catch(e => {
-            dispatch({type: SIGN_OUT});
-            Alert.alert(e.code);
-          });
-      } catch (e) {
-        Alert.alert('Incorrect email or password');
-        dispatch({type: SIGN_OUT});
-      }
+      })
     },
     signOut: async () => {
       await AsyncStorage.removeItem('token');
