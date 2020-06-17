@@ -93,7 +93,6 @@ const Login = ({navigation}) => {
             navigation.navigate('Register');
           }
         } catch (e) {
-          console.log(e);
           setState({
             ...state,
             emailChecking: false,

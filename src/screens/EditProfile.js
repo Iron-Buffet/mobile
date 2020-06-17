@@ -120,17 +120,15 @@ const EditProfile = ({navigation}) => {
           }, 2000);
         })
           .catch(e => {
-            console.log(e)
+            alert(e.message)
           });
 
       } catch (e) {
         Alert.alert(e.message);
-        console.log(e)
       }
     })
       .catch(e => {
         Alert.alert(e.message);
-        console.log('sql', e)
       });
   };
 

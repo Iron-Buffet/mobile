@@ -18,14 +18,10 @@ import {
   SIGN_IN,
   SIGN_OUT,
   UPDATE_USER,
-  SET_CHATS,
 } from '../types';
 import auth from '@react-native-firebase/auth';
 import {fire} from '../../services';
 import messaging from "@react-native-firebase/messaging";
-const PushNotification = require('react-native-push-notification');
-import {checkNotifications} from 'react-native-permissions';
-
 
 export const AuthState = ({children}) => {
   const {restoreData} = React.useContext(AppContext);
@@ -49,65 +45,43 @@ export const AuthState = ({children}) => {
   });
 
   React.useEffect(() => {
-    checkNotifications().then(({status, settings}) => {
-
-    });
-  }, []);
-
-  React.useEffect(() => {
-    if (state.isLoading) {
-      const bootstrapAsync = async () => {
-        const userToken = await AsyncStorage.getItem('token');
-        if (userToken) {
-          try {
-            auth().onAuthStateChanged(async res => {
-              console.log('123', res);
-              if (res) {
-                await restoreData();
-                const user = await $get(LINKS.PROFILE);
-                const tok = await AsyncStorage.getItem('token');
-                console.log('321', tok);
-                fire.userDoc.get().then(snap => {
-                  dispatch({
-                    type: RESTORE_TOKEN,
-                    token: tok,
-                    user: user.data,
-                    fbUser: {uid: snap.id, ...snap.data()},
-                  });
-                }).catch(e => console.log(e));
-
-                messaging()
-                  .getToken()
-                  .then(async token => {
-                    return fire.saveTokenToDatabase(token);
-                  });
-              } else {
-                dispatch({type: SIGN_OUT});
-              }
+    let authSubscribe = auth().onAuthStateChanged(async res => {
+      const userToken = await AsyncStorage.getItem('token');
+      if (userToken && res) {
+        try {
+          await restoreData();
+          const user = await $get(LINKS.PROFILE);
+          const tok = await AsyncStorage.getItem('token');
+          fire.userDoc.get().then(snap => {
+            console.log('get');
+            dispatch({
+              type: RESTORE_TOKEN,
+              token: tok,
+              user: user.data,
+              fbUser: {uid: snap.id, ...snap.data()},
             });
-          } catch (e) {
-            alert(e.message);
-            dispatch({type: SIGN_OUT});
-          }
-        } else {
+          }).catch(e => alert(e.message));
+
+          messaging()
+            .getToken()
+            .then(async token => {
+              return fire.saveTokenToDatabase(token);
+            });
+        } catch (e) {
+          alert(e.message);
           dispatch({type: SIGN_OUT});
-          console.log('e loading data');
         }
-      };
-
-      bootstrapAsync();
-    } else {
-      if (auth().currentUser) {
-        return () => {
-          messaging().onTokenRefresh(async token => {
-            await fire.saveTokenToDatabase(token);
-          });
-        };
+      } else {
+        dispatch({type: SIGN_OUT});
       }
-    }
+    });
 
+    return () => {
+      authSubscribe();
+      console.log('exit');
+    }
     //eslint-disable-next-line
-  }, [state.isLoading]);
+  }, []);
 
   const authContext = {
     signIn: async (loginData, url, email, password) => {
@@ -118,11 +92,10 @@ export const AuthState = ({children}) => {
             Alert.alert('Incorrect email or password');
             return false;
           }
+          await AsyncStorage.setItem('token', login.token);
           auth()
             .signInWithEmailAndPassword(email, password)
-            .then(async res => {
-              await AsyncStorage.setItem('token', login.token);
-            })
+            .then()
             .catch(e => {
               dispatch({type: SIGN_OUT});
               Alert.alert(e.code);
@@ -145,7 +118,7 @@ export const AuthState = ({children}) => {
 
         dispatch({type: UPDATE_USER, user: data});
       } catch (e) {
-        console.log(e);
+        alert(e);
       }
     },
     signUp: async (regData) => {
@@ -163,7 +136,7 @@ export const AuthState = ({children}) => {
           });
         });
       } catch (e) {
-        console.log(e);
+        alert(e);
       }
     },
     ...state,

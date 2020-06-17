@@ -100,7 +100,6 @@ const Messages = ({route, navigation}) => {
 
       return () => {
         dispatch({type: SET_CURRENT_CHAT, chat: null});
-        console.log('set');
         onSub();
         chatSub();
         chatRef.update({

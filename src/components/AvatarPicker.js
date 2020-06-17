@@ -16,7 +16,7 @@ const AvatarPicker = ({onAvatarPicked, avatar}) => {
       onAvatarPicked(image.path);
     })
       .catch(e => {
-        console.log(e)
+        alert(e)
       });
   };
   return (

@@ -29,7 +29,6 @@ export default class Fire {
 
   saveTokenToDatabase = async token => {
     try {
-      console.log(token)
       await this.userDoc
         .update({
           token,

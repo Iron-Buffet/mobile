@@ -25,7 +25,7 @@ const Workouts = ({url, workoutPath, createWorkoutPath}) => {
         });
       })
       .catch(error => {
-        console.error(error);
+
       });
     //eslint-disable-next-line
   }, []);

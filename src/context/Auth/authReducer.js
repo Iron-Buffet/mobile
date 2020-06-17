@@ -23,7 +23,6 @@ import auth from '@react-native-firebase/auth';
 export default (prevState, action) => {
   switch (action.type) {
     case RESTORE_TOKEN:
-      console.log('token', action.token);
       return {
         ...prevState,
         userToken: action.token,

@@ -17,7 +17,6 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
   PushNotification.setApplicationIconBadgeNumber(1);
 });
 function HeadlessCheck({ isHeadless }) {
-  console.log(isHeadless);
   if (isHeadless) {
     // App has been launched in the background by iOS, ignore
     return null;
