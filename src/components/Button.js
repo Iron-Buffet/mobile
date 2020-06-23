@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, ActivityIndicator} from 'react-native';
 import {Button} from 'galio-framework';
 import Text from './Text';
 import {shadow} from '../utils/globalStyles';
@@ -15,6 +15,7 @@ export default class GaButton extends React.Component {
       back,
       small,
       secondary,
+      loading,
       ...props
     } = this.props;
     const styleArray = [
@@ -34,7 +35,7 @@ export default class GaButton extends React.Component {
             secondary ? styles.secondaryText : null,
             textStyle,
           ]}>
-          {children}
+          {loading ? <ActivityIndicator /> : children}
         </Text>
       </Button>
     );

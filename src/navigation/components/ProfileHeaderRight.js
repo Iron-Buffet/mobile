@@ -4,18 +4,26 @@ import {StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Block} from 'galio-framework';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {theme} from '../../constants';
 import {AuthContext} from '../../context/contexts';
 
 const ProfileHeaderRight = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const {signOut} = React.useContext(AuthContext);
   return (
     <Block row>
-      <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}>
-        <Icon name="edit" style={styles.icon} />
-      </TouchableOpacity>
+      {route.name === 'EditProfile' ? (
+        <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
+          <Icon name="lock-outline" style={styles.icon} />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}>
+          <Icon name="edit" style={styles.icon} />
+        </TouchableOpacity>
+      )}
+
       <TouchableOpacity onPress={signOut}>
         <Icon
           name="power-settings-new"
