@@ -318,12 +318,6 @@ const DrawerNav = () => {
         inactiveTintColor: theme.COLORS.TEXT,
         activeBackgroundColor: theme.COLORS.PRIMARY,
       }}>
-      {/*<Drawer.Screen
-        options={{
-          drawerLabel: () => undefined,
-          gestureEnabled: false,
-        }}
-        name="Alert" component={AlertTrialScreen} />*/}
       <Drawer.Screen
         options={{
           drawerLabel: ({focused}) => (

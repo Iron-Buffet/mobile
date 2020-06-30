@@ -4,6 +4,7 @@ import {Block} from 'galio-framework';
 import theme from '../constants/Theme';
 import XDate from 'xdate';
 import {getShortDay, getShortMonth} from '../utils/methods';
+import {useFocusEffect} from '@react-navigation/native';
 
 import {Agenda} from 'react-native-calendars';
 import {$get} from '../utils/Fetch';
@@ -11,18 +12,41 @@ import {$get} from '../utils/Fetch';
 import {Text, Wrap} from '../components';
 
 const Calendar = ({navigation}) => {
-  const [items, setItems] = React.useState([]);
+  const [state, setState] = React.useState({
+    items: [],
+    timestamp: null
+  });
+
+  /*useFocusEffect(
+    React.useCallback(() => {
+      console.log(state.timestamp);
+      $get('/workout/events-mobile?time=' + Date.now()).then(res => {
+        setState(prev => ({
+          ...prev,
+          items: res,
+        }));
+      });
+    }, [])
+  );*/
 
   React.useEffect(() => {
     const date = {};
     date.timestamp = new Date().getTime();
     loadItems(date);
+    return () => {
+      console.log('exit calendar');
+    }
     //eslint-disable-next-line
   }, []);
 
   const loadItems = day => {
     $get('/workout/events-mobile?time=' + day.timestamp).then(res => {
-      setItems(res);
+      console.log(res)
+      setState(prev => ({
+        ...prev,
+        items: res,
+        timestamp: day.timestamp,
+      }));
     });
   };
 
@@ -46,13 +70,14 @@ const Calendar = ({navigation}) => {
   };
 
   const renderItem = item => {
+    console.log(item)
     return (
       <TouchableOpacity
         style={[
           styles.item,
           {backgroundColor: item.done ? 'grey' : theme.COLORS.PRIMARY},
         ]}
-        onPress={() => navigation.navigate('SWorkout', {id: item.id})}>
+        onPress={() => navigation.navigate('SWorkout', {id: item.id, from: 'calendar'})}>
         <Text style={styles.itemTitle}>{item.name}</Text>
         <Text>{item.description}</Text>
       </TouchableOpacity>
@@ -70,7 +95,7 @@ const Calendar = ({navigation}) => {
   return (
     <Wrap style={{paddingBottom: 30}}>
       <Agenda
-        items={items}
+        items={state.items}
         renderItem={renderItem}
         renderEmptyDate={renderEmptyDate}
         renderEmptyData={() => <Block />}

@@ -8,11 +8,14 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {Table, Row} from 'react-native-table-component';
-import {Block} from 'galio-framework';
+import {Block, Toast} from 'galio-framework';
 import {Text, Button} from '../components';
 import {$get, $post} from '../utils/Fetch';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {theme} from '../constants';
 import {HeaderHeight} from '../constants/utils';
 import PARTS from '../constants/Parts';
@@ -25,7 +28,6 @@ const widthArr = [150, 100, 50, 50, 150];
 const Workout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-
   const {fitStyles} = React.useContext(AppContext);
 
   const [state, setState] = React.useState({
@@ -37,6 +39,7 @@ const Workout = () => {
     date: new Date(),
     timestamp: Math.floor(Date.now() / 1000),
     image: null,
+    toast: false,
   });
 
   const setDate = (event, date) => {
@@ -49,7 +52,11 @@ const Workout = () => {
   };
 
   const toggleModal = () => {
-    setState({...state, isModalVisible: !state.isModalVisible});
+    if (route.params.from === 'calendar') {
+      navigation.goBack();
+    } else {
+      setState({...state, isModalVisible: !state.isModalVisible});
+    }
   };
 
   const addPressHandler = () => {
@@ -58,7 +65,17 @@ const Workout = () => {
     data.append('id', workout.id);
     data.append('date', timestamp);
     $post('/workout/set-date', {body: data}).then(() => {
-      navigation.navigate('Calendar', {screen: 'Calendar'});
+      setState(prev => ({
+        ...prev,
+        isModalVisible: false,
+        toast: true,
+      }));
+      setTimeout(() => {
+        setState(prev => ({
+          ...prev,
+          toast: false,
+        }));
+      }, 2000);
     });
   };
 
@@ -84,6 +101,14 @@ const Workout = () => {
       .catch(error => {
 
       });
+    return () => {
+      console.log('exit workout');
+      setState(prev => ({
+        ...prev,
+        isModalVisible: false,
+      }));
+
+    }
     //eslint-disable-next-line
   }, []);
 
@@ -115,6 +140,13 @@ const Workout = () => {
   }
   return (
     <Block flex style={styles.home}>
+      <Toast
+        isShow={state.toast}
+        style={styles.toast}
+        color="success"
+        positionIndicator="top">
+        Workout added to calendar.
+      </Toast>
       <Block>
         <ImageBackground
           source={image}
@@ -183,7 +215,7 @@ const Workout = () => {
         </ScrollView>
         {!state.isModalVisible ? (
           <Button onPress={toggleModal} style={styles.buttonBig}>
-            Add to Calendar
+            {route.params.from === 'calendar' ? 'Complete' : 'Add to Calendar'}
           </Button>
         ) : null}
       </Block>
@@ -195,6 +227,10 @@ const styles = StyleSheet.create({
   descriptionTitle: {
     marginBottom: 8,
     fontWeight: 'bold'
+  },
+  toast: {
+    position: 'absolute',
+    top: 0,
   },
   mb: {
     marginBottom: 12

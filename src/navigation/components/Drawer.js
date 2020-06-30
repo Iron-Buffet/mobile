@@ -56,6 +56,7 @@ const Drawer = props => {
       <Block flex>
         <DrawerContentScrollView {...props}>
           <DrawerItemList {...props} />
+          {/*<CustomDrawer {...props} />*/}
         </DrawerContentScrollView>
         <Block style={styles.social} row>
           <TouchableWithoutFeedback onPress={() => handlePress('https://www.instagram.com/ironbuffet/')}>

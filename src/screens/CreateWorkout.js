@@ -10,6 +10,7 @@ import theme from '../constants/Theme';
 import PARTS from '../constants/Parts';
 import {$post} from '../utils/Fetch';
 import {LINKS} from '../constants';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 const baseExercise = {
   exercise: null,
@@ -20,7 +21,8 @@ const baseExercise = {
   notes: null,
 };
 
-const CreateWorkout = ({navigation}) => {
+const CreateWorkout = () => {
+  const navigation = useNavigation();
   const [state, setState] = React.useState({
     newDate: new Date(),
     workout: {

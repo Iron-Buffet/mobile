@@ -34,6 +34,17 @@ const Parts = props => {
     }
   };
 
+  React.useEffect(() => {
+    console.log('enter parts')
+    return () => {
+      console.log('exit parts')
+      setState(prev => ({
+        ...prev,
+        selectedParts: [],
+      }));
+    }
+  }, []);
+
   const renderParts = () => {
     const {selectedParts} = state;
 
