@@ -45,31 +45,35 @@ export const AuthState = ({children}) => {
     stateRef.current = state;
   });
 
+  const load = async uid => {
+    try {
+      fire.firestore.collection('users').doc(uid).get().then(async snap => {
+        await AsyncStorage.setItem('token', snap.data().api_token);
+        const user = await $get(LINKS.PROFILE);
+        await restoreData();
+        dispatch({
+          type: RESTORE_TOKEN,
+          token: snap.data().api_token,
+          user: user.data,
+          fbUser: {uid: snap.id, ...snap.data()},
+        });
+      }).catch(e => alert(e.message));
+      messaging()
+        .getToken()
+        .then(async token => {
+          return fire.saveTokenToDatabase(token);
+        });
+    } catch (e) {
+      alert(e.message);
+      await AsyncStorage.removeItem('token');
+      dispatch({type: SIGN_OUT});
+    }
+  };
+
   React.useEffect(() => {
     let authSubscribe = firebase.auth().onAuthStateChanged(async res => {
       if (res) {
-        try {
-          fire.firestore.collection('users').doc(res.uid).get().then(async snap => {
-            await AsyncStorage.setItem('token', snap.data().api_token);
-            const user = await $get(LINKS.PROFILE);
-            await restoreData();
-            dispatch({
-              type: RESTORE_TOKEN,
-              token: snap.data().api_token,
-              user: user.data,
-              fbUser: {uid: snap.id, ...snap.data()},
-            });
-          }).catch(e => alert(e.message));
-          messaging()
-            .getToken()
-            .then(async token => {
-              return fire.saveTokenToDatabase(token);
-            });
-        } catch (e) {
-          alert(e.message);
-          await AsyncStorage.removeItem('token');
-          dispatch({type: SIGN_OUT});
-        }
+        await load(res.uid)
       } else {
         await AsyncStorage.removeItem('token');
         dispatch({type: SIGN_OUT});
@@ -89,7 +93,9 @@ export const AuthState = ({children}) => {
         try {
           firebase.auth()
             .signInWithEmailAndPassword(email, password)
-            .then()
+            .then(async snap => {
+              await load(snap.user.uid)
+            })
             .catch(e => {
               dispatch({type: SIGN_OUT});
               Alert.alert(e.code);

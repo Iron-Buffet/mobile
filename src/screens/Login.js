@@ -12,6 +12,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {Text, Button, Input, Loader} from '../components';
 import {LINKS} from '../constants';
 import {checkEmail} from '../constants/utils';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 import {$post} from '../utils/Fetch';
 
@@ -111,7 +113,9 @@ const Login = ({navigation}) => {
           form,
         });
         try {
+          console.log('start login');
           await signIn(form, LINKS.LOGIN, state.email, state.password);
+          console.log('end login');
         } catch (e) {}
         finally {
           setState({
@@ -127,6 +131,14 @@ const Login = ({navigation}) => {
         alert('Enter password');
       }
     }
+  };
+
+  const resetPassword = () => {
+    firebase.auth().sendPasswordResetEmail(state.email).then(() => {
+      alert('Thank you. A password reset request has been sent to your email.')
+    }).catch(e => {
+      alert(e.message);
+    })
   };
 
   const {isEmailChecked, emailChecking, user} = state;
@@ -188,7 +200,7 @@ const Login = ({navigation}) => {
             <TouchableOpacity onPress={backPressHandler}>
               <Text style={{color: theme.COLORS.TEXT}}>Back</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => alert('Reset password')}>
+            <TouchableOpacity onPress={() => resetPassword()}>
               <Text style={{color: theme.COLORS.TEXT}}>Reset password</Text>
             </TouchableOpacity>
           </Block>
