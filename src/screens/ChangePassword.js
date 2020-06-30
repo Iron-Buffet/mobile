@@ -36,7 +36,6 @@ const ChangePassword = () => {
     const data = new FormData();
     data.append('password', state.newPassword);
     fire.user.updatePassword(state.newPassword).then(async () => {
-      await $post('/users/password?id=' + user.id, {body: data});
       alert('Password changed');
       setState({
         ...state,

@@ -4,8 +4,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
-  TouchableOpacity,
-  Image, default as Alert,
+  Alert,
 } from 'react-native';
 import {LINKS, PROFILE, theme} from '../constants';
 import {Input, Wrap, Button, Checkbox, Text, AvatarPicker} from '../components';
@@ -19,7 +18,6 @@ import {Block, Toast} from 'galio-framework';
 import {AuthContext} from '../context/contexts';
 import {UPDATE_USER} from '../context/types';
 import {fire} from '../services';
-import AlertTrial from "./AlertTrial";
 
 const plans = PROFILE.PLANS.map((plan, index) => {
   return {

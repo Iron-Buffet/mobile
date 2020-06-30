@@ -1,5 +1,5 @@
 import * as firebase from 'firebase';
-import auth from '@react-native-firebase/auth';
+import 'firebase/auth';
 import {getUtcTimestamp} from '../utils/methods';
 import config from './fbConfig';
 import {fire} from "./index";
@@ -19,12 +19,12 @@ export default class Fire {
   }
 
   get user() {
-    return auth().currentUser || {};
+    return firebase.auth().currentUser || {};
   }
 
 
   get uid() {
-    return (auth().currentUser || {}).uid
+    return (firebase.auth().currentUser || {}).uid
   }
 
   saveTokenToDatabase = async token => {
@@ -39,7 +39,6 @@ export default class Fire {
   };
 
   uploadPhotoAsync = async (uri, fileName) => {
-
     return new Promise(async (res, rej) => {
       const response = await fetch(uri);
       const file = await response.blob();
@@ -60,12 +59,12 @@ export default class Fire {
   createUser = async user => {
     return new Promise(async (resolve, reject) => {
       try {
-        await auth().createUserWithEmailAndPassword(user.email, user.password);
+        const usr = await firebase.auth().createUserWithEmailAndPassword(user.email, user.password);
         let remoteUrl = null;
         if (user.avatar) {
-          remoteUrl = await this.uploadPhotoAsync(user.avatar, `avatars/${this.uid}`);
+          remoteUrl = await this.uploadPhotoAsync(user.avatar, `avatars/${usr.user.uid}`);
         }
-        await this.firestore.collection('users').doc(this.uid).set({
+        await this.firestore.collection('users').doc(usr.user.uid).set({
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,

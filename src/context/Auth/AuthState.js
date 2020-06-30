@@ -19,9 +19,10 @@ import {
   SIGN_OUT,
   UPDATE_USER,
 } from '../types';
-import auth from '@react-native-firebase/auth';
 import {fire} from '../../services';
 import messaging from "@react-native-firebase/messaging";
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 export const AuthState = ({children}) => {
   const {restoreData} = React.useContext(AppContext);
@@ -45,23 +46,20 @@ export const AuthState = ({children}) => {
   });
 
   React.useEffect(() => {
-    let authSubscribe = auth().onAuthStateChanged(async res => {
-      const userToken = await AsyncStorage.getItem('token');
-      if (userToken && res) {
+    let authSubscribe = firebase.auth().onAuthStateChanged(async res => {
+      if (res) {
         try {
-          await restoreData();
-          const user = await $get(LINKS.PROFILE);
-          const tok = await AsyncStorage.getItem('token');
-          fire.userDoc.get().then(snap => {
-            console.log('get');
+          fire.firestore.collection('users').doc(res.uid).get().then(async snap => {
+            await AsyncStorage.setItem('token', snap.data().api_token);
+            const user = await $get(LINKS.PROFILE);
+            await restoreData();
             dispatch({
               type: RESTORE_TOKEN,
-              token: tok,
+              token: snap.data().api_token,
               user: user.data,
               fbUser: {uid: snap.id, ...snap.data()},
             });
           }).catch(e => alert(e.message));
-
           messaging()
             .getToken()
             .then(async token => {
@@ -69,9 +67,11 @@ export const AuthState = ({children}) => {
             });
         } catch (e) {
           alert(e.message);
+          await AsyncStorage.removeItem('token');
           dispatch({type: SIGN_OUT});
         }
       } else {
+        await AsyncStorage.removeItem('token');
         dispatch({type: SIGN_OUT});
       }
     });
@@ -87,13 +87,7 @@ export const AuthState = ({children}) => {
     signIn: async (loginData, url, email, password) => {
       return new Promise(async (resolve, reject) => {
         try {
-          const login = await $post(url, {body: loginData});
-          if (!login) {
-            Alert.alert('Incorrect email or password');
-            return false;
-          }
-          await AsyncStorage.setItem('token', login.token);
-          auth()
+          firebase.auth()
             .signInWithEmailAndPassword(email, password)
             .then()
             .catch(e => {
@@ -121,13 +115,17 @@ export const AuthState = ({children}) => {
         alert(e);
       }
     },
-    signUp: async (regData) => {
+    signUp: async regData => {
       try {
         const {token} = await $post('/register', {body: regData});
         await AsyncStorage.setItem('token', token);
         const user = await $get(LINKS.PROFILE);
         await restoreData();
-        fire.userDoc.get().then(res => {
+        const usr = firebase.auth().currentUser;
+        await fire.firestore.collection('users').doc(usr.uid).update({
+          api_token: token,
+        });
+        fire.firestore.collection('users').doc(usr.uid).get().then(res => {
           dispatch({
             type: SIGN_IN,
             token: token,
