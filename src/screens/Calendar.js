@@ -38,6 +38,7 @@ const Calendar = ({navigation}) => {
       timestamp: day.timestamp,
     }));
     $get('/workout/events-mobile?time=' + day.timestamp).then(res => {
+      console.log(res);
       setState(prev => ({
         ...prev,
         items: res,
@@ -71,7 +72,11 @@ const Calendar = ({navigation}) => {
           styles.item,
           {backgroundColor: item.done ? 'grey' : theme.COLORS.PRIMARY},
         ]}
-        onPress={() => navigation.navigate('SWorkout', {id: item.id, from: 'calendar'})}>
+        onPress={() => navigation.navigate('SWorkout', {
+          id: item.workout_id,
+          from: 'calendar',
+          eventId: item.id,
+        })}>
         <Text style={styles.itemTitle}>{item.name}</Text>
         <Text color={'white'}>{item.description}</Text>
       </TouchableOpacity>
