@@ -6,12 +6,14 @@ import {
   ImageBackground,
   Platform,
   ActivityIndicator,
+  TouchableOpacity, Alert,
 } from 'react-native';
 import {Table, Row} from 'react-native-table-component';
 import {Block, Toast} from 'galio-framework';
 import {Text, Button} from '../components';
 import {$get, $post} from '../utils/Fetch';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   useNavigation,
   useRoute,
@@ -41,6 +43,37 @@ const Workout = () => {
     image: null,
     toast: false,
   });
+
+  const confirmDeleteEvent = id => {
+    Alert.alert(
+      'Delete',
+      'Are you sure you want to delete this event from calendar?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        { text: 'Yes', onPress: () => deleteEvent(id) }
+      ]
+    )
+  };
+
+  const deleteEvent = async () => {
+    try {
+      await $get('/workout/delete-event?id=' + route.params.eventId);
+      alert('Workout deleted.');
+    } catch (e) {
+      alert(e.message)
+    }
+  };
+
+  if (route.params.eventId) {
+    navigation.setOptions({
+      headerRight: () => (<TouchableOpacity onPress={confirmDeleteEvent}>
+        <Ionicons style={{marginRight: theme.SIZES.BASE}} name={`ios-trash`} color={theme.COLORS.PRIMARY} size={24} />
+      </TouchableOpacity>)
+    });
+  }
 
   const setDate = (event, date) => {
     date = date || state.date;

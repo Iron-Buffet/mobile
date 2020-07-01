@@ -1,10 +1,11 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableWithoutFeedback, Alert} from 'react-native';
 import {Block} from 'galio-framework';
 import theme from '../constants/Theme';
 import XDate from 'xdate';
 import {getShortDay, getShortMonth} from '../utils/methods';
 import {useFocusEffect} from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {Agenda} from 'react-native-calendars';
 import {$get} from '../utils/Fetch';
@@ -46,6 +47,44 @@ const Calendar = ({navigation}) => {
     });
   };
 
+  const confirmDeleteEvent = id => {
+    Alert.alert(
+      'Delete',
+      'Are you sure you want to delete this event?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        { text: 'Yes', onPress: () => deleteEvent(id) }
+      ]
+      )
+  };
+
+  const deleteEvent = async id => {
+    try {
+      await $get('/workout/delete-event?id=' + id);
+      let containerKey;
+      let index;
+      for (const key in state.items) {
+        const idx = state.items[key].findIndex(e => e.id === id);
+        if (idx !== -1) {
+          index = idx;
+          containerKey = key;
+        }
+      }
+      let old = {...state.items};
+      old[containerKey].splice(index, 1);
+      setState(prev => ({
+        ...prev,
+        items: old,
+      }));
+      alert('Workout deleted.');
+    } catch (e) {
+      alert(e.message)
+    }
+  };
+
   const renderDay = day => {
     if (!day) {
       return <Block center style={styles.day}/>;
@@ -67,19 +106,29 @@ const Calendar = ({navigation}) => {
 
   const renderItem = item => {
     return (
-      <TouchableOpacity
-        style={[
-          styles.item,
-          {backgroundColor: item.done ? 'grey' : theme.COLORS.PRIMARY},
-        ]}
-        onPress={() => navigation.navigate('SWorkout', {
-          id: item.workout_id,
-          from: 'calendar',
-          eventId: item.id,
-        })}>
-        <Text style={styles.itemTitle}>{item.name}</Text>
-        <Text color={'white'}>{item.description}</Text>
-      </TouchableOpacity>
+        <Block flex row>
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate('SWorkout', {
+              id: item.workout_id,
+              from: 'calendar',
+              eventId: item.id,
+            })}>
+          <Block style={[
+            styles.item,
+            {backgroundColor: item.done ? 'grey' : theme.COLORS.PRIMARY},
+          ]}>
+            <Text style={styles.itemTitle}>{item.name}</Text>
+            <Text color={'white'}>{item.description}</Text>
+          </Block>
+          </TouchableWithoutFeedback>
+          <Block style={styles.standaloneRowBack}>
+            <TouchableWithoutFeedback onPress={() => confirmDeleteEvent(item.id)}>
+              <Block style={styles.deleteButton}>
+                <Ionicons name={`ios-trash`} color={theme.COLORS.PRIMARY} size={24} />
+              </Block>
+            </TouchableWithoutFeedback>
+          </Block>
+        </Block>
     );
   };
 
@@ -135,8 +184,18 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 5,
     padding: 10,
-    marginRight: 10,
-    marginTop: 17,
+    marginTop: 10,
+  },
+  deleteButton: {
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  standaloneRowBack: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 10,
   },
   itemTitle: {
     color: theme.COLORS.WHITE,
