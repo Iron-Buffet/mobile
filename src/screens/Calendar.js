@@ -16,43 +16,38 @@ const Calendar = ({navigation}) => {
     items: [],
     timestamp: null
   });
-
-  /*useFocusEffect(
+  const calendar = React.useRef(null);
+  useFocusEffect(
     React.useCallback(() => {
-      console.log(state.timestamp);
-      $get('/workout/events-mobile?time=' + Date.now()).then(res => {
+      const date = {};
+      date.timestamp = new Date().getTime();
+      loadItems(date);
+
+      return () => {
         setState(prev => ({
           ...prev,
-          items: res,
+          timestamp: null,
         }));
-      });
+      }
     }, [])
-  );*/
-
-  React.useEffect(() => {
-    const date = {};
-    date.timestamp = new Date().getTime();
-    loadItems(date);
-    return () => {
-      console.log('exit calendar');
-    }
-    //eslint-disable-next-line
-  }, []);
+  );
 
   const loadItems = day => {
+    setState(prev => ({
+      ...prev,
+      timestamp: day.timestamp,
+    }));
     $get('/workout/events-mobile?time=' + day.timestamp).then(res => {
-      console.log(res)
       setState(prev => ({
         ...prev,
         items: res,
-        timestamp: day.timestamp,
       }));
     });
   };
 
   const renderDay = day => {
     if (!day) {
-      return <Block center style={styles.day} />;
+      return <Block center style={styles.day}/>;
     }
     const xDate = new XDate(day.timestamp, true);
     const d = xDate.getDay();
@@ -70,7 +65,6 @@ const Calendar = ({navigation}) => {
   };
 
   const renderItem = item => {
-    console.log(item)
     return (
       <TouchableOpacity
         style={[
@@ -79,7 +73,7 @@ const Calendar = ({navigation}) => {
         ]}
         onPress={() => navigation.navigate('SWorkout', {id: item.id, from: 'calendar'})}>
         <Text style={styles.itemTitle}>{item.name}</Text>
-        <Text>{item.description}</Text>
+        <Text color={'white'}>{item.description}</Text>
       </TouchableOpacity>
     );
   };
@@ -94,16 +88,18 @@ const Calendar = ({navigation}) => {
 
   return (
     <Wrap style={{paddingBottom: 30}}>
-      <Agenda
+      {!!state.timestamp && <Agenda
+        current={state.timestamp}
+        ref={calendar}
         items={state.items}
         renderItem={renderItem}
         renderEmptyDate={renderEmptyDate}
-        renderEmptyData={() => <Block />}
+        renderEmptyData={() => <Block/>}
         onDayPress={loadItems}
         theme={calendarTheme}
         renderDay={renderDay}
         hideExtraDays={true}
-      />
+      />}
     </Wrap>
   );
 };
@@ -165,3 +161,5 @@ const styles = StyleSheet.create({
 });
 
 export default Calendar;
+
+

@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Text from '../../components/Text';
 
 import {theme} from '../../constants';
-import {shadow} from '../../utils/globalStyles';
 
 const DrawerLabel = ({focused, title, icon}) => {
   return (
@@ -19,11 +18,11 @@ const DrawerLabel = ({focused, title, icon}) => {
       <Block middle style={{marginRight: 14}}>
         <Icon
           name={icon.name}
-          style={[styles.icon, focused ? {color: theme.COLORS.TEXT} : null]}
+          style={[styles.icon, focused ? {color: 'white'} : null]}
         />
       </Block>
       <Block row center>
-        <Text style={[styles.label]}>{title}</Text>
+        <Text style={[styles.label, focused ? {color: 'white'} : null]}>{title}</Text>
       </Block>
     </Block>
   );
