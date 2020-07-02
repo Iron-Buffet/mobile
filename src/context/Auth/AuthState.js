@@ -65,8 +65,8 @@ export const AuthState = ({children}) => {
         });
     } catch (e) {
       alert(e.message);
-      await AsyncStorage.removeItem('token');
       dispatch({type: SIGN_OUT});
+      await AsyncStorage.removeItem('token');
     }
   };
 
@@ -75,8 +75,8 @@ export const AuthState = ({children}) => {
       if (res) {
         await load(res.uid)
       } else {
-        await AsyncStorage.removeItem('token');
         dispatch({type: SIGN_OUT});
+        await AsyncStorage.removeItem('token');
       }
     });
 
@@ -96,26 +96,31 @@ export const AuthState = ({children}) => {
             .then(async snap => {
               await load(snap.user.uid)
             })
-            .catch(e => {
+            .catch(async e => {
               dispatch({type: SIGN_OUT});
-              Alert.alert(e.code);
+              await AsyncStorage.removeItem('token');
+              Alert.alert(e.message);
               reject(e)
             });
         } catch (e) {
-          Alert.alert('Incorrect email or password');
           dispatch({type: SIGN_OUT});
+          Alert.alert('Incorrect email or password');
+          await AsyncStorage.removeItem('token');
           reject(e)
         }
       })
     },
     signOut: async () => {
-      await AsyncStorage.removeItem('token');
-      dispatch({type: SIGN_OUT});
+      try {
+        await AsyncStorage.removeItem('token');
+        await firebase.auth().signOut();
+      } catch (e) {} finally {
+        dispatch({type: SIGN_OUT});
+      }
     },
     updateUser: async () => {
       try {
         const {data} = await $get('/user/profile');
-
         dispatch({type: UPDATE_USER, user: data});
       } catch (e) {
         alert(e);
@@ -140,7 +145,8 @@ export const AuthState = ({children}) => {
           });
         });
       } catch (e) {
-        alert(e);
+        dispatch({type: SIGN_OUT});
+        alert(e.message);
       }
     },
     ...state,

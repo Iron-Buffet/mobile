@@ -18,7 +18,6 @@ import {
   CLEAR_CHAT_LIST,
   SET_CURRENT_CHAT,
 } from '../types';
-import auth from '@react-native-firebase/auth';
 
 export default (prevState, action) => {
   switch (action.type) {
@@ -76,7 +75,6 @@ export default (prevState, action) => {
         isLoading: true,
       };
     case SIGN_OUT:
-      auth().signOut();
       return {
         ...prevState,
         isSignout: true,

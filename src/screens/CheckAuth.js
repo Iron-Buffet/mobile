@@ -1,11 +1,11 @@
 import React from 'react';
 import {Wrap} from '../components';
-import LoadingData from '../components/LoadingData';
+import LoadingData from '../components/Loader';
 
 const CheckAuth = () => {
   return (
     <Wrap>
-      <LoadingData checkAuth />
+      <LoadingData />
     </Wrap>
   );
 };
