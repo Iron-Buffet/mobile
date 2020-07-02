@@ -337,7 +337,7 @@ const DrawerNav = () => {
             <DrawerLabel
               focused={focused}
               icon={{name: 'chat'}}
-              title="Messages"
+              title="Trainer Chat"
             />
           ),
         }}
@@ -404,7 +404,7 @@ const Chat = () => {
   return (
     <ChatStack.Navigator>
       <ChatStack.Screen
-        name="Chats"
+        name="Trainer Chat"
         component={ChatsScreen}
         options={{
           ...headerBaseConfig,
