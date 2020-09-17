@@ -1,34 +1,43 @@
-import React from 'react';
-import {Block} from 'galio-framework';
-import {
-  Image,
-  Alert,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Linking,
-} from 'react-native';
-import {theme} from '../../constants';
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from '@react-navigation/drawer';
-import {useNavigation} from '@react-navigation/native';
-import Text from '../../components/Text';
-import {AuthContext} from '../../context/contexts';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React from 'react'
+import {Block} from 'galio-framework'
+import {Alert, Image, Linking, StyleSheet, TouchableWithoutFeedback} from 'react-native'
+import {theme} from '../../constants'
+import {DrawerContentScrollView, DrawerItemList} from '@react-navigation/drawer'
+import {useNavigation} from '@react-navigation/native'
+import Text from '../../components/Text'
+import {AuthContext} from '../../context/contexts'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Drawer = props => {
-  const navigation = useNavigation();
-  const {user, fbUser} = React.useContext(AuthContext);
-    const handlePress = async url => {
-      const supported = await Linking.canOpenURL(url);
+  const navigation = useNavigation()
+  const {user, fbUser} = React.useContext(AuthContext)
+  const handlePress = async url => {
+    const supported = await Linking.canOpenURL(url)
 
-      if (supported) {
-        await Linking.openURL(url);
+    if (supported) {
+      await Linking.openURL(url)
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${url}`)
+    }
+  }
+
+  const handlePressNutrition = async () => {
+    const url = 'mynutritionapp://';
+    if (await Linking.canOpenURL(url)) {
+      await Linking.openURL(url);
+    } else {
+      const appstoreMobile = 'itms-apps://apps.apple.com/us/app/id1530262458'
+      const appstoreWeb = 'https://apps.apple.com/us/app/id1530262458';
+
+      if (await Linking.canOpenURL(appstoreMobile)) {
+        await Linking.openURL(appstoreMobile);
       } else {
-        Alert.alert(`Don't know how to open this URL: ${url}`);
+        await Linking.openURL(appstoreWeb);
       }
-    };
+    }
+
+  }
 
   return (
     <Block
@@ -38,7 +47,7 @@ const Drawer = props => {
         <Block flex={0.2} style={styles.header} row center>
           <TouchableWithoutFeedback
             onPress={() => navigation.navigate('Profile')}>
-            <Image source={{uri: fbUser && fbUser.avatar ? fbUser.avatar : user.avatar}} style={styles.avatar} />
+            <Image source={{uri: fbUser && fbUser.avatar ? fbUser.avatar : user.avatar}} style={styles.avatar}/>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
             onPress={() => navigation.navigate('Profile')}>
@@ -54,22 +63,31 @@ const Drawer = props => {
         </Block>
       )}
       <Block flex>
-        <DrawerContentScrollView {...props}>
-          <DrawerItemList {...props} />
-          {/*<CustomDrawer {...props} />*/}
-        </DrawerContentScrollView>
+        <Block flex={5}>
+          <DrawerContentScrollView {...props}>
+            <DrawerItemList {...props} />
+          </DrawerContentScrollView>
+        </Block>
+        <Block flex={2}>
+          <TouchableWithoutFeedback onPress={handlePressNutrition}>
+
+            <Block style={styles.nutriBtn}>
+              <Icon style={styles.ion} size={22} color={theme.COLORS.TEXT} name={'favorite'} /><Text style={{fontSize: 16}}>MY NUTRITION</Text>
+            </Block>
+          </TouchableWithoutFeedback>
+        </Block>
         <Block style={styles.social} row>
           <TouchableWithoutFeedback onPress={() => handlePress('https://www.instagram.com/ironbuffet/')}>
-            <Ionicons name={`logo-instagram`} size={30} color={theme.COLORS.TEXT} />
+            <Ionicons name={`logo-instagram`} size={30} color={theme.COLORS.TEXT}/>
           </TouchableWithoutFeedback>
           <Block style={styles.center}>
             <TouchableWithoutFeedback onPress={() => handlePress('https://facebook.com/ironbuffet')}>
-              <Ionicons name={`logo-facebook`} size={30} color={theme.COLORS.TEXT} />
+              <Ionicons name={`logo-facebook`} size={30} color={theme.COLORS.TEXT}/>
             </TouchableWithoutFeedback>
           </Block>
           <TouchableWithoutFeedback onPress={() => handlePress('https://facebook.com/groups/ironbuffet')}>
             <Block center row>
-              <Ionicons name={`logo-facebook`} size={30} color={theme.COLORS.TEXT} />
+              <Ionicons name={`logo-facebook`} size={30} color={theme.COLORS.TEXT}/>
               <Block style={styles.gr}>
                 <Text color={`white`} size={10}>GROUP</Text>
               </Block>
@@ -78,10 +96,22 @@ const Drawer = props => {
         </Block>
       </Block>
     </Block>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
+  nutriBtn: {
+    marginHorizontal: 15,
+    borderRadius: 4,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ion: {
+    marginRight: 12,
+  },
   social: {
     marginBottom: 40,
     justifyContent: 'center',
@@ -122,6 +152,6 @@ const styles = StyleSheet.create({
     marginRight: 16,
     fontWeight: '300',
   },
-});
+})
 
-export default Drawer;
+export default Drawer
