@@ -23,7 +23,11 @@ const Drawer = props => {
   const handlePressNutrition = async () => {
     const url = 'mynutritionapp://'
     if (await Linking.canOpenURL(url)) {
-      await Linking.openURL(url)
+      try {
+        await Linking.openURL(url)
+      } catch (e) {
+        console.log(e)
+      }
     } else {
       const appstoreWeb = 'https://apps.apple.com/us/app/id1530262458'
       if (await Linking.canOpenURL(appstoreWeb)) {
