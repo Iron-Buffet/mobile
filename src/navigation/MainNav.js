@@ -120,6 +120,7 @@ const Profile = () => {
       <ProfileStack.Screen
         name="BillingInformation"
         component={BillingInformationScreen}
+        path="prfl"
         options={{
           ...headerBaseConfig,
           title: 'Billing Information',
@@ -443,4 +444,7 @@ const AppNavigation = ({initRoute}) => {
   );
 };
 
-export default AppNavigation;
+export default () => {
+  const prefix = 'ironbuffetapp://'
+  return <AppNavigation uriprefix={prefix} />
+  }

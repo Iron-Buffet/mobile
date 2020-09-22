@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Dimensions, Image} from 'react-native';
+import {StyleSheet, Dimensions, Image, Linking} from 'react-native';
 import {Block} from 'galio-framework';
 import {theme, Icons} from '../constants';
 import Wrap from '../components/Wrap';
@@ -17,10 +17,23 @@ const Dashboard = ({navigation}) => {
     return navigation.navigate(route);
   };
 
+  const handleDeepLink = async () => {
+    try {
+      await Linking.openURL('ironuffetapp://');
+    } catch (e) {
+      await Linking.openURL('https://google.com');
+    }
+  };
+
   return (
     <Wrap space="between" flex>
       <Image style={styles.img} source={require('../assets/images/logo.png')} />
       <Block style={{marginBottom: 25}}>
+        <Button
+          style={styles.button}
+          onPress={() => handleDeepLink()}>
+          Deep Link
+        </Button>
         <Button
           style={styles.button}
           onPress={() => btnPressHandler('DCreateWorkout')}>

@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-  StatusBar
+  StatusBar,
+  Linking
 } from 'react-native';
 
 import {Block} from 'galio-framework';
@@ -29,7 +30,9 @@ const App: () => React$Node = () => {
       sound: true,
     },
   });
-
+  React.useEffect(() => {
+    console.log('event')
+  })
   React.useEffect(() => {
     PushNotification.setApplicationIconBadgeNumber(0);
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -59,7 +62,9 @@ const App: () => React$Node = () => {
           );
         }
       });
-
+    Linking.getInitialURL().then(res => {
+      console.log(res)
+    });
     return () => {
       unsubscribe()
     };
