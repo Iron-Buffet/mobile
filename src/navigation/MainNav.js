@@ -424,10 +424,15 @@ const Chat = () => {
   );
 };
 
-const AppNavigation = ({initRoute}) => {
+const AppNavigation = () => {
   const {isLoading, userToken} = React.useContext(AuthContext);
+
+  const linking = {
+    prefixes: ['ironbuffetapp://'],
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <RootStack.Navigator
         screenOptions={{
           headerShown: false,
@@ -444,7 +449,4 @@ const AppNavigation = ({initRoute}) => {
   );
 };
 
-export default () => {
-  const prefix = 'ironbuffetapp://'
-  return <AppNavigation uriprefix={prefix} />
-  }
+export default AppNavigation;

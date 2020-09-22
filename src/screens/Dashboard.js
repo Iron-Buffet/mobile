@@ -19,7 +19,7 @@ const Dashboard = ({navigation}) => {
 
   const handleDeepLink = async () => {
     try {
-      await Linking.openURL('ironuffetapp://');
+      await Linking.openURL('ironbuffetapp://');
     } catch (e) {
       await Linking.openURL('https://google.com');
     }
@@ -29,11 +29,6 @@ const Dashboard = ({navigation}) => {
     <Wrap space="between" flex>
       <Image style={styles.img} source={require('../assets/images/logo.png')} />
       <Block style={{marginBottom: 25}}>
-        <Button
-          style={styles.button}
-          onPress={() => handleDeepLink()}>
-          Deep Link
-        </Button>
         <Button
           style={styles.button}
           onPress={() => btnPressHandler('DCreateWorkout')}>
