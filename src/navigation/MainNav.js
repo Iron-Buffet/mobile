@@ -8,7 +8,6 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 /**
  * Components
  */
-import DrawerLabel from './components/DrawerLabel';
 import HeaderLeft from './components/HeaderLeft';
 import ProfileHeaderRight from './components/ProfileHeaderRight';
 import CalendarHeaderRight from './components/CalendarHeaderRight';
@@ -39,6 +38,7 @@ import PartsScreen from '../screens/Parts';
 import ChatsScreen from '../screens/Chat/Chats';
 import MessagesScreen from '../screens/Chat/Messages';
 import {AuthContext} from '../context/contexts';
+
 const headerBaseConfig = {
   headerStyle: {
     backgroundColor: theme.COLORS.APP_BG,
@@ -320,80 +320,26 @@ const DrawerNav = () => {
         activeBackgroundColor: theme.COLORS.PRIMARY,
       }}>
       <Drawer.Screen
-        options={{
-          drawerLabel: ({focused}) => (
-            <DrawerLabel
-              focused={focused}
-              icon={{name: 'home'}}
-              title="Dashboard"
-            />
-          ),
-        }}
         name="Dashboard"
         component={Dashboard}
       />
       <Drawer.Screen
-        options={{
-          drawerLabel: ({focused}) => (
-            <DrawerLabel
-              focused={focused}
-              icon={{name: 'chat'}}
-              title="Trainer Chat"
-            />
-          ),
-        }}
         name="Messages"
         component={Chat}
       />
       <Drawer.Screen
-        options={{
-          drawerLabel: ({focused}) => (
-            <DrawerLabel
-              focused={focused}
-              icon={{name: 'accessibility'}}
-              title="Workout&nbsp;management"
-            />
-          ),
-        }}
         name="WorkoutManagement"
         component={WM}
       />
       <Drawer.Screen
-        options={{
-          drawerLabel: ({focused}) => (
-            <DrawerLabel
-              focused={focused}
-              icon={{name: 'group'}}
-              title="Certified workouts"
-            />
-          ),
-        }}
         name="CertifiedWorkouts"
         component={Certified}
       />
       <Drawer.Screen
-        options={{
-          drawerLabel: ({focused}) => (
-            <DrawerLabel
-              focused={focused}
-              icon={{name: 'schedule'}}
-              title="Calendar"
-            />
-          ),
-        }}
         name="Calendar"
         component={Calendar}
       />
       <Drawer.Screen
-        options={{
-          drawerLabel: ({focused}) => (
-            <DrawerLabel
-              focused={focused}
-              icon={{name: 'person'}}
-              title="Profile"
-            />
-          ),
-        }}
         name="Profile"
         component={Profile}
       />
@@ -430,7 +376,7 @@ const AppNavigation = () => {
   const linking = {
     prefixes: ['ironbuffetapp://'],
   };
-
+  console.log(isLoading, userToken)
   return (
     <NavigationContainer linking={linking}>
       <RootStack.Navigator

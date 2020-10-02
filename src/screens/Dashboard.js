@@ -1,9 +1,9 @@
 import React from 'react';
-import {StyleSheet, Dimensions, Image, Linking} from 'react-native';
+import {StyleSheet, Dimensions, Image} from 'react-native';
 import {Block} from 'galio-framework';
 import {theme, Icons} from '../constants';
 import Wrap from '../components/Wrap';
-import {Button, Text} from '../components';
+import {Button} from '../components';
 import HeaderLeft from '../navigation/components/HeaderLeft';
 
 const {width} = Dimensions.get('screen');
@@ -15,14 +15,6 @@ const Dashboard = ({navigation}) => {
 
   const btnPressHandler = route => {
     return navigation.navigate(route);
-  };
-
-  const handleDeepLink = async () => {
-    try {
-      await Linking.openURL('ironbuffetapp://');
-    } catch (e) {
-      await Linking.openURL('https://google.com');
-    }
   };
 
   return (

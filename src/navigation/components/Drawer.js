@@ -2,12 +2,12 @@ import React from 'react'
 import {Block} from 'galio-framework'
 import {Alert, Image, Linking, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import {theme} from '../../constants'
-import {DrawerContentScrollView, DrawerItemList} from '@react-navigation/drawer'
+import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
 import {useNavigation} from '@react-navigation/native'
 import Text from '../../components/Text'
 import {AuthContext} from '../../context/contexts'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import DrawerLabel from './DrawerLabel';
 
 const Drawer = props => {
   const navigation = useNavigation()
@@ -26,7 +26,6 @@ const Drawer = props => {
       try {
         await Linking.openURL(url)
       } catch (e) {
-        console.log(e)
       }
     } else {
       const appstoreWeb = 'https://apps.apple.com/us/app/id1530262458'
@@ -61,15 +60,79 @@ const Drawer = props => {
       <Block flex>
         <Block flex={5}>
           <DrawerContentScrollView {...props}>
-            <DrawerItemList {...props} />
+            <DrawerItem
+              onPress={() => navigation.navigate('Dashboard')}
+              label={({focused}) => (
+                <DrawerLabel
+                  focused={focused}
+                  icon={{name: 'home'}}
+                  title="Dashboard"
+                />
+              )}
+            />
+            <DrawerItem
+              onPress={() => navigation.navigate('Messages')}
+              label={({focused}) => (
+                <DrawerLabel
+                  focused={focused}
+                  icon={{name: 'chat'}}
+                  title="Trainer Chat"
+                />
+              )}
+            />
+            <DrawerItem
+              onPress={handlePressNutrition}
+              label={({focused}) => (
+                <DrawerLabel
+                  focused={focused}
+                  title={'MY NUTRITION'}
+                  icon={{name: 'restaurant'}}
+                />
+              )}
+            />
+            <DrawerItem
+              onPress={() => navigation.navigate('WorkoutManagement')}
+              label={({focused}) => {
+                return (
+                  <DrawerLabel
+                    focused={focused}
+                    title='Workout&nbsp;management'
+                    icon={{name: 'accessibility'}}
+                  />
+                )
+              }}
+            />
+            <DrawerItem
+              onPress={() => navigation.navigate('CertifiedWorkouts')}
+              label={({focused}) => (
+                <DrawerLabel
+                  focused={focused}
+                  title={'Certified workouts'}
+                  icon={{name: 'group'}}
+                />
+              )}
+            />
+            <DrawerItem
+              onPress={() => navigation.navigate('Calendar')}
+              label={({focused}) => (
+                <DrawerLabel
+                  focused={focused}
+                  title={'Calendar'}
+                  icon={{name: 'schedule'}}
+                />
+              )}
+            />
+            <DrawerItem
+              onPress={() => navigation.navigate('Profile')}
+              label={({focused}) => (
+                <DrawerLabel
+                  focused={focused}
+                  icon={{name: 'person'}}
+                  title="Profile"
+                />
+              )}
+            />
           </DrawerContentScrollView>
-        </Block>
-        <Block flex={2}>
-          <TouchableWithoutFeedback onPress={handlePressNutrition}>
-            <Block style={styles.nutriBtn}>
-              <Icon style={styles.ion} size={22} color={theme.COLORS.TEXT} name={'favorite'} /><Text style={{ fontSize: 16 }}>MY NUTRITION</Text>
-            </Block>
-          </TouchableWithoutFeedback>
         </Block>
         <Block style={styles.social} row>
           <TouchableWithoutFeedback onPress={() => handlePress('https://www.instagram.com/ironbuffet/')}>

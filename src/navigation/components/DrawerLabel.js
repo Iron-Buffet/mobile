@@ -7,6 +7,7 @@ import Text from '../../components/Text';
 import {theme} from '../../constants';
 
 const DrawerLabel = ({focused, title, icon}) => {
+
   return (
     <Block
       flex
