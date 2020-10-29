@@ -8,6 +8,7 @@ import Text from '../../components/Text'
 import {AuthContext} from '../../context/contexts'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DrawerLabel from './DrawerLabel';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Drawer = props => {
   const navigation = useNavigation()
@@ -21,7 +22,12 @@ const Drawer = props => {
     }
   }
   const handlePressNutrition = async () => {
-    const url = 'mynutritionapp://'
+    const login = await AsyncStorage.getItem('login');
+    const password = await AsyncStorage.getItem('password');
+    let url = 'mynutritionapp://';
+    if (login && password) {
+      url += login + ':' + password;
+    }
     if (await Linking.canOpenURL(url)) {
       try {
         await Linking.openURL(url)

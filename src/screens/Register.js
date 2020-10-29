@@ -477,6 +477,8 @@ const Register = props => {
       dob: date.toLocaleDateString(),
     };
     try {
+      await AsyncStorage.setItem('login', usr.email);
+      await AsyncStorage.setItem('password', usr.password);
       await fire.createUser(usr);
       await signUp(form);
     } catch (error) {

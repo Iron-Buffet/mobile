@@ -107,6 +107,8 @@ const Login = ({navigation}) => {
       }
     } else {
       if (state.password) {
+        await AsyncStorage.setItem('login', state.email);
+        await AsyncStorage.setItem('password', state.password);
         form.append('password', state.password);
         setState({
           ...state,
