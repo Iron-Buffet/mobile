@@ -116,9 +116,7 @@ const Login = ({navigation}) => {
           form,
         });
         try {
-          console.log('start login');
           await signIn(form, LINKS.LOGIN, state.email, state.password);
-          console.log('end login');
         } catch (e) {}
         finally {
           setState({
