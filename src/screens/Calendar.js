@@ -39,7 +39,6 @@ const Calendar = ({navigation}) => {
       timestamp: day.timestamp,
     }));
     $get('/workout/events-mobile?time=' + day.timestamp).then(res => {
-      console.log(res);
       setState(prev => ({
         ...prev,
         items: res,

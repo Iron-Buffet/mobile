@@ -376,7 +376,6 @@ const AppNavigation = () => {
   const linking = {
     prefixes: ['ironbuffetapp://'],
   };
-  console.log(isLoading, userToken)
   return (
     <NavigationContainer linking={linking}>
       <RootStack.Navigator

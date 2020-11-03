@@ -31,9 +31,6 @@ const App: () => React$Node = () => {
     },
   });
   React.useEffect(() => {
-    console.log('event')
-  })
-  React.useEffect(() => {
     PushNotification.setApplicationIconBadgeNumber(0);
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       PushNotification.localNotification({
@@ -44,27 +41,6 @@ const App: () => React$Node = () => {
       });
     });
 
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log(
-        'Notification caused app to open from background state:',
-        remoteMessage.notification,
-      );
-    });
-
-    // Check whether an initial notification is available
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage.notification,
-          );
-        }
-      });
-    Linking.getInitialURL().then(res => {
-      console.log(res)
-    });
     return () => {
       unsubscribe()
     };

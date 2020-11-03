@@ -38,6 +38,7 @@ export const AuthState = ({children}) => {
   };
 
   const [state, dispatch] = React.useReducer(authReducer, initState);
+  const { handleGoNutrition } = React.useContext(AppContext);
 
   const stateRef = React.useRef(state);
 
@@ -85,7 +86,6 @@ export const AuthState = ({children}) => {
 
     return () => {
       authSubscribe();
-      console.log('exit');
     }
     //eslint-disable-next-line
   }, []);
@@ -146,6 +146,7 @@ export const AuthState = ({children}) => {
             user: user.data,
             fbUser: res.data(),
           });
+          handleGoNutrition();
         });
       } catch (e) {
         dispatch({type: SIGN_OUT});

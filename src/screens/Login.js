@@ -79,7 +79,6 @@ const Login = ({navigation}) => {
         });
         try {
           const user = await $post(LINKS.CHECK_EMAIL, {body: form});
-          console.log('user', user)
           if (user) {
             setState({
               ...state,

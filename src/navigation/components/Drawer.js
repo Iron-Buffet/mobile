@@ -5,39 +5,20 @@ import {theme} from '../../constants'
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
 import {useNavigation} from '@react-navigation/native'
 import Text from '../../components/Text'
-import {AuthContext} from '../../context/contexts'
+import {AuthContext, AppContext} from '../../context/contexts'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DrawerLabel from './DrawerLabel';
-import AsyncStorage from '@react-native-community/async-storage';
 
 const Drawer = props => {
   const navigation = useNavigation()
-  const { user, fbUser } = React.useContext(AuthContext)
+  const { user, fbUser } = React.useContext(AuthContext);
+  const { handleGoNutrition } = React.useContext(AppContext);
   const handlePress = async url => {
     const supported = await Linking.canOpenURL(url)
     if (supported) {
       await Linking.openURL(url)
     } else {
       Alert.alert(`Don't know how to open this URL: ${url}`)
-    }
-  }
-  const handlePressNutrition = async () => {
-    const login = await AsyncStorage.getItem('login');
-    const password = await AsyncStorage.getItem('password');
-    let url = 'mynutritionapp://';
-    if (login && password) {
-      url += login + ':' + password;
-    }
-    if (await Linking.canOpenURL(url)) {
-      try {
-        await Linking.openURL(url)
-      } catch (e) {
-      }
-    } else {
-      const appstoreWeb = 'https://apps.apple.com/us/app/id1530262458'
-      if (await Linking.canOpenURL(appstoreWeb)) {
-        await Linking.openURL(appstoreWeb)
-      }
     }
   }
   return (
@@ -87,7 +68,7 @@ const Drawer = props => {
               )}
             />
             <DrawerItem
-              onPress={handlePressNutrition}
+              onPress={handleGoNutrition}
               label={({focused}) => (
                 <DrawerLabel
                   focused={focused}

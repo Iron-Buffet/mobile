@@ -38,14 +38,6 @@ exports.sendNotificationToFCMToken = functions.firestore.document('users/{uid}/c
           priority: 'high',
         },
       );
-      console.log(`message_name = ${title} \n 
-      message_text = ${body} \n 
-      trainerUid = ${trainerUid} \n 
-      authorUid = ${authorUid} \n 
-      uidNeeded = ${uidNeeded} \n 
-      lastUid = ${lastUid} \n 
-      token = ${token} \n
-      ` , response);
     }
   }
 });

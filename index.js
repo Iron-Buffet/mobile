@@ -7,7 +7,6 @@ const PushNotification = require("react-native-push-notification");
 import messaging from '@react-native-firebase/messaging';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Message handled in the background!', remoteMessage);
   PushNotification.localNotification({
     title: remoteMessage.data.notification.title,
     message: remoteMessage.data.notification.body,

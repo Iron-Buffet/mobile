@@ -135,7 +135,6 @@ const Workout = () => {
 
       });
     return () => {
-      console.log('exit workout');
       setState(prev => ({
         ...prev,
         isModalVisible: false,
