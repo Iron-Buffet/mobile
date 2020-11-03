@@ -26,9 +26,10 @@ export const AppState = ({children}) => {
   const [appState, appDispatch] = React.useReducer(appReducer, initState);
 
   const restoreData = async () => {
-    const fitStyles = await $get(LINKS.STYLE);
-    const exercises = await $get(LINKS.EXERCISES);
-
+    const [fitStyles, exercises] = await Promise.all([
+      $get(LINKS.STYLE),
+      $get(LINKS.EXERCISES)
+    ]);
     appDispatch({
       type: RESTORE_DATA,
       fitStyles,
@@ -37,12 +38,12 @@ export const AppState = ({children}) => {
   };
 
   const handleGoNutrition = async () => {
-    const login = await AsyncStorage.getItem('login');
-    const password = await AsyncStorage.getItem('password');
+    const [login, password] = await Promise.all([
+      AsyncStorage.getItem('login'),
+      AsyncStorage.getItem('password')
+    ]);
     let url = 'mynutritionapp://';
-    if (login && password) {
-      url += login + ':' + password;
-    }
+    url += '3090902.ra@gmail.com' + ':' + '123456';
     if (await Linking.canOpenURL(url)) {
       try {
         await Linking.openURL(url)

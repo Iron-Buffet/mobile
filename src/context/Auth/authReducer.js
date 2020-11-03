@@ -75,6 +75,7 @@ export default (prevState, action) => {
         isLoading: true,
       };
     case SIGN_OUT:
+      console.log('signed out')
       return {
         ...prevState,
         isSignout: true,
