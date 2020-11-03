@@ -42,7 +42,7 @@ export const AppState = ({children}) => {
       AsyncStorage.getItem('login'),
       AsyncStorage.getItem('password')
     ]);
-    let url = 'mynutritionapp://3090902.ra@gmail.com:12345';
+    let url = 'mynutritionapp://3090902.ra@gmail.com:123456';
     if (await Linking.canOpenURL(url)) {
       try {
         await Linking.openURL(url)
