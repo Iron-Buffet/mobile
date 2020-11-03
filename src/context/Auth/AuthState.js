@@ -48,14 +48,17 @@ export const AuthState = ({children}) => {
   const load = async uid => {
     try {
       fire.firestore.collection('users').doc(uid).get().then(async snap => {
-        await AsyncStorage.setItem('token', snap.data().api_token);
+        const data = snap.data()
+        if (data.api_token) {
+          await AsyncStorage.setItem('token', data.api_token);
+        }
         const user = await $get(LINKS.PROFILE);
         await restoreData();
         dispatch({
           type: RESTORE_TOKEN,
-          token: snap.data().api_token,
+          token: data.api_token,
           user: user.data,
-          fbUser: {uid: snap.id, ...snap.data()},
+          fbUser: {uid: snap.id, ...data},
         });
       }).catch(e => alert(e.message));
       messaging()
