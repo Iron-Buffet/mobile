@@ -1,14 +1,7 @@
 import React from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Linking,
-  Alert,
-} from 'react-native';
+import {Alert, Keyboard, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {Block} from 'galio-framework';
-import {Input, Text, Button, Wrap, Loader, AvatarPicker} from '../components';
+import {AvatarPicker, Button, Input, Loader, Text, Wrap} from '../components';
 import theme from '../constants/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {TextInputMask} from 'react-native-masked-text';
@@ -18,7 +11,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {PROFILE, utils} from '../constants';
 import {age} from '../utils/methods';
 import {AuthContext} from '../context/contexts';
-import {fire} from '../services'
+import {fire} from '../services';
 
 const Register = props => {
   const {navigation} = props;
@@ -45,6 +38,9 @@ const Register = props => {
     phoneNumber: null,
     terms: false,
     avatar: '',
+    gender: 0,
+    height: null,
+    weight: null,
   });
 
   React.useEffect(() => {
@@ -182,7 +178,7 @@ const Register = props => {
           </Text>
           <Text size={18}>{state.email}</Text>
           <Block style={{marginTop: 10}}>
-            <AvatarPicker avatar={state.avatar} onAvatarPicked={avatar => setState({...state, avatar})} />
+            <AvatarPicker avatar={state.avatar} onAvatarPicked={avatar => setState({...state, avatar})}/>
           </Block>
         </Block>
         <Block>
@@ -216,13 +212,73 @@ const Register = props => {
                   isDatePickerVisible: true,
                 });
               }}>
-              <Block style={styles.inputOverflow} />
+              <Block style={styles.inputOverflow}/>
             </TouchableWithoutFeedback>
             <Input
               placeholder="Date of Birth"
               editable={false}
               value={state.date.toLocaleDateString() + ' (' + age(state.date) + ' y.o.)'}
             />
+          </Block>
+          <Block row space={`between`}>
+            <Block>
+              <Input
+                placeholder="Weight"
+                value={state.weight}
+                style={{width: 135}}
+                onChangeText={text => {
+                  const weight = text.replace(/[^0-9]/g, '');
+                  setState({...state, weight})
+                }}
+              />
+            </Block>
+            <Block>
+              <Input
+                placeholder="Height"
+                value={state.height}
+                style={{width: 135}}
+                onChangeText={text => {
+                  const height = text.replace(/[^0-9]/g, '');
+                  setState({...state, height})
+                }}
+              />
+            </Block>
+          </Block>
+          <Block row style={{marginTop: 8}}>
+
+            <TouchableOpacity
+              onPress={() =>
+                setState({
+                  ...state,
+                  gender: 1,
+                })
+              }>
+              <Block row style={{marginRight: 16}}>
+                <Block style={styles.checkBorder}>
+                  {state.gender === 1 && <Block style={styles.check}/>}
+                </Block>
+                <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>
+                  Male
+                </Text>
+              </Block>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                setState({
+                  ...state,
+                  gender: 0,
+                })
+              }>
+              <Block row>
+                <Block style={styles.checkBorder}>
+                  {state.gender === 0 && <Block style={styles.check}/>}
+                </Block>
+                <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>
+                  Female
+                </Text>
+              </Block>
+            </TouchableOpacity>
+
           </Block>
           <Block style={styles.terms}>
             <TouchableOpacity
@@ -233,7 +289,7 @@ const Register = props => {
                 })
               }>
               <Block style={styles.checkBorder}>
-                {state.terms && <Block style={styles.check} />}
+                {state.terms && <Block style={styles.check}/>}
               </Block>
             </TouchableOpacity>
             <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>
@@ -449,6 +505,9 @@ const Register = props => {
       month,
       year,
       cvv,
+      gender,
+      weight,
+      height,
     } = state;
     const form = new FormData();
     form.append('email', email);
@@ -463,6 +522,9 @@ const Register = props => {
     form.append('card', cardNumber);
     form.append('month', month);
     form.append('year', year);
+    form.append('gender', gender);
+    form.append('weight', weight);
+    form.append('height', height);
     form.append('cvv', cvv);
     const usr = {
       first_name: firstName,
@@ -473,6 +535,9 @@ const Register = props => {
       goal: goal.join(','),
       email,
       plan,
+      gender,
+      weight,
+      height,
       avatar: state.avatar,
       dob: date.toLocaleDateString(),
     };
@@ -525,10 +590,10 @@ const Register = props => {
     } else {
       style.backgroundColor = theme.COLORS.TEXT;
     }
-    dots.push(<Block key={`dot-${i}`} style={[styles.dot, style]} />);
+    dots.push(<Block key={`dot-${i}`} style={[styles.dot, style]}/>);
   }
   if (state.loading) {
-    return <Loader />;
+    return <Loader/>;
   }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -538,6 +603,7 @@ const Register = props => {
             style={{
               marginBottom: 'auto',
               marginTop: 'auto',
+              paddingTop: 16,
             }}>
             {currentScreen}
             <Block row center middle style={{marginVertical: 30}}>
@@ -564,7 +630,7 @@ const Register = props => {
               </Block>
             ) : null}
           </Block>
-          <Block middle>
+          <Block middle style={{marginTop: 32}}>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
               <Text color={theme.COLORS.TEXT}>
                 Already have an account? Go to login

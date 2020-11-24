@@ -22,7 +22,7 @@ const AvatarPicker = ({onAvatarPicked, avatar}) => {
   return (
     <TouchableOpacity onPress={pickAvatarHandler}>
       <Block center middle>
-        {avatar ? <Image source={{uri: avatar}} style={styles.avatar} /> : <Block center middle style={styles.avatarPlaceholder}><Text size={50} color={`white`}>+</Text></Block>}
+        {avatar ? <Image source={{uri: avatar}} style={styles.avatar} /> : <Block center middle style={styles.avatarPlaceholder}><Text size={32} color={`white`}>+</Text></Block>}
       </Block>
     </TouchableOpacity>
   )
@@ -30,15 +30,15 @@ const AvatarPicker = ({onAvatarPicked, avatar}) => {
 
 const styles = StyleSheet.create({
   avatarPlaceholder: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
     backgroundColor: theme.COLORS.MUTED,
-    borderRadius: 50,
+    borderRadius: 35,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
   },
 });
 
