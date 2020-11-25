@@ -38,11 +38,11 @@ export const AppState = ({children}) => {
   };
 
   const handleGoNutrition = async () => {
-    const [login, password] = await Promise.all([
+    const [login, ntoken] = await Promise.all([
       AsyncStorage.getItem('login'),
-      AsyncStorage.getItem('password')
+      AsyncStorage.getItem('ntoken')
     ]);
-    let url = 'mynutritionapp://3090902.ra@gmail.com:123456';
+    let url = `mynutritionapp://${login}:${ntoken}`;
     if (await Linking.canOpenURL(url)) {
       try {
         await Linking.openURL(url)

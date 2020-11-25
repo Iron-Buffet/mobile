@@ -131,8 +131,9 @@ export const AuthState = ({children}) => {
     },
     signUp: async regData => {
       try {
-        const {token} = await $post('/register', {body: regData});
+        const {token, ntoken} = await $post('/register', {body: regData});
         await AsyncStorage.setItem('token', token);
+        await AsyncStorage.setItem('ntoken', ntoken);
         const user = await $get(LINKS.PROFILE);
         await restoreData();
         const usr = firebase.auth().currentUser;
