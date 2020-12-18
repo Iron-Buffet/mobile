@@ -9,6 +9,10 @@ import {
 import {theme} from '../constants';
 
 const Checkbox = ({full, value, text, onPress}) => {
+
+  if (full === undefined) {
+    full = true
+  }
   if (full) {
     return (
       <TouchableWithoutFeedback onPress={onPress}>

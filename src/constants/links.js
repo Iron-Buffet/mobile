@@ -1,4 +1,4 @@
-export const API_URL = 'https://api.ironbuffet.com';
+export const API_URL = 'https://ironbuffet.robots.a2hosted.com';
 export const LOGIN = '/login';
 export const CHECK_EMAIL = '/site/email';
 export const WORKOUT_INDEX = '/workout/index';

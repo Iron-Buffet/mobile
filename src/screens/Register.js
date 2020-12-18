@@ -1,15 +1,13 @@
 import React from 'react';
-import {Alert, Keyboard, Linking, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
+import {Alert, Keyboard, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {Block} from 'galio-framework';
-import {AvatarPicker, Button, Input, Loader, Text, Wrap} from '../components';
+import {Button, Input, Loader, MainInfo, Text, Wrap, AdditionalInfo} from '../components';
 import theme from '../constants/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {TextInputMask} from 'react-native-masked-text';
 import RNPickerSelect from 'react-native-picker-select';
 import {cardInput} from '../utils/globalStyles';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {PROFILE, utils} from '../constants';
-import {age} from '../utils/methods';
 import {AuthContext} from '../context/contexts';
 import {fire} from '../services';
 
@@ -34,13 +32,20 @@ const Register = props => {
     cvv: null,
     loading: false,
     form: null,
-    isDatePickerVisible: false,
-    phoneNumber: null,
+    phone: null,
     terms: false,
     avatar: '',
     gender: 0,
     height: null,
     weight: null,
+    // additional
+    generalUnits: 0,
+    energyUnits: 0,
+    dateFormat: 0,
+    lactation: 0,
+    BMRCalcMethod: 0,
+    RMRValue: null,
+    BMR: null,
   });
 
   React.useEffect(() => {
@@ -53,21 +58,13 @@ const Register = props => {
     //eslint-disable-next-line
   }, []);
 
-  const handleConfirm = date => {
-    setState({
-      ...state,
-      date,
-      isDatePickerVisible: false,
-    });
-  };
-
   const nextBtnHandler = async () => {
     const {
       currentStep,
       password,
       firstName,
       lastName,
-      phoneNumber,
+      phone,
       date,
       expLevel,
       goal,
@@ -83,7 +80,7 @@ const Register = props => {
         if (!terms) {
           alert('You must agree with Terms & Conditions & Privacy Policy');
         } else {
-          if (!(password && firstName && lastName && date && phoneNumber)) {
+          if (!(password && firstName && lastName && date && phone)) {
             alert('Check entered data');
           } else {
             setState({
@@ -114,6 +111,12 @@ const Register = props => {
         }
         break;
       case 4:
+        setState({
+          ...state,
+          currentStep: 5,
+        });
+        break;
+      case 5:
         if (!plan) {
           alert('Create your plan');
         } else {
@@ -122,12 +125,12 @@ const Register = props => {
           } else {
             setState({
               ...state,
-              currentStep: 5,
+              currentStep: 6,
             });
           }
         }
         break;
-      case 5:
+      case 6:
       default:
         if (!(cardNumber && month && year && cvv)) {
           alert('Check entered data');
@@ -168,161 +171,43 @@ const Register = props => {
     setState({...state, expLevel});
   };
 
-  const renderStepOne = () => {
-    const {date} = state;
+  const renderMainInfo = () => {
     return (
-      <Block>
-        <Block center>
-          <Text title style={styles.mb0}>
-            Registration
-          </Text>
-          <Text size={18}>{state.email}</Text>
-          <Block style={{marginTop: 10}}>
-            <AvatarPicker avatar={state.avatar} onAvatarPicked={avatar => setState({...state, avatar})}/>
-          </Block>
-        </Block>
-        <Block>
-          <Input
-            placeholder="Password"
-            password
-            value={state.password}
-            onChangeText={password => setState({...state, password})}
-          />
-          <Input
-            placeholder="First Name"
-            value={state.firstName}
-            onChangeText={firstName => setState({...state, firstName})}
-          />
-          <Input
-            placeholder="Last Name"
-            value={state.lastName}
-            onChangeText={lastName => setState({...state, lastName})}
-          />
-          <Input
-            placeholder="Phone Number"
-            value={state.phoneNumber}
-            keyboardType="phone-pad"
-            onChangeText={phoneNumber => setState({...state, phoneNumber})}
-          />
-          <Block style={{position: 'relative'}}>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                setState({
-                  ...state,
-                  isDatePickerVisible: true,
-                });
-              }}>
-              <Block style={styles.inputOverflow}/>
-            </TouchableWithoutFeedback>
-            <Input
-              placeholder="Date of Birth"
-              editable={false}
-              value={state.date.toLocaleDateString() + ' (' + age(state.date) + ' y.o.)'}
-            />
-          </Block>
-          <Block row space={`between`}>
-            <Block>
-              <Input
-                placeholder="Weight"
-                value={state.weight}
-                style={{width: 135}}
-                onChangeText={text => {
-                  const weight = text.replace(/[^0-9]/g, '');
-                  setState({...state, weight})
-                }}
-              />
-            </Block>
-            <Block>
-              <Input
-                placeholder="Height"
-                value={state.height}
-                style={{width: 135}}
-                onChangeText={text => {
-                  const height = text.replace(/[^0-9]/g, '');
-                  setState({...state, height})
-                }}
-              />
-            </Block>
-          </Block>
-          <Block row style={{marginTop: 8}}>
-
-            <TouchableOpacity
-              onPress={() =>
-                setState({
-                  ...state,
-                  gender: 1,
-                })
-              }>
-              <Block row style={{marginRight: 16}}>
-                <Block style={styles.checkBorder}>
-                  {state.gender === 1 && <Block style={styles.check}/>}
-                </Block>
-                <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>
-                  Male
-                </Text>
-              </Block>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                setState({
-                  ...state,
-                  gender: 0,
-                })
-              }>
-              <Block row>
-                <Block style={styles.checkBorder}>
-                  {state.gender === 0 && <Block style={styles.check}/>}
-                </Block>
-                <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>
-                  Female
-                </Text>
-              </Block>
-            </TouchableOpacity>
-
-          </Block>
-          <Block style={styles.terms}>
-            <TouchableOpacity
-              onPress={() =>
-                setState({
-                  ...state,
-                  terms: !state.terms,
-                })
-              }>
-              <Block style={styles.checkBorder}>
-                {state.terms && <Block style={styles.check}/>}
-              </Block>
-            </TouchableOpacity>
-            <Text style={{fontSize: theme.SIZES.BASE * 0.8}}>
-              By checking this box I agree on{' '}
-              <Text
-                style={styles.link}
-                onPress={() =>
-                  Linking.openURL('https://ironbuffet.com/terms-of-use')
-                }>
-                Terms & Conditions
-              </Text>{' '}
-              &{' '}
-              <Text
-                style={styles.link}
-                onPress={() =>
-                  Linking.openURL('https://ironbuffet.com/privacy-policy')
-                }>
-                Privacy&nbsp;Policy
-              </Text>
-            </Text>
-          </Block>
-          <Text style={styles.info}>
-            By participating, you consent to receive text and emails messages
-            sent by an automatic telephone dialing system. Consent to these
-            terms is not a condition of purchase. Message and data rates may
-            apply.
-          </Text>
-        </Block>
-      </Block>
+      <MainInfo
+        state={state}
+        handleAvatarPicked={avatar => setState({
+          ...state, avatar,
+        })
+        }
+        handleSetPassword={password => setState({
+          ...state, password,
+        })
+        }
+        handleSetFirstName={firstName => setState({
+          ...state, firstName,
+        })
+        }
+        handleSetLastName={lastName => setState({
+          ...state, lastName,
+        })
+        }
+        handleSetPhone={phone => setState({
+          ...state, phone,
+        })
+        }
+        handleSetDate={date => setState({
+          ...state, date,
+        })
+        }
+        handleAcceptTerms={terms => setState({
+          ...state, terms,
+        })
+        }
+      />
     );
   };
 
-  const renderStepTwo = () => {
+  const renderExpLevel = () => {
     const {expLevel} = state;
     const buttons = PROFILE.EXPERIENCE_LEVELS.map((lvl, idx) => {
       const bg = expLevel === idx ? 'transparent' : theme.COLORS.PRIMARY;
@@ -354,7 +239,7 @@ const Register = props => {
     );
   };
 
-  const renderStepThree = () => {
+  const renderGoals = () => {
     const {goal} = state;
     const buttons = PROFILE.GOALS.map((lvl, idx) => {
       const bg = goal.includes(idx) ? 'transparent' : theme.COLORS.PRIMARY;
@@ -386,7 +271,7 @@ const Register = props => {
     );
   };
 
-  const renderStepFour = () => {
+  const renderPlan = () => {
     const {plan} = state;
     const buttons = PROFILE.PLANS.map((_plan, idx) => {
       const bg = plan === _plan.id ? 'transparent' : theme.COLORS.PRIMARY;
@@ -486,6 +371,31 @@ const Register = props => {
     );
   };
 
+  const renderAdditionalInfo = () => {
+    return (
+      <AdditionalInfo
+        setGeneralUnits={generalUnits => {
+          setState({...state, generalUnits})
+        }}
+        setEnergyUnits={energyUnits => {
+          setState({...state, energyUnits})
+        }}
+        setDateFormat={dateFormat => {
+          setState({...state, dateFormat})
+        }}
+        setGender={gender => {
+          setState({...state, gender})
+        }}
+        setWeight={weight => setState({...state, weight})}
+        setHeight={height => setState({...state, height})}
+        setLactation={lactation => setState({...state, lactation})}
+        setBMRCalcMethod={BMRCalcMethod => setState({...state, BMRCalcMethod})}
+        setRMRValue={RMRValue => setState({...state, RMRValue})}
+        setBMR={BMR => setState({...state, BMR})}
+        state={state} />
+    )
+  };
+
   const register = async () => {
     setState({
       ...state,
@@ -496,7 +406,7 @@ const Register = props => {
       password,
       firstName,
       lastName,
-      phoneNumber,
+      phone,
       expLevel,
       goal,
       plan,
@@ -514,7 +424,7 @@ const Register = props => {
     form.append('password', password);
     form.append('firstName', firstName);
     form.append('lastName', lastName);
-    form.append('phone', phoneNumber);
+    form.append('phone', phone);
     form.append('level', expLevel);
     form.append('goal', goal.join(','));
     form.append('plan', plan);
@@ -530,7 +440,7 @@ const Register = props => {
       first_name: firstName,
       password: password,
       last_name: lastName,
-      phone: phoneNumber,
+      phone: phone,
       level: expLevel,
       goal: goal.join(','),
       email,
@@ -567,23 +477,26 @@ const Register = props => {
   let currentScreen = null;
   switch (currentStep) {
     case 1:
-      currentScreen = renderStepOne();
+      currentScreen = renderMainInfo();
       break;
     case 2:
-      currentScreen = renderStepTwo();
+      currentScreen = renderExpLevel();
       break;
     case 3:
-      currentScreen = renderStepThree();
+      currentScreen = renderGoals();
       break;
     case 4:
-      currentScreen = renderStepFour();
+      currentScreen = renderAdditionalInfo();
       break;
     case 5:
+      currentScreen = renderPlan();
+      break;
+    case 6:
       currentScreen = renderStepFive();
       break;
   }
   let dots = [];
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 6; i++) {
     let style = {};
     if (i <= currentStep) {
       style.backgroundColor = theme.COLORS.PRIMARY;
@@ -637,18 +550,7 @@ const Register = props => {
               </Text>
             </TouchableOpacity>
           </Block>
-          <DateTimePickerModal
-            isVisible={state.isDatePickerVisible}
-            mode="date"
-            onConfirm={handleConfirm}
-            isDarkModeEnabled={theme.IS_DARK}
-            onCancel={() => {
-              setState({
-                ...state,
-                isDatePickerVisible: false,
-              });
-            }}
-          />
+
         </Block>
       </Wrap>
     </TouchableWithoutFeedback>
@@ -662,50 +564,12 @@ const styles = StyleSheet.create({
   mb0: {
     marginBottom: 0,
   },
-  inputOverflow: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: 2,
-  },
-  link: {
-    textDecorationLine: 'underline',
-    textDecorationStyle: 'solid',
-    textDecorationColor: theme.COLORS.TEXT,
-  },
-  info: {
-    fontSize: 10,
-    marginTop: theme.SIZES.BASE,
-  },
-  terms: {
-    marginTop: theme.SIZES.BASE,
-    flexDirection: 'row',
-  },
+
+
   container: {
     alignItems: 'stretch',
   },
-  checkBorder: {
-    borderRadius: 3,
-    borderWidth: 2,
-    borderColor: theme.COLORS.MUTED,
-    width: 20,
-    height: 20,
-    position: 'relative',
-    marginRight: theme.SIZES.BASE / 2,
-  },
-  check: {
-    width: 20,
-    height: 10,
-    borderColor: theme.COLORS.PRIMARY,
-    borderLeftWidth: 2,
-    borderBottomWidth: 2,
-    position: 'absolute',
-    top: -3,
-    left: 2,
-    transform: [{rotate: '-45deg'}],
-  },
+
   loadingContainer: {
     flex: 1,
     paddingHorizontal: theme.SIZES.BASE,

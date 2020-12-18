@@ -12,10 +12,11 @@ import theme from '../constants/Theme';
 
 export default class IText extends React.Component {
   render() {
-    const {children, color, title, flex, style, ...props} = this.props;
+    const {children, color, title, subtitle, flex, style, ...props} = this.props;
     const textStyle = [
       styles.text,
       title && styles.title,
+      subtitle && styles.subtitle,
       flex && styles.flex,
       !!color && {color},
       style,
@@ -42,8 +43,10 @@ const styles = StyleSheet.create({
     marginBottom: theme.SIZES.BASE,
     textTransform: 'uppercase',
     textAlign: 'center',
-    // fontWeight: 'bold',
     fontSize: 20,
-    color: theme.COLORS.TEXT,
+  },
+  subtitle: {
+    marginBottom: theme.SIZES.BASE / 2,
+    fontSize: 18,
   },
 });

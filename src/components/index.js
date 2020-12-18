@@ -12,6 +12,8 @@ import Message from './Message';
 import Checkbox from './Checkbox';
 import Loader from './Loader';
 import AvatarPicker from './AvatarPicker';
+import MainInfo from './Register/MainInfo';
+import AdditionalInfo from './Register/AdditionalInfo';
 
 export {
   Button,
@@ -28,4 +30,6 @@ export {
   Checkbox,
   Loader,
   AvatarPicker,
+  MainInfo,
+  AdditionalInfo,
 };

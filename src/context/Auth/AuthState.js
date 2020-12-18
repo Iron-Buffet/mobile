@@ -131,7 +131,8 @@ export const AuthState = ({children}) => {
     },
     signUp: async regData => {
       try {
-        const {token, ntoken} = await $post('/register', {body: regData});
+        const resp = await $post('/register', {body: regData});
+        const {token, ntoken} = resp;
         await AsyncStorage.setItem('token', token);
         await AsyncStorage.setItem('ntoken', ntoken);
         const user = await $get(LINKS.PROFILE);
