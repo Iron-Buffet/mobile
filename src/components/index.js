@@ -11,6 +11,7 @@ import KeyboardView from './KeyboardView';
 import Message from './Message';
 import Checkbox from './Checkbox';
 import Loader from './Loader';
+import YNCheckbox from './YNCheckbox';
 import MultipleButtons from './MultipleButtons';
 import AvatarPicker from './AvatarPicker';
 import MainInfo from './Register/MainInfo';
@@ -34,4 +35,5 @@ export {
   MainInfo,
   AdditionalInfo,
   MultipleButtons,
+  YNCheckbox,
 };

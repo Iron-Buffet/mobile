@@ -23,9 +23,9 @@ const Register = props => {
     password: '',
     expLevel: null,
     goal: [],
-    plan: '',
+    plan: 'trial',
     date: new Date('1/1/2000'),
-    currentStep: 4,
+    currentStep: 1,
     cardNumber: null,
     month: null,
     year: null,
@@ -53,6 +53,24 @@ const Register = props => {
     goalRate: 0,
     expirationDate: new Date('1/1/2000'),
     mealTypeId: 1,
+    hideTemplates: 0,
+    heartDisease: 0,
+    liverDisease: 0,
+    pancreaticDisease: 0,
+    anemia: 0,
+    kidneyDisease: 0,
+    hypoglycemia: 0,
+    diabetes: 0,
+    hypertension: 0,
+    histHeartDisease: 0,
+    histBreastCancer: 0,
+    histCancerOther: 0,
+    histLiverDisease: 0,
+    histStroke: 0,
+    histOsteoporosis: 0,
+    histHypoglycemia: 0,
+    histDiabetes: 0,
+    histHypertension: 0,
   });
 
   React.useEffect(() => {
@@ -118,10 +136,7 @@ const Register = props => {
         }
         break;
       case 4:
-        setState({
-          ...state,
-          currentStep: 5,
-        });
+        await register();
         break;
       case 5:
         if (!plan) {
@@ -182,27 +197,13 @@ const Register = props => {
     return (
       <MainInfo
         state={state}
-        handleAvatarPicked={avatar => setState({
-          ...state, avatar,
-        })}
-        handleSetPassword={password => setState({
-          ...state, password,
-        })}
-        handleSetFirstName={firstName => setState({
-          ...state, firstName,
-        })}
-        handleSetLastName={lastName => setState({
-          ...state, lastName,
-        })}
-        handleSetPhone={phone => setState({
-          ...state, phone,
-        })}
-        handleSetDate={date => setState({
-          ...state, date,
-        })}
-        handleAcceptTerms={terms => setState({
-          ...state, terms,
-        })}
+        handleAvatarPicked={avatar => setState({...state, avatar})}
+        handleSetPassword={password => setState({...state, password})}
+        handleSetFirstName={firstName => setState({...state, firstName})}
+        handleSetLastName={lastName => setState({...state, lastName})}
+        handleSetPhone={phone => setState({...state, phone})}
+        handleSetDate={date => setState({...state, date})}
+        handleAcceptTerms={terms => setState({...state, terms})}
       />
     );
   };
@@ -403,6 +404,24 @@ const Register = props => {
         setGoalRate={goalRate => setState({...state, goalRate})}
         setExpirationDate={expirationDate => setState({...state, expirationDate})}
         setMealTypeId={mealTypeId => setState({...state, mealTypeId})}
+        setHideTemplates={hideTemplates => setState({...state, hideTemplates})}
+        setHeartDisease={heartDisease => setState({...state, heartDisease})}
+        setLiverDisease={liverDisease => setState({...state, liverDisease})}
+        setPancreaticDisease={pancreaticDisease => setState({...state, pancreaticDisease})}
+        setAnemia={anemia => setState({...state, anemia})}
+        setKidneyDisease={kidneyDisease => setState({...state, kidneyDisease})}
+        setHypoglycemia={hypoglycemia => setState({...state, hypoglycemia})}
+        setDiabetes={diabetes => setState({...state, diabetes})}
+        setHypertension={hypertension => setState({...state, hypertension})}
+        setHistHeartDisease={histHeartDisease => setState({...state, histHeartDisease})}
+        setHistBreastCancer={histBreastCancer => setState({...state, histBreastCancer})}
+        setHistCancerOther={histCancerOther => setState({...state, histCancerOther})}
+        setHistLiverDisease={histLiverDisease => setState({...state, histLiverDisease})}
+        setHistStroke={histStroke => setState({...state, histStroke})}
+        setHistOsteoporosis={histOsteoporosis => setState({...state, histOsteoporosis})}
+        setHistHypoglycemia={histHypoglycemia => setState({...state, histHypoglycemia})}
+        setHistDiabetes={histDiabetes => setState({...state, histDiabetes})}
+        setHistHypertension={histHypertension => setState({...state, histHypertension})}
         state={state} />
     )
   };

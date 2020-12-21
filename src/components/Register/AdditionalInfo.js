@@ -1,17 +1,10 @@
 import React from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  TouchableWithoutFeedback,
-  Picker,
-} from 'react-native';
+import {Dimensions, ScrollView, StyleSheet, TouchableWithoutFeedback, Picker} from 'react-native';
 import {Block} from 'galio-framework';
-import {Checkbox, Input, Text, MultipleButtons} from '../index';
+import {Checkbox, Text, YNCheckbox, Input, MultipleButtons} from '../index';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import theme from '../../constants/Theme';
 import mealTypes from '../../utils/mealTypes';
-
 const AdditionalInfo = ({
                           state,
                           setGender,
@@ -31,6 +24,24 @@ const AdditionalInfo = ({
                           setGoalRate,
                           setExpirationDate,
                           setMealTypeId,
+                          setHideTemplates,
+                          setHeartDisease,
+                          setLiverDisease,
+                          setPancreaticDisease,
+                          setAnemia,
+                          setKidneyDisease,
+                          setHypoglycemia,
+                          setDiabetes,
+                          setHypertension,
+                          setHistHeartDisease,
+                          setHistBreastCancer,
+                          setHistCancerOther,
+                          setHistLiverDisease,
+                          setHistStroke,
+                          setHistOsteoporosis,
+                          setHistHypoglycemia,
+                          setHistDiabetes,
+                          setHistHypertension,
                         }) => {
 
   const {height} = Dimensions.get('screen');
@@ -44,22 +55,22 @@ const AdditionalInfo = ({
   const handleDecrease = () => {
     if (state.generalUnits === 0) {
       if (state.goalRate > .25) {
-        setGoalRate(state.goalRate - .25)
+        setGoalRate(state.goalRate - .25);
       }
     } else {
       if (state.goalRate > .11) {
-        setGoalRate(state.goalRate - .11)
+        setGoalRate(state.goalRate - .11);
       }
     }
   };
   const handleIncrease = () => {
     if (state.generalUnits === 0) {
       if (state.goalRate < 2) {
-        setGoalRate(state.goalRate + .25)
+        setGoalRate(state.goalRate + .25);
       }
     } else {
       if (state.goalRate < .88) {
-        setGoalRate(state.goalRate + .11)
+        setGoalRate(state.goalRate + .11);
       }
     }
   };
@@ -71,7 +82,7 @@ const AdditionalInfo = ({
         <Block center style={{paddingTop: 20}}>
           <Text title>Nutrition options</Text>
         </Block>
-       <Text subtitle>General Units</Text>
+        <Text subtitle>General Units</Text>
         <Block row style={styles.mb16}>
           <Block style={styles.mr16}>
             <Checkbox
@@ -86,7 +97,7 @@ const AdditionalInfo = ({
             text='International'
           />
         </Block>
-        {/*<Text subtitle>Energy Units</Text>
+        <Text subtitle>Energy Units</Text>
         <Block row style={styles.mb16}>
           <Block style={styles.mr16}>
             <Checkbox
@@ -343,7 +354,98 @@ const AdditionalInfo = ({
               return (<Picker.Item key={mt.value} label={mt.label} value={mt.value} />)
             })}
           </Picker>
-        </Block>*/}
+        </Block>
+        <YNCheckbox
+          placeholder="Hide Templates"
+          value={state.hideTemplates}
+          onPress={setHideTemplates}
+        />
+        <YNCheckbox
+          placeholder="Heart Disease"
+          value={state.heartDisease}
+          onPress={setHeartDisease}
+        />
+        <YNCheckbox
+          placeholder="Liver Disease"
+          value={state.liverDisease}
+          onPress={setLiverDisease}
+        />
+        <YNCheckbox
+          placeholder="Pancreatic Disease"
+          value={state.pancreaticDisease}
+          onPress={setPancreaticDisease}
+        />
+        <YNCheckbox
+          placeholder="Anemia"
+          value={state.anemia}
+          onPress={setAnemia}
+        />
+        <YNCheckbox
+          placeholder="Kidney Disease"
+          value={state.kidneyDisease}
+          onPress={setKidneyDisease}
+        />
+        <YNCheckbox
+          placeholder="Hypoglycemia"
+          value={state.hypoglycemia}
+          onPress={setHypoglycemia}
+        />
+        <YNCheckbox
+          placeholder="Diabetes"
+          value={state.diabetes}
+          onPress={setDiabetes}
+        />
+        <YNCheckbox
+          placeholder="Hypertension"
+          value={state.hypertension}
+          onPress={setHypertension}
+        />
+        <YNCheckbox
+          placeholder="HistHeart Disease"
+          value={state.histHeartDisease}
+          onPress={setHistHeartDisease}
+        />
+        <YNCheckbox
+          placeholder="Hist Breast Cancer"
+          value={state.histBreastCancer}
+          onPress={setHistBreastCancer}
+        />
+        <YNCheckbox
+          placeholder="Hist Cancer Other"
+          value={state.histCancerOther}
+          onPress={setHistCancerOther}
+        />
+        <YNCheckbox
+          placeholder="Hist Liver Disease"
+          value={state.histLiverDisease}
+          onPress={setHistLiverDisease}
+        />
+        <YNCheckbox
+          placeholder="Hist Stroke"
+          value={state.histStroke}
+          onPress={setHistStroke}
+        />
+        <YNCheckbox
+          placeholder="Hist Osteoporosis"
+          value={state.histOsteoporosis}
+          onPress={setHistOsteoporosis}
+        />
+        <YNCheckbox
+          placeholder="Hist Hypoglycemia"
+          value={state.histHypoglycemia}
+          onPress={setHistHypoglycemia}
+        />
+        <YNCheckbox
+          placeholder="Hist Diabetes"
+          value={state.histDiabetes}
+          onPress={setHistDiabetes}
+        />
+        <YNCheckbox
+          placeholder="Hist Hypertension"
+          value={state.histHypertension}
+          onPress={setHistHypertension}
+        />
+
       </ScrollView>
       <DateTimePickerModal
         isVisible={datePicker}
@@ -368,7 +470,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   twoRows: {
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   mt8: {
     marginTop: 8,
