@@ -25,7 +25,7 @@ const Register = props => {
     goal: [],
     plan: '',
     date: new Date('1/1/2000'),
-    currentStep: 1,
+    currentStep: 4,
     cardNumber: null,
     month: null,
     year: null,
@@ -46,6 +46,13 @@ const Register = props => {
     BMRCalcMethod: 0,
     RMRValue: null,
     BMR: null,
+    bodyType: 0,
+    profession: 0,
+    weightGoals: 0,
+    goalWeight: 0,
+    goalRate: 0,
+    expirationDate: new Date('1/1/2000'),
+    mealTypeId: 1,
   });
 
   React.useEffect(() => {
@@ -177,32 +184,25 @@ const Register = props => {
         state={state}
         handleAvatarPicked={avatar => setState({
           ...state, avatar,
-        })
-        }
+        })}
         handleSetPassword={password => setState({
           ...state, password,
-        })
-        }
+        })}
         handleSetFirstName={firstName => setState({
           ...state, firstName,
-        })
-        }
+        })}
         handleSetLastName={lastName => setState({
           ...state, lastName,
-        })
-        }
+        })}
         handleSetPhone={phone => setState({
           ...state, phone,
-        })
-        }
+        })}
         handleSetDate={date => setState({
           ...state, date,
-        })
-        }
+        })}
         handleAcceptTerms={terms => setState({
           ...state, terms,
-        })
-        }
+        })}
       />
     );
   };
@@ -375,23 +375,34 @@ const Register = props => {
     return (
       <AdditionalInfo
         setGeneralUnits={generalUnits => {
-          setState({...state, generalUnits})
+          let goalRate = .25;
+          if (generalUnits === 1) {
+            goalRate = .11
+          }
+          setState({...state, generalUnits, goalRate})
         }}
-        setEnergyUnits={energyUnits => {
-          setState({...state, energyUnits})
-        }}
-        setDateFormat={dateFormat => {
-          setState({...state, dateFormat})
-        }}
-        setGender={gender => {
-          setState({...state, gender})
-        }}
+        setEnergyUnits={energyUnits => setState({...state, energyUnits})}
+        setDateFormat={dateFormat => setState({...state, dateFormat})}
+        setGender={gender => setState({...state, gender})}
         setWeight={weight => setState({...state, weight})}
         setHeight={height => setState({...state, height})}
         setLactation={lactation => setState({...state, lactation})}
         setBMRCalcMethod={BMRCalcMethod => setState({...state, BMRCalcMethod})}
         setRMRValue={RMRValue => setState({...state, RMRValue})}
         setBMR={BMR => setState({...state, BMR})}
+        setBodyType={bodyType => setState({...state, bodyType})}
+        setProfession={profession => setState({...state, profession})}
+        setWeightGoals={weightGoals => {
+          let goalRate = .25;
+          if (state.generalUnits === 1) {
+            goalRate = .11
+          }
+          setState({...state, weightGoals, goalRate})
+        }}
+        setGoalWeight={goalWeight => setState({...state, goalWeight})}
+        setGoalRate={goalRate => setState({...state, goalRate})}
+        setExpirationDate={expirationDate => setState({...state, expirationDate})}
+        setMealTypeId={mealTypeId => setState({...state, mealTypeId})}
         state={state} />
     )
   };

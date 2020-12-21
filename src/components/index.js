@@ -11,6 +11,7 @@ import KeyboardView from './KeyboardView';
 import Message from './Message';
 import Checkbox from './Checkbox';
 import Loader from './Loader';
+import MultipleButtons from './MultipleButtons';
 import AvatarPicker from './AvatarPicker';
 import MainInfo from './Register/MainInfo';
 import AdditionalInfo from './Register/AdditionalInfo';
@@ -32,4 +33,5 @@ export {
   AvatarPicker,
   MainInfo,
   AdditionalInfo,
+  MultipleButtons,
 };

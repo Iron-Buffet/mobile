@@ -13,7 +13,6 @@ const MainInfo = ({
                     handleSetFirstName,
                     handleSetLastName,
                     handleSetPhone,
-                    handleSetGender,
                     handleSetDate,
                     handleAcceptTerms,
                   }) => {
