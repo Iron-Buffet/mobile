@@ -462,10 +462,38 @@ const Register = props => {
     form.append('card', cardNumber);
     form.append('month', month);
     form.append('year', year);
+    form.append('cvv', cvv);
     form.append('gender', gender);
     form.append('weight', weight);
     form.append('height', height);
-    form.append('cvv', cvv);
+    form.append('GeneralUnits', state.generalUnits);
+    form.append('EnergyUnits', state.energyUnits);
+    form.append('DateFormat', state.dateFormat);
+    form.append('Lactation', state.lactation);
+    form.append('BMRCalcMethod', state.BMRCalcMethod);
+    form.append('RMRValue', state.RMRValue);
+    form.append('BMR', state.BMR);
+    form.append('BodyType', state.bodyType);
+    form.append('Profession', state.profession);
+    form.append('WeightGoals', state.weightGoals);
+    form.append('GoalWeight', state.goalWeight);
+    form.append('GoalRate', state.goalRate);
+    form.append('ExpirationDate', state.expirationDate.toLocaleDateString());
+    form.append('MealTypeID', state.mealTypeId);
+    form.append('HideTemplates', state.hideTemplates);
+    form.append('HeartDisease', state.heartDisease);
+    form.append('LiverDisease', state.liverDisease);
+    form.append('PancreaticDisease', state.pancreaticDisease);
+    form.append('Anemia', state.anemia);
+    form.append('KidneyDisease', state.kidneyDisease);
+    form.append('Hypoglycemia', state.hypoglycemia);
+    form.append('Diabetes', state.diabetes);
+    form.append('Hypertension', state.hypertension);
+    form.append('HistHeartDisease', state.histHeartDisease);
+    form.append('HistBreastCancer', state.histBreastCancer);
+    form.append('HistCancerOther', state.histCancerOther);
+    form.append('HistLiverDisease', state.histLiverDisease);
+    form.append('HistHypertension', state.histHypertension);
     const usr = {
       first_name: firstName,
       password: password,
@@ -526,7 +554,7 @@ const Register = props => {
       break;
   }
   let dots = [];
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 5; i++) {
     let style = {};
     if (i <= currentStep) {
       style.backgroundColor = theme.COLORS.PRIMARY;
