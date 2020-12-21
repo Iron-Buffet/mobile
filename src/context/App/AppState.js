@@ -12,7 +12,7 @@ import appReducer from './appReducer';
 import {$get} from '../../utils/Fetch';
 import {RESTORE_DATA} from '../types';
 import {LINKS} from '../../constants';
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Linking} from 'react-native'
 
 export const AppState = ({children}) => {

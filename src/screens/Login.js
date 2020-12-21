@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {Block} from 'galio-framework';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Text, Button, Input, Loader} from '../components';
 import {LINKS} from '../constants';
 import {checkEmail} from '../constants/utils';

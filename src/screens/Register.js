@@ -3,7 +3,7 @@ import {Alert, Keyboard, StyleSheet, TouchableOpacity, TouchableWithoutFeedback}
 import {Block} from 'galio-framework';
 import {Button, Input, Loader, MainInfo, Text, Wrap, AdditionalInfo} from '../components';
 import theme from '../constants/Theme';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TextInputMask} from 'react-native-masked-text';
 import RNPickerSelect from 'react-native-picker-select';
 import {cardInput} from '../utils/globalStyles';

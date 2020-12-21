@@ -11,7 +11,7 @@ import {Alert} from 'react-native';
 import {AuthContext, AppContext} from '../contexts';
 import authReducer from './authReducer';
 import {$get, $post} from '../../utils/Fetch';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LINKS} from '../../constants';
 import {
   RESTORE_TOKEN,
