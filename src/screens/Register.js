@@ -494,6 +494,11 @@ const Register = props => {
     form.append('HistCancerOther', state.histCancerOther);
     form.append('HistLiverDisease', state.histLiverDisease);
     form.append('HistHypertension', state.histHypertension);
+    form.append('HistStroke', state.histStroke);
+    form.append('HistOsteoporosis', state.histOsteoporosis);
+    form.append('HistHypoglycemia', state.histHypoglycemia);
+    form.append('HistDiabetes', state.histDiabetes);
+    form.append('HistHypertension', state.histHypertension);
     const usr = {
       first_name: firstName,
       password: password,
