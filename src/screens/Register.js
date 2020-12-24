@@ -52,7 +52,7 @@ const Register = props => {
     goalWeight: 0,
     goalRate: 0,
     expirationDate: new Date('1/1/2000'),
-    mealTypeId: 1,
+    mealTypeId: 3,
     hideTemplates: 0,
     heartDisease: 0,
     liverDisease: 0,

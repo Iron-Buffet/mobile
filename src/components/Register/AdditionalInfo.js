@@ -5,6 +5,7 @@ import {Checkbox, Text, YNCheckbox, Input, MultipleButtons} from '../index';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import theme from '../../constants/Theme';
 import mealTypes from '../../utils/mealTypes';
+const {height} = Dimensions.get('screen');
 const AdditionalInfo = ({
                           state,
                           setGender,
@@ -44,7 +45,6 @@ const AdditionalInfo = ({
                           setHistHypertension,
                         }) => {
 
-  const {height} = Dimensions.get('screen');
 
   const [datePicker, setDatePicker] = React.useState(false);
   const handleConfirm = date => {
@@ -76,99 +76,100 @@ const AdditionalInfo = ({
   };
 
   return (
-    <Block style={{height: height - 220}}>
-      <ScrollView>
+    <Block style={styles.container}>
+      <ScrollView keyboardShouldPersistTaps={'never'} showsVerticalScrollIndicator={false}>
+        <Block onStartShouldSetResponder={() => true}>
 
-        <Block center style={{paddingTop: 20}}>
-          <Text title>Nutrition options</Text>
-        </Block>
-        <Text subtitle>General Units</Text>
-        <Block row style={styles.mb16}>
-          <Block style={styles.mr16}>
+          <Block center style={{paddingTop: 20}}>
+            <Text title>Nutrition options</Text>
+          </Block>
+          <Text subtitle>General Units</Text>
+          <Block row style={styles.mb16}>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setGeneralUnits(0)}
+                value={state.generalUnits === 0}
+                text='US'
+              />
+            </Block>
             <Checkbox
-              onPress={() => setGeneralUnits(0)}
-              value={state.generalUnits === 0}
-              text='US'
+              onPress={() => setGeneralUnits(1)}
+              value={state.generalUnits === 1}
+              text='International'
             />
           </Block>
-          <Checkbox
-            onPress={() => setGeneralUnits(1)}
-            value={state.generalUnits === 1}
-            text='International'
-          />
-        </Block>
-        <Text subtitle>Energy Units</Text>
-        <Block row style={styles.mb16}>
-          <Block style={styles.mr16}>
+          <Text subtitle>Energy Units</Text>
+          <Block row style={styles.mb16}>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setEnergyUnits(0)}
+                value={state.energyUnits === 0}
+                text='US'
+              />
+            </Block>
             <Checkbox
-              onPress={() => setEnergyUnits(0)}
-              value={state.energyUnits === 0}
-              text='US'
+              onPress={() => setEnergyUnits(1)}
+              value={state.energyUnits === 1}
+              text='International'
             />
           </Block>
-          <Checkbox
-            onPress={() => setEnergyUnits(1)}
-            value={state.energyUnits === 1}
-            text='International'
-          />
-        </Block>
-        <Text subtitle>Date Format</Text>
-        <Block row style={styles.mb16}>
-          <Block style={styles.mr16}>
+          <Text subtitle>Date Format</Text>
+          <Block row style={styles.mb16}>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setDateFormat(0)}
+                value={state.dateFormat === 0}
+                text='US'
+              />
+            </Block>
             <Checkbox
-              onPress={() => setDateFormat(0)}
-              value={state.dateFormat === 0}
-              text='US'
+              onPress={() => setDateFormat(1)}
+              value={state.dateFormat === 1}
+              text='International'
             />
           </Block>
-          <Checkbox
-            onPress={() => setDateFormat(1)}
-            value={state.dateFormat === 1}
-            text='International'
-          />
-        </Block>
-        <Text subtitle>Gender</Text>
-        <Block row style={styles.mb16}>
-          <Block style={styles.mr16}>
+          <Text subtitle>Gender</Text>
+          <Block row style={styles.mb16}>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setGender(0)}
+                value={state.gender === 0}
+                text='Male'
+              />
+            </Block>
             <Checkbox
-              onPress={() => setGender(0)}
-              value={state.gender === 0}
-              text='Male'
+              onPress={() => setGender(1)}
+              value={state.gender === 1}
+              text='Female'
             />
           </Block>
-          <Checkbox
-            onPress={() => setGender(1)}
-            value={state.gender === 1}
-            text='Female'
-          />
-        </Block>
-        <Block row space={`between`}>
-          <Block>
-            <Input
-              placeholder="Weight"
-              value={state.weight}
-              style={{width: 135}}
-              keyboardType="number-pad"
-              onChangeText={text => {
-                const weight = text.replace(/[^0-9]/g, '');
-                setWeight(weight);
-              }}
-            />
+          <Block row space={`between`}>
+            <Block>
+              <Input
+                placeholder="Weight"
+                value={state.weight}
+                style={{width: 135}}
+                keyboardType="number-pad"
+                onChangeText={text => {
+                  const weight = text.replace(/[^0-9]/g, '');
+                  setWeight(weight);
+                }}
+              />
+            </Block>
+            <Block>
+              <Input
+                placeholder="Height"
+                value={state.height}
+                style={{width: 135}}
+                keyboardType="number-pad"
+                onChangeText={text => {
+                  const height = text.replace(/[^0-9]/g, '');
+                  setHeight(height);
+                }}
+              />
+            </Block>
           </Block>
-          <Block>
-            <Input
-              placeholder="Height"
-              value={state.height}
-              style={{width: 135}}
-              keyboardType="number-pad"
-              onChangeText={text => {
-                const height = text.replace(/[^0-9]/g, '');
-                setHeight(height);
-              }}
-            />
-          </Block>
-        </Block>
-        {state.gender === 1 && (<Block>
+          {state.gender === 1 && (<Block>
             <Text subtitle>Lactation</Text>
             <Block row style={styles.mb16}>
               <Block style={styles.mr16}>
@@ -185,29 +186,29 @@ const AdditionalInfo = ({
               />
             </Block>
           </Block>)}
-        <Text subtitle>BMRCalcMethod</Text>
-        <Block row style={styles.mb16}>
-          <Block style={styles.mr16}>
+          <Text subtitle>BMRCalcMethod</Text>
+          <Block row style={styles.mb16}>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setBMRCalcMethod(0)}
+                value={state.BMRCalcMethod === 0}
+                text='Default Calculation'
+              />
+            </Block>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setBMRCalcMethod(1)}
+                value={state.BMRCalcMethod === 1}
+                text='RMR Device'
+              />
+            </Block>
             <Checkbox
-              onPress={() => setBMRCalcMethod(0)}
-              value={state.BMRCalcMethod === 0}
-              text='Default Calculation'
+              onPress={() => setBMRCalcMethod(2)}
+              value={state.BMRCalcMethod === 2}
+              text='Custom'
             />
           </Block>
-          <Block style={styles.mr16}>
-            <Checkbox
-              onPress={() => setBMRCalcMethod(1)}
-              value={state.BMRCalcMethod === 1}
-              text='RMR Device'
-            />
-          </Block>
-          <Checkbox
-            onPress={() => setBMRCalcMethod(2)}
-            value={state.BMRCalcMethod === 2}
-            text='Custom'
-          />
-        </Block>
-        {state.BMRCalcMethod === 1 && (
+          {state.BMRCalcMethod === 1 && (
             <Block>
               <Text subtitle>RMRValue</Text>
               <Input
@@ -218,7 +219,7 @@ const AdditionalInfo = ({
               />
             </Block>
           )}
-        {state.BMRCalcMethod === 2 && (
+          {state.BMRCalcMethod === 2 && (
             <Block>
               <Text subtitle>BMR</Text>
               <Input
@@ -229,223 +230,227 @@ const AdditionalInfo = ({
               />
             </Block>
           )}
-        <Text subtitle>Body type</Text>
-        <Block row style={styles.mb16}>
-          <Block style={styles.mr16}>
+          <Text subtitle>Body type</Text>
+          <Block row style={styles.mb16}>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setBodyType(0)}
+                value={state.bodyType === 0}
+                text='Type I'
+              />
+            </Block>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setBodyType(1)}
+                value={state.bodyType === 1}
+                text='Type II'
+              />
+            </Block>
             <Checkbox
-              onPress={() => setBodyType(0)}
-              value={state.bodyType === 0}
-              text='Type I'
+              onPress={() => setBodyType(2)}
+              value={state.bodyType === 2}
+              text='Type III'
             />
           </Block>
-          <Block style={styles.mr16}>
+          <Text subtitle>Profession</Text>
+          <Block row style={[styles.mb16, styles.twoRows]}>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setProfession(0)}
+                value={state.profession === 0}
+                text='Sedentary'
+              />
+            </Block>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setProfession(1)}
+                value={state.profession === 1}
+                text='Moderate'
+              />
+            </Block>
             <Checkbox
-              onPress={() => setBodyType(1)}
-              value={state.bodyType === 1}
-              text='Type II'
+              onPress={() => setProfession(2)}
+              value={state.profession === 2}
+              text='Active'
             />
-          </Block>
-          <Checkbox
-            onPress={() => setBodyType(2)}
-            value={state.bodyType === 2}
-            text='Type III'
-          />
-        </Block>
-        <Text subtitle>Profession</Text>
-        <Block row style={[styles.mb16, styles.twoRows]}>
-          <Block style={styles.mr16}>
-            <Checkbox
-              onPress={() => setProfession(0)}
-              value={state.profession === 0}
-              text='Sedentary'
-            />
-          </Block>
-          <Block style={styles.mr16}>
-            <Checkbox
-              onPress={() => setProfession(1)}
-              value={state.profession === 1}
-              text='Moderate'
-            />
-          </Block>
-          <Checkbox
-            onPress={() => setProfession(2)}
-            value={state.profession === 2}
-            text='Active'
-          />
-          <Block style={styles.mt8}>
-            <Checkbox
-              onPress={() => setProfession(3)}
-              value={state.profession === 3}
-              text='Very Active'
-            />
-          </Block>
-        </Block>
-        <Text subtitle>Weight Goals</Text>
-        <Block row style={[styles.mb16, styles.twoRows]}>
-          <Block style={styles.mr16}>
-            <Checkbox
-              onPress={() => setWeightGoals(0)}
-              value={state.weightGoals === 0}
-              text='Weight Loss'
-            />
-          </Block>
-          <Block style={styles.mr16}>
-            <Checkbox
-              onPress={() => setWeightGoals(1)}
-              value={state.weightGoals === 1}
-              text='Weight Maintain'
-            />
-          </Block>
-          <Block style={styles.mt8}>
-            <Checkbox
-              onPress={() => setWeightGoals(2)}
-              value={state.weightGoals === 2}
-              text='Weight Gain'
-            />
-          </Block>
-        </Block>
-        {state.weightGoals === 1 && (
-          <Block>
-            <Input
-              placeholder="Goal Weight"
-              value={state.goalWeight}
-              keyboardType="number-pad"
-              onChangeText={text => {
-                const val = text.replace(/[^0-9]/g, '');
-                setGoalWeight(val);
-              }}
-            />
-          </Block>
-        )}
-        {state.weightGoals === 1 && (
-          <Block>
-            <Text subtitle>Goal Rate</Text>
-            <Block row space={'between'}>
-              <Text>{state.goalRate}</Text>
-              <MultipleButtons
-                onDecrease={handleDecrease}
-                onIncrease={handleIncrease}
+            <Block style={styles.mt8}>
+              <Checkbox
+                onPress={() => setProfession(3)}
+                value={state.profession === 3}
+                text='Very Active'
               />
             </Block>
           </Block>
-        )}
-        <Text subtitle>Expiration Date</Text>
-        <Block style={{position: 'relative'}}>
-          <TouchableWithoutFeedback
-            onPress={() => setDatePicker(true)}>
-            <Block style={styles.inputOverflow}/>
-          </TouchableWithoutFeedback>
-          <Input
-            placeholder="Expiration Date"
-            editable={false}
-            value={state.expirationDate.toLocaleDateString()}
+          <Text subtitle>Weight Goals</Text>
+          <Block row style={[styles.mb16, styles.twoRows]}>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setWeightGoals(0)}
+                value={state.weightGoals === 0}
+                text='Weight Loss'
+              />
+            </Block>
+            <Block style={styles.mr16}>
+              <Checkbox
+                onPress={() => setWeightGoals(1)}
+                value={state.weightGoals === 1}
+                text='Weight Maintain'
+              />
+            </Block>
+            <Block style={styles.mt8}>
+              <Checkbox
+                onPress={() => setWeightGoals(2)}
+                value={state.weightGoals === 2}
+                text='Weight Gain'
+              />
+            </Block>
+          </Block>
+          {state.weightGoals === 1 && (
+            <Block>
+              <Input
+                placeholder="Goal Weight"
+                value={state.goalWeight}
+                keyboardType="number-pad"
+                onChangeText={text => {
+                  const val = text.replace(/[^0-9]/g, '');
+                  setGoalWeight(val);
+                }}
+              />
+            </Block>
+          )}
+          {state.weightGoals === 1 && (
+            <Block>
+              <Text subtitle>Goal Rate</Text>
+              <Block row space={'between'}>
+                <Text>{state.goalRate}</Text>
+                <MultipleButtons
+                  onDecrease={handleDecrease}
+                  onIncrease={handleIncrease}
+                />
+              </Block>
+            </Block>
+          )}
+          <Text subtitle>Expiration Date</Text>
+          <Block style={{position: 'relative'}}>
+            <TouchableWithoutFeedback
+              onPress={() => setDatePicker(true)}>
+              <Block style={styles.inputOverflow}/>
+            </TouchableWithoutFeedback>
+            <Input
+              placeholder="Expiration Date"
+              editable={false}
+              value={state.expirationDate.toLocaleDateString()}
+            />
+          </Block>
+          <Block>
+            <Text subtitle>Meal Type</Text>
+            <Block style={styles.mealTypes}>
+              <Picker
+                selectedValue={state.mealTypeId}
+                style={{ height: 50 }}
+                onValueChange={mealTypeId =>
+                  setMealTypeId(mealTypeId)
+                }
+              >
+                {mealTypes.map(mt => {
+                  return (<Picker.Item key={mt.value} label={mt.label} value={mt.value} />)
+                })}
+              </Picker>
+            </Block>
+          </Block>
+          <YNCheckbox
+            placeholder="Hide Templates"
+            value={state.hideTemplates}
+            onPress={setHideTemplates}
           />
-        </Block>
-        <Block>
-          <Text subtitle>Meal Type</Text>
-          <Picker
-            selectedValue={state.mealTypeId}
-            style={{ height: 50 }}
-            onValueChange={mealTypeId =>
-              setMealTypeId(mealTypeId)
-            }
-          >
-            {mealTypes.map(mt => {
-              return (<Picker.Item key={mt.value} label={mt.label} value={mt.value} />)
-            })}
-          </Picker>
-        </Block>
-        <YNCheckbox
-          placeholder="Hide Templates"
-          value={state.hideTemplates}
-          onPress={setHideTemplates}
-        />
-        <YNCheckbox
-          placeholder="Heart Disease"
-          value={state.heartDisease}
-          onPress={setHeartDisease}
-        />
-        <YNCheckbox
-          placeholder="Liver Disease"
-          value={state.liverDisease}
-          onPress={setLiverDisease}
-        />
-        <YNCheckbox
-          placeholder="Pancreatic Disease"
-          value={state.pancreaticDisease}
-          onPress={setPancreaticDisease}
-        />
-        <YNCheckbox
-          placeholder="Anemia"
-          value={state.anemia}
-          onPress={setAnemia}
-        />
-        <YNCheckbox
-          placeholder="Kidney Disease"
-          value={state.kidneyDisease}
-          onPress={setKidneyDisease}
-        />
-        <YNCheckbox
-          placeholder="Hypoglycemia"
-          value={state.hypoglycemia}
-          onPress={setHypoglycemia}
-        />
-        <YNCheckbox
-          placeholder="Diabetes"
-          value={state.diabetes}
-          onPress={setDiabetes}
-        />
-        <YNCheckbox
-          placeholder="Hypertension"
-          value={state.hypertension}
-          onPress={setHypertension}
-        />
-        <YNCheckbox
-          placeholder="HistHeart Disease"
-          value={state.histHeartDisease}
-          onPress={setHistHeartDisease}
-        />
-        <YNCheckbox
-          placeholder="Hist Breast Cancer"
-          value={state.histBreastCancer}
-          onPress={setHistBreastCancer}
-        />
-        <YNCheckbox
-          placeholder="Hist Cancer Other"
-          value={state.histCancerOther}
-          onPress={setHistCancerOther}
-        />
-        <YNCheckbox
-          placeholder="Hist Liver Disease"
-          value={state.histLiverDisease}
-          onPress={setHistLiverDisease}
-        />
-        <YNCheckbox
-          placeholder="Hist Stroke"
-          value={state.histStroke}
-          onPress={setHistStroke}
-        />
-        <YNCheckbox
-          placeholder="Hist Osteoporosis"
-          value={state.histOsteoporosis}
-          onPress={setHistOsteoporosis}
-        />
-        <YNCheckbox
-          placeholder="Hist Hypoglycemia"
-          value={state.histHypoglycemia}
-          onPress={setHistHypoglycemia}
-        />
-        <YNCheckbox
-          placeholder="Hist Diabetes"
-          value={state.histDiabetes}
-          onPress={setHistDiabetes}
-        />
-        <YNCheckbox
-          placeholder="Hist Hypertension"
-          value={state.histHypertension}
-          onPress={setHistHypertension}
-        />
+          <YNCheckbox
+            placeholder="Heart Disease"
+            value={state.heartDisease}
+            onPress={setHeartDisease}
+          />
+          <YNCheckbox
+            placeholder="Liver Disease"
+            value={state.liverDisease}
+            onPress={setLiverDisease}
+          />
+          <YNCheckbox
+            placeholder="Pancreatic Disease"
+            value={state.pancreaticDisease}
+            onPress={setPancreaticDisease}
+          />
+          <YNCheckbox
+            placeholder="Anemia"
+            value={state.anemia}
+            onPress={setAnemia}
+          />
+          <YNCheckbox
+            placeholder="Kidney Disease"
+            value={state.kidneyDisease}
+            onPress={setKidneyDisease}
+          />
+          <YNCheckbox
+            placeholder="Hypoglycemia"
+            value={state.hypoglycemia}
+            onPress={setHypoglycemia}
+          />
+          <YNCheckbox
+            placeholder="Diabetes"
+            value={state.diabetes}
+            onPress={setDiabetes}
+          />
+          <YNCheckbox
+            placeholder="Hypertension"
+            value={state.hypertension}
+            onPress={setHypertension}
+          />
+          <YNCheckbox
+            placeholder="HistHeart Disease"
+            value={state.histHeartDisease}
+            onPress={setHistHeartDisease}
+          />
+          <YNCheckbox
+            placeholder="Hist Breast Cancer"
+            value={state.histBreastCancer}
+            onPress={setHistBreastCancer}
+          />
+          <YNCheckbox
+            placeholder="Hist Cancer Other"
+            value={state.histCancerOther}
+            onPress={setHistCancerOther}
+          />
+          <YNCheckbox
+            placeholder="Hist Liver Disease"
+            value={state.histLiverDisease}
+            onPress={setHistLiverDisease}
+          />
+          <YNCheckbox
+            placeholder="Hist Stroke"
+            value={state.histStroke}
+            onPress={setHistStroke}
+          />
+          <YNCheckbox
+            placeholder="Hist Osteoporosis"
+            value={state.histOsteoporosis}
+            onPress={setHistOsteoporosis}
+          />
+          <YNCheckbox
+            placeholder="Hist Hypoglycemia"
+            value={state.histHypoglycemia}
+            onPress={setHistHypoglycemia}
+          />
+          <YNCheckbox
+            placeholder="Hist Diabetes"
+            value={state.histDiabetes}
+            onPress={setHistDiabetes}
+          />
+          <YNCheckbox
+            placeholder="Hist Hypertension"
+            value={state.histHypertension}
+            onPress={setHistHypertension}
+          />
 
+
+        </Block>
       </ScrollView>
       <DateTimePickerModal
         isVisible={datePicker}
@@ -483,6 +488,13 @@ const styles = StyleSheet.create({
     height: '100%',
     zIndex: 2,
   },
+  container: {
+    height: height - 250
+  },
+  mealTypes: {
+    height: 210,
+    marginTop: -20,
+  }
 });
 
 export default AdditionalInfo;
