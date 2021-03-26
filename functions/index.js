@@ -41,3 +41,15 @@ exports.sendNotificationToFCMToken = functions.firestore.document('users/{uid}/c
     }
   }
 });
+
+exports.removeUser = functions.https.onCall(async data => {
+  admin.auth().deleteUser(data.uid)
+    .then(function() {
+      return {
+        message: 'User deleted!',
+      }
+    })
+    .catch(function(error) {
+      return error
+    });
+});

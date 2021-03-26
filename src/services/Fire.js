@@ -64,7 +64,8 @@ export default class Fire {
         if (user.avatar) {
           remoteUrl = await this.uploadPhotoAsync(user.avatar, `avatars/${usr.user.uid}`);
         }
-        await this.firestore.collection('users').doc(usr.user.uid).set({
+        console.log(usr.user.uid)
+        await firebase.firestore().collection('users').doc(usr.user.uid).set({
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,
@@ -75,7 +76,7 @@ export default class Fire {
           plan: user.plan,
           dob: user.dob,
         });
-        resolve(true)
+        resolve(usr.user.uid)
       } catch (e) {
         reject(e);
         return e;

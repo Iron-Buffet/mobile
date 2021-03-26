@@ -517,7 +517,8 @@ const Register = props => {
     try {
       await AsyncStorage.setItem('login', email);
       await AsyncStorage.setItem('password', password);
-      await fire.createUser(usr);
+      const uid = await fire.createUser(usr);
+      form.append('fb_id', uid);
       await signUp(form);
     } catch (error) {
       setState({

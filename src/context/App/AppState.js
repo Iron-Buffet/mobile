@@ -49,12 +49,12 @@ export const AppState = ({children}) => {
       } catch (e) {
       }
     } else {
-      const appstoreWeb = 'https://apps.apple.com/us/app/id1530262458'
+      const appstoreWeb = 'https://apps.apple.com/us/app/id1530262458';
       if (await Linking.canOpenURL(appstoreWeb)) {
         await Linking.openURL(appstoreWeb)
       }
     }
-  }
+  };
 
   return (
     <AppContext.Provider
